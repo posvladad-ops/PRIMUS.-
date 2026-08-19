@@ -13,12 +13,12 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Unbounded:wght@900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Unbounded:wght@900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ===================== ТОКЕНЫ ТЕМЫ ===================== */
 :root{
-  --font-display:'Montserrat',sans-serif;
-  --font-body:'Montserrat',sans-serif;
+  --font-display:'Onest',sans-serif;
+  --font-body:'Onest',sans-serif;
   --font-mono:'JetBrains Mono',monospace;
   --radius-s:8px; --radius-m:12px; --radius-l:18px;
 }
@@ -126,16 +126,19 @@ textarea,input,select{border-radius:var(--radius-s);}
   position:absolute;top:0;right:-3px;width:6px;height:100%;cursor:col-resize;z-index:20;background:transparent;
 }
 .sidebar-resizer:hover,.sidebar-resizer.dragging{background:var(--accent-soft);}
-.brand{padding:10px 8px 6px;}
+.brand{padding:10px 8px 6px;position:relative;}
+.brand-divider{position:absolute;height:1px;background:var(--accent);opacity:.5;}
+html[data-theme="dark"] .brand-divider{background:var(--khaki);}
 .brand h1{
   font-family:'Unbounded',var(--font-display);font-weight:900;
-  font-size:26px;letter-spacing:2.6px;
+  font-size:29px;letter-spacing:4.8px;
   transform:scaleX(1.15) scaleY(0.94);transform-origin:left center;
   display:inline-block;white-space:nowrap;
   color:var(--text);
 }
+.brand-dot{display:inline-block;transform:scaleX(0.86957) scaleY(1.06383);transform-origin:center;}
 html[data-theme="light"] .brand h1{ color:var(--choc-bitter); }
-.brand .sub{font-size:11.5px;color:var(--text-dim);margin-top:3px;letter-spacing:.2px;}
+.brand .sub{font-family:var(--font-mono);font-size:10.5px;font-weight:400;text-transform:uppercase;color:var(--text-dim);opacity:.55;margin-top:-11px;letter-spacing:1.4px;transform:scaleX(1.06) scaleY(0.9);transform-origin:left top;}
 .aura-badge{margin:10px 8px 16px;padding:8px 12px;border-radius:var(--radius-s);background:var(--accent-soft);color:var(--accent-strong);font-family:var(--font-mono);font-size:11.5px;font-weight:600;text-align:center;}
 
 .nav-group{margin-bottom:6px;}
@@ -172,6 +175,15 @@ html[data-theme="light"] .switch::after{transform:translateX(16px);}
 .topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:16px;flex-wrap:wrap;}
 .topbar h2{font-size:25px;}
 .topbar .desc{color:var(--text-dim);font-size:13.5px;margin-top:2px;max-width:560px;}
+h2.prog-title{font-family:var(--font-display);font-weight:800;font-size:30px;text-transform:uppercase;letter-spacing:.5px;margin:0;}
+.p-khaki{color:var(--khaki);}
+.prog-plus{color:var(--khaki);opacity:.5;font-size:.55em;font-weight:800;margin-left:2px;vertical-align:super;}
+.prog-toc-divider{width:100%;max-width:460px;height:1px;background:var(--khaki);opacity:.35;margin:6px 0 10px;}
+.prog-toc{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;}
+.prog-toc a{color:var(--text-faint);text-decoration:none;cursor:pointer;transition:color .12s;}
+.prog-toc a:hover{color:var(--khaki);}
+h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--text-dim);margin:0;}
+.sec-line{height:1px;background:var(--border);opacity:.7;margin:9px 0 18px;}
 .btn{
   display:inline-flex;align-items:center;gap:6px;
   padding:8px 14px;border-radius:var(--radius-s);border:1px solid var(--border);
@@ -301,17 +313,40 @@ html[data-theme="light"] .switch::after{transform:translateX(16px);}
 .rno-banner{padding:12px 16px;border-radius:var(--radius-s);background:rgba(181,103,90,.12);border:1px solid var(--bad);color:var(--bad);font-size:13px;font-weight:600;margin-bottom:18px;}
 
 /* Calendar — компактная, лаконичная */
-.cal-wrap{max-width:320px;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;}
+.cal-row{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap;min-width:0;}
+.cal-wrap{max-width:230px;flex-shrink:0;}
+.fullcal-side{flex:1;min-width:280px;max-width:100%;}
+.cal-legend{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text-dim);line-height:1.4;}
+.cal-legend-sq{width:8px;height:8px;border-radius:2.5px;background:var(--khaki-ring);flex-shrink:0;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:10px;}
 .cal-month-title{font-family:var(--font-display);font-size:13px;font-weight:700;margin:16px 0 6px;color:var(--text-dim);}
-.cal-cell{aspect-ratio:1;border-radius:5px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-dim);cursor:pointer;}
+.cal-cell{aspect-ratio:1;border-radius:4px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--text-dim);cursor:pointer;}
 .cal-cell.empty{border:none;background:transparent;cursor:default;}
 .cal-cell.filled{background:var(--khaki-ring);color:#fff;border-color:var(--khaki-ring);font-weight:600;}
-.cal-cell .n{font-size:10px;}
-.cal-dow{text-align:center;font-size:9px;color:var(--text-faint);font-family:var(--font-mono);}
+.cal-cell .n{font-size:8px;}
+.cal-dow{text-align:center;font-size:8px;color:var(--text-faint);font-family:var(--font-mono);}
+
+/* ---------- Полный календарь: боковая панель на неделю ---------- */
+.fcs-toggle{border:1px dashed var(--border);background:transparent;color:var(--text-faint);font-size:11.5px;padding:7px 12px;border-radius:var(--radius-s);}
+.fcs-toggle:hover{border-color:var(--accent);color:var(--accent-strong);}
+.fcs-panel{margin-top:10px;}
+.fcs-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.fcs-range{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);}
+.fcs-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.fcs-day{border:1px dashed var(--border);border-radius:var(--radius-s);padding:8px;min-height:150px;display:flex;flex-direction:column;background:var(--bg-soft);}
+.fcs-day.today{border-style:solid;border-color:var(--accent);}
+.fcs-day-head{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);text-transform:uppercase;text-align:center;margin-bottom:6px;}
+.fcs-day-head b{display:block;font-family:var(--font-display);font-size:13px;color:var(--text);font-weight:700;}
+.fcs-empty{font-size:10px;color:var(--text-faint);text-align:center;padding:6px 0;opacity:.6;}
+@media (max-width:820px){
+  .cal-row{flex-direction:column;min-width:0;}
+  .fullcal-side{min-width:0;width:100%;}
+  .fcs-days{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:8px;-webkit-overflow-scrolling:touch;min-width:0;}
+  .fcs-day{min-width:150px;flex-shrink:0;scroll-snap-align:start;}
+}
 
 /* Progress */
-.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:16px;}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(172px,1fr));gap:12px;margin-top:16px;}
 .prog-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:18px;display:flex;align-items:center;gap:14px;}
 .prog-card .p-info{flex:1;}
 .prog-card h4{font-size:14px;margin-bottom:3px;}
@@ -328,6 +363,30 @@ html[data-theme="light"] .switch::after{transform:translateX(16px);}
 .overlay.show{display:flex;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-l);padding:24px;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;box-shadow:var(--shadow);}
 .modal.modal-lg{max-width:640px;}
+.modal.modal-cal{max-width:880px;}
+
+/* ---------- Полный календарь ---------- */
+.fullcal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.fullcal-title{font-family:var(--font-display);font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:.5px;}
+.fullcal-nav{display:flex;align-items:center;gap:6px;}
+.fullcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.fullcal-dow{text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-faint);text-transform:uppercase;padding-bottom:4px;}
+.fullcal-cell{min-height:88px;border:1px dashed var(--border);border-radius:var(--radius-s);padding:6px;display:flex;flex-direction:column;gap:3px;cursor:pointer;background:var(--bg-soft);}
+.fullcal-cell:hover{border-color:var(--accent);}
+.fullcal-cell.empty{border:none;background:transparent;cursor:default;}
+.fullcal-cell.today{border-style:solid;border-color:var(--accent);}
+.fullcal-cell .fc-daynum{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
+.fc-event-chip{font-size:10px;padding:2px 5px;border-radius:4px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;}
+.fc-more{font-size:9.5px;color:var(--text-faint);}
+.fc-week-add{width:100%;padding:5px;border:1px dashed var(--border);border-radius:6px;background:transparent;color:var(--text-faint);font-size:10.5px;margin-top:auto;}
+.fc-week-add:hover{border-color:var(--accent);color:var(--accent-strong);}
+.fc-event-row{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 6px;border-radius:5px;background:var(--surface);margin-bottom:4px;cursor:pointer;border:1px solid var(--border);}
+.fc-event-row:hover{border-color:var(--accent);}
+.fc-event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fc-event-time{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);}
+.fc-color-pick{display:flex;gap:9px;margin:0 0 16px;}
+.fc-color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;box-shadow:0 0 0 1px var(--border) inset;}
+.fc-color-dot.sel{border-color:var(--text);}
 .modal h3{font-size:18px;margin-bottom:14px;}
 .field{margin-bottom:12px;}
 .field label{display:block;font-size:11.5px;color:var(--text-faint);margin-bottom:5px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.5px;}
@@ -338,9 +397,9 @@ html[data-theme="light"] .switch::after{transform:translateX(16px);}
 .field textarea{min-height:64px;resize:vertical;}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
 .topic-row,.manage-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;transition:transform .15s;}
-.topic-row.dragging{opacity:.85;box-shadow:var(--shadow);border-radius:var(--radius-s);background:var(--surface);z-index:5;}
-.drag-handle{cursor:grab;color:var(--text-faint);font-size:16px;padding:2px 4px;touch-action:none;user-select:none;}
-.drag-handle:active{cursor:grabbing;color:var(--accent-strong);}
+.topic-row.dragging{opacity:.85;box-shadow:var(--shadow);border-radius:var(--radius-s);background:var(--surface);z-index:5;transition:none;}
+.topics-tab-list .topic-row{touch-action:none;cursor:grab;}
+.topics-tab-list .topic-row.dragging{cursor:grabbing;}
 .topic-name-input,.manage-name-input{flex:1;padding:8px 10px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text);font-size:13px;border-radius:var(--radius-s);}
 .lookup-row{display:flex;align-items:center;gap:8px;margin:-6px 0 12px;}
 .lookup-hint{font-size:10.5px;color:var(--text-faint);}
@@ -414,22 +473,8 @@ html[data-theme="light"] .switch::after{transform:translateX(16px);}
   .main{padding:18px;}
   .match-grid{grid-template-columns:1fr;}
   .cover-banner{height:44px;}
-  #app.sidebar-collapsed .sidebar{display:none;}
-  .sidebar-toggle{position:fixed !important;top:10px !important;right:10px !important;left:auto !important;}
-  .brand{padding:30px 8px 10px;}
+  .brand{padding:calc(34px + env(safe-area-inset-top)) 8px 10px;}
 }
-:root{ --sidebar-w:256px; }
-.sidebar-toggle{
-  position:fixed;top:14px;left:calc(var(--sidebar-w) - 13px);width:28px;height:28px;border-radius:50%;
-  background:var(--surface);border:1px solid var(--border);color:var(--text-dim);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;z-index:200;
-  box-shadow:var(--shadow);transition:left .15s;
-}
-.sidebar-toggle:hover{color:var(--accent-strong);border-color:var(--accent);}
-#app.sidebar-collapsed{grid-template-columns:0px 1fr !important;}
-#app.sidebar-collapsed .sidebar{overflow:hidden;padding-left:0;padding-right:0;border-right:none;}
-#app.sidebar-collapsed .sidebar > *:not(.sidebar-toggle){display:none;}
-#app.sidebar-collapsed .sidebar-toggle{left:10px;}
 
 /* ==========================================================================
    OVERVIEW: вкладки внутри Progress
@@ -460,7 +505,7 @@ html[data-theme="light"] .switch::after{transform:translateX(16px);}
 
 /* ---------- Матрица Эйзенхауэра ---------- */
 .eis-wrap{border:1px solid var(--border);border-radius:var(--radius-l);padding:18px;background:var(--surface);}
-.eis-title{font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--khaki);margin-bottom:14px;text-align:center;letter-spacing:3.5px;text-transform:uppercase;opacity:.55;transform:scaleX(1.15);}
+.eis-title{font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--text-dim);margin-bottom:0;text-align:left;letter-spacing:1.6px;text-transform:uppercase;}
 .eis-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;min-height:340px;}
 .eis-cell{border-radius:var(--radius-m);padding:10px;display:flex;flex-direction:column;color:var(--text);position:relative;overflow:hidden;border:1px solid var(--border);}
 .eis-cell .ec-label{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:.4px;opacity:.75;line-height:1.4;margin-bottom:6px;}
@@ -482,8 +527,8 @@ html[data-theme="light"] .switch::after{transform:translateX(16px);}
 /* ---------- Недельная шкала планера ---------- */
 .week-strip{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
 .week-days{display:flex;gap:5px;flex:1;}
-.week-day-pick{flex:1;text-align:center;padding:8px 2px;border-radius:var(--radius-s);background:var(--surface);border:1px solid var(--border);cursor:pointer;}
-.week-day-pick:hover{border-color:var(--accent);}
+.week-day-pick{flex:1;text-align:center;padding:6px 2px;border-radius:var(--radius-s);background:transparent;border:1px solid transparent;cursor:pointer;}
+.week-day-pick:hover{border-color:var(--border);}
 .week-day-pick.active{background:var(--accent-soft);border-color:var(--accent);}
 .week-day-pick.done .wd-num{color:var(--good);}
 .week-day-pick .wd-label{font-family:var(--font-mono);font-size:9px;color:var(--text-faint);text-transform:uppercase;}
@@ -510,24 +555,38 @@ html[data-theme="dark"] .smoky-modal{color:#F0EDE5;}
 .timer-tabs{display:flex;gap:6px;margin-bottom:18px;}
 .timer-tabs .btn{border-radius:3px;}
 .timer-display-wrap{
-  max-width:400px;margin:0 auto 18px;padding:32px 20px 26px;border-radius:var(--radius-l);
-  background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:center;
+  max-width:480px;margin:0 auto 18px;padding:36px 20px 30px;text-align:center;
 }
-.timer-display{
-  font-family:var(--font-display);font-size:58px;font-weight:700;margin:0;
-  letter-spacing:1px;transform:scaleX(1.12) scaleY(0.96);transform-origin:center;
+.flip-clock{display:flex;align-items:center;justify-content:center;gap:7px;}
+.flip-digit{
+  position:relative;width:72px;height:82px;flex-shrink:0;border-radius:11px;
+  background:linear-gradient(180deg, var(--surface) 0%, var(--bg-soft) 100%);
+  box-shadow:0 8px 18px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.06);
+  perspective:240px;overflow:hidden;
+}
+.flip-digit-inner{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:60px;font-weight:300;
   color:var(--choc-bitter);font-variant-numeric:tabular-nums;
-  text-shadow:0 1px 0 rgba(255,255,255,.25), 0 2px 6px rgba(0,0,0,.06);
+  backface-visibility:hidden;
 }
-html[data-theme="dark"] .timer-display{color:#EFE4D2;text-shadow:0 1px 0 rgba(0,0,0,.3), 0 2px 10px rgba(0,0,0,.35);}
+.flip-digit.flip .flip-digit-inner{animation:flipTile .32s ease;}
+@keyframes flipTile{
+  0%{transform:rotateX(0deg);}
+  45%{transform:rotateX(-90deg);}
+  100%{transform:rotateX(0deg);}
+}
+.flip-colon{
+  width:16px;font-family:var(--font-mono);font-size:46px;font-weight:300;
+  color:var(--text-dim);display:flex;align-items:center;justify-content:center;
+}
+html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
 .timer-subject-input{width:100%;max-width:360px;margin:0 auto 16px;display:block;padding:10px 14px;border-radius:3px;
   border:1px solid var(--border);background:var(--bg-soft);color:var(--text);font-size:13px;text-align:center;}
 .timer-controls{display:flex;gap:10px;justify-content:center;margin-bottom:20px;}
 .btn-timer-primary{background:var(--wine);border-color:var(--wine);color:#fff;padding:10px 24px;border-radius:3px;}
 .btn-timer-secondary{background:var(--khaki-ring);border-color:var(--khaki-ring);color:#fff;border-radius:3px;}
 .btn-timer-ghost{background:var(--choc-bitter);border-color:var(--choc-bitter);color:#fff;border-radius:3px;}
-.pomo-progress{width:100%;max-width:360px;margin:0 auto 16px;height:4px;border-radius:2px;background:var(--bg-soft);overflow:hidden;}
-.pomo-progress-fill{height:100%;background:var(--wine);transition:width 1s linear;}
 .time-records{margin-top:24px;}
 .time-record-row{display:flex;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border);font-size:12.5px;}
 .time-record-row .tr-subject{font-weight:500;}
@@ -544,8 +603,10 @@ html[data-theme="dark"] .timer-display{color:#EFE4D2;text-shadow:0 1px 0 rgba(0,
 .sched-item .si-del{border:none;background:transparent;color:var(--text-faint);cursor:pointer;font-size:12px;}
 
 /* ---------- Прогресс: предметы с раскрытием тем ---------- */
-.subj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:16px;cursor:pointer;}
-.subj-card-top{display:flex;align-items:center;gap:14px;}
+.subj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:13px;cursor:pointer;}
+.subj-card-top{display:flex;align-items:center;gap:11px;}
+.subj-card h4{font-size:13px;margin-bottom:2px;}
+.subj-card .p-sub{font-size:10.5px;color:var(--text-faint);}
 .subj-topics{margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);display:none;}
 .subj-card.expanded .subj-topics{display:block;}
 .subj-topic-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:11.5px;}
@@ -612,12 +673,12 @@ html[data-theme="dark"] .timer-display{color:#EFE4D2;text-shadow:0 1px 0 rgba(0,
 </head>
 <body>
 <div id="app">
-  <button class="sidebar-toggle" id="sidebarToggle" title="Свернуть/развернуть меню">‹</button>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-resizer" id="sidebarResizer"></div>
     <div class="brand">
-      <h1>PRIMUS.</h1>
-      <div class="sub">The best platform for successful studying</div>
+      <h1>PRIMUS<span class="brand-dot">.</span></h1>
+      <div class="brand-divider"></div>
+      <div class="sub">the best platform for successful studying</div>
     </div>
     <div class="aura-badge" id="auraBadge">0 Aura · ур. 1</div>
     <div id="navCategories"></div>
@@ -1323,8 +1384,9 @@ const CATEGORY_META = [
    ========================================================================== */
 
 /* ---------- Утилиты дат ---------- */
-function todayISO(){ return new Date().toISOString().slice(0,10); }
-function addDays(iso,days){ const d=new Date(iso+"T00:00:00"); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+function toISO(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function todayISO(){ return toISO(new Date()); }
+function addDays(iso,days){ const d=new Date(iso+"T00:00:00"); d.setDate(d.getDate()+days); return toISO(d); }
 function fmtDate(iso){ const d=new Date(iso+"T00:00:00"); return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit'}); }
 function uid(prefix){ return prefix+"_"+Math.random().toString(36).slice(2,9); }
 function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
@@ -1359,12 +1421,12 @@ function defaultStore(){
     sidebarWidth:256, coverImage:null,
     fixedMistakes:0,
     hiddenCategories:[],
-    sidebarCollapsed:false,
     dailyGoals:{learned:10, tasks:15, rno:5},
     planTasks:[], // {id,text,tier:'min'|'max',quadrant:'uiq'|'inq'|'uniq'|'ninq',done,deadline,createdDate}
     notes:[], // {id,title,body,date}
     timeRecords:[], // {id,subject,seconds,date,type}
     schedule:[], // {id,day,time,subject,room,professor}
+    calEvents:[], // {id,title,date,time,place,category,color}
     customTasks:{}, // catKey -> [{id,mode,topic,prompt,options,answer,explanation}]
     notebooks:{} // catKey -> [{id,name,pages:[{id,bg,paper,strokes:[]}]}]
   };
@@ -1894,7 +1956,7 @@ function weekStart(offsetWeeks){
   const d = new Date(todayISO()+"T00:00:00");
   let dow = d.getDay(); dow = dow===0?6:dow-1; // Пн=0
   d.setDate(d.getDate() - dow + offsetWeeks*7);
-  return d.toISOString().slice(0,10);
+  return toISO(d);
 }
 function fmtPlanDate(iso){
   if(iso===todayISO()) return 'сегодня';
@@ -1916,14 +1978,21 @@ function checkPlanDayBonus(dateIso){
 function renderProgressPage(main){
   const li = getLevelInfo();
   main.innerHTML = `
-    <div class="topbar"><div><h2>Progress</h2><div class="desc">Aura, планер, матрица Эйзенхауэра, календарь и прогресс по предметам</div></div></div>
-    <div class="aura-hero aura-hero-sm">
+    <div class="topbar"><div>
+      <h2 class="prog-title"><span class="p-khaki">Pro</span>gress<span class="prog-plus">+</span></h2>
+      <div class="prog-toc-divider"></div>
+      <nav class="prog-toc">
+        <a data-scroll="secAura">Your Aura</a><a data-scroll="secPlanner">Planner</a><a data-scroll="secMatrix">Matrix</a><a data-scroll="secCalendar">Calendar</a><a data-scroll="secProgress">Progress</a>
+      </nav>
+    </div></div>
+    <div class="aura-hero aura-hero-sm" id="secAura">
       <div class="aura-num">${li.aura}<span class="aura-unit">Aura</span></div>
       <div class="aura-level">Уровень ${li.level} · до следующего ${li.need-li.into} Aura · серия ${STORE.streak||0} дн.</div>
       <div class="aura-bar"><div class="aura-bar-fill" style="width:${Math.round(100*li.into/li.need)}%"></div></div>
     </div>
 
-    <h3 style="margin-top:24px">Планер</h3>
+    <h3 class="sec-head" style="margin-top:28px" id="secPlanner">Планер</h3>
+    <div class="sec-line"></div>
     <div class="plan-grid">
       <div>
         <div class="week-strip" id="weekStrip"></div>
@@ -1935,23 +2004,33 @@ function renderProgressPage(main){
         <div id="planMax"></div>
         <button class="plan-add-btn" id="addMax">+ Добавить задачу</button>
       </div>
-      <div class="eis-wrap">
+      <div class="eis-wrap" id="secMatrix">
         <div class="eis-title">Матрица Эйзенхауэра</div>
+        <div class="sec-line" style="margin:9px 0 16px"></div>
         <div class="eis-grid" id="eisGrid"></div>
       </div>
     </div>
 
-    <h3 style="margin-top:28px">Календарь</h3>
-    <div class="cal-wrap" id="calWrap"></div>
+    <h3 class="sec-head" style="margin-top:32px" id="secCalendar">Календарь</h3>
+    <div class="sec-line"></div>
+    <div class="cal-row">
+      <div class="cal-wrap" id="calWrap"></div>
+      <div class="fullcal-side" id="fullCalSide"></div>
+    </div>
 
-    <h3 style="margin-top:28px">Прогресс по предметам</h3>
+    <h3 class="sec-head" style="margin-top:32px" id="secProgress">Прогресс по предметам</h3>
+    <div class="sec-line"></div>
     <div class="prog-grid" id="progGrid"></div>
   `;
   renderWeekStrip();
   renderPlanLists();
   renderEisGrid();
   renderCalendarInto(document.getElementById("calWrap"));
+  renderFullCalSide();
   renderProgressRingsInto(document.getElementById("progGrid"));
+  main.querySelectorAll('.prog-toc [data-scroll]').forEach(a=>{
+    a.onclick=()=>{ const el=document.getElementById(a.dataset.scroll); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); };
+  });
 }
 
 function renderWeekStrip(){
@@ -2076,9 +2155,9 @@ function importStoreJSON(file){
 /* ---------- План: базовый минимум / роскошный максимум + матрица Эйзенхауэра ---------- */
 const EIS_QUADS = [
   {id:'uiq', label:'Срочно + Важно', cls:'uiq'},
-  {id:'inq', label:'Важно, не срочно', cls:'inq'},
-  {id:'uniq', label:'Срочно, не важно', cls:'uniq'},
-  {id:'ninq', label:'Не срочно, не важно', cls:'ninq'}
+  {id:'inq', label:'Важно + не срочно', cls:'inq'},
+  {id:'uniq', label:'Срочно + не важно', cls:'uniq'},
+  {id:'ninq', label:'Не срочно + не важно', cls:'ninq'}
 ];
 function daysUntil(iso){
   if(!iso) return null;
@@ -2235,8 +2314,7 @@ function renderOvTimer(body){
     </div>
     <input class="timer-subject-input" id="timerSubject" placeholder="Над чем работаешь?" value="${esc(TIMER_STATE.subject)}">
     <div class="timer-display-wrap">
-      <div class="timer-display" id="timerDisplay">${fmtSeconds2(TIMER_MODE==='pomodoro'?TIMER_STATE.seconds:TIMER_STATE.stopwatchSeconds)}</div>
-      ${TIMER_MODE==='pomodoro'?'<div class="pomo-progress"><div class="pomo-progress-fill" id="pomoFill" style="width:0%"></div></div>':''}
+      <div class="flip-clock" id="timerDisplay">${flipTilesHtml(fmtSeconds2(TIMER_MODE==='pomodoro'?TIMER_STATE.seconds:TIMER_STATE.stopwatchSeconds))}</div>
     </div>
     <div class="timer-controls">
       <button class="btn btn-timer-primary" id="timerStartPause">${TIMER_STATE.running?'Пауза':'Старт'}</button>
@@ -2259,6 +2337,31 @@ function renderOvTimer(body){
 }
 function fmtSeconds2(s){ s=Math.max(0,Math.round(s)); const h=Math.floor(s/3600); const m=Math.floor((s%3600)/60); const r=s%60;
   return h>0? `${h}:${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}` : `${m}:${String(r).padStart(2,'0')}`; }
+
+/* ---------- Flip-clock тайлы для таймера ---------- */
+function flipTilesHtml(str){
+  return [...str].map(ch=> ch===':'
+    ? `<span class="flip-colon">:</span>`
+    : `<span class="flip-digit"><span class="flip-digit-inner">${ch}</span></span>`
+  ).join('');
+}
+function updateFlipTime(container, str){
+  if(!container) return;
+  const tiles = [...container.children];
+  const chars = [...str];
+  if(tiles.length !== chars.length){ container.innerHTML = flipTilesHtml(str); return; }
+  chars.forEach((ch,i)=>{
+    const tile = tiles[i];
+    if(tile.classList.contains('flip-colon')) return; // разделитель не меняется
+    const inner = tile.querySelector('.flip-digit-inner');
+    if(inner.textContent !== ch){
+      inner.textContent = ch;
+      tile.classList.remove('flip');
+      void tile.offsetWidth;
+      tile.classList.add('flip');
+    }
+  });
+}
 function toggleTimer(body){
   if(TIMER_STATE.running){
     clearInterval(TIMER_STATE.intervalId); TIMER_STATE.running=false; renderOvTimer(body); return;
@@ -2267,16 +2370,14 @@ function toggleTimer(body){
   TIMER_STATE.intervalId = setInterval(()=>{
     if(TIMER_MODE==='pomodoro'){
       TIMER_STATE.seconds--;
-      const disp = document.getElementById('timerDisplay');
-      if(disp) disp.textContent = fmtSeconds2(TIMER_STATE.seconds);
+      updateFlipTime(document.getElementById('timerDisplay'), fmtSeconds2(TIMER_STATE.seconds));
       const totalLen = TIMER_STATE.isBreak?5*60:25*60;
       const fill = document.getElementById('pomoFill');
       if(fill) fill.style.width = Math.round(100*(1-TIMER_STATE.seconds/totalLen))+'%';
       if(TIMER_STATE.seconds<=0) finishPomodoroSession(body);
     } else {
       TIMER_STATE.stopwatchSeconds++;
-      const disp = document.getElementById('timerDisplay');
-      if(disp) disp.textContent = fmtSeconds2(TIMER_STATE.stopwatchSeconds);
+      updateFlipTime(document.getElementById('timerDisplay'), fmtSeconds2(TIMER_STATE.stopwatchSeconds));
     }
   },1000);
   const btn = document.getElementById('timerStartPause'); if(btn) btn.textContent='Пауза';
@@ -2412,7 +2513,8 @@ const CAL_MONTHS = (()=>{
 let CAL_MONTH_IDX = 0;
 function renderCalendarInto(wrap){
   const {y,m,name} = CAL_MONTHS[CAL_MONTH_IDX];
-  let html = `<div class="btn-row" style="align-items:center;margin-bottom:4px">
+  let html = `<div class="cal-legend"><span class="cal-legend-sq"></span> Ударный режим — базовый минимум дня выполнен</div>
+  <div class="btn-row" style="align-items:center;margin:14px 0 10px">
     <button class="mini-btn" id="calPrev" ${CAL_MONTH_IDX===0?'disabled':''}>‹</button>
     <span class="cal-month-title" style="margin:0">${name}</span>
     <button class="mini-btn" id="calNext" ${CAL_MONTH_IDX===CAL_MONTHS.length-1?'disabled':''}>›</button>
@@ -2449,6 +2551,229 @@ function renderCalendarInto(wrap){
   });
 }
 
+/* ---------- Полный календарь (месяц/неделя) — экзамены, сессии, дела по датам и времени ---------- */
+const CAL_COLORS = [
+  {id:'wine', v:'var(--wine)'},
+  {id:'khaki', v:'var(--khaki-ring)'},
+  {id:'accent', v:'var(--accent-strong)'},
+  {id:'good', v:'var(--good)'},
+  {id:'bad', v:'var(--bad)'},
+];
+const CAL_EVENT_TYPES = ['Экзамен','Сессия','Работа','Личное','Другое'];
+function calColorVar(id){ const c=CAL_COLORS.find(x=>x.id===id); return c?c.v:CAL_COLORS[2].v; }
+function isoWeekStart(iso){ const d=new Date(iso+"T00:00:00"); let dow=d.getDay(); dow=dow===0?6:dow-1; d.setDate(d.getDate()-dow); return toISO(d); }
+function addMonths(iso,n){ const d=new Date(iso+"T00:00:00"); d.setMonth(d.getMonth()+n); return toISO(d); }
+function monthTitle(y,m){ const names=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']; return `${names[m-1]} ${y}`; }
+
+let FULLCAL_DATE = todayISO();
+
+function openFullCalendar(prefillDate){
+  FULLCAL_DATE = prefillDate || todayISO();
+  document.getElementById('modalBody').classList.add('modal-cal');
+  renderFullCalendarModal();
+  openOverlay();
+}
+
+function closeFullCalendar(){
+  document.getElementById('modalBody').classList.remove('modal-cal');
+  closeOverlay();
+  renderCalendarInto(document.getElementById('calWrap'));
+  renderFullCalSide();
+}
+
+function renderFullCalendarModal(){
+  const modal = document.getElementById('modalBody');
+  modal.innerHTML = `
+    <div class="fullcal-head">
+      <div class="fullcal-title" id="fcTitle"></div>
+      <div class="fullcal-nav">
+        <button class="mini-btn" id="fcPrev">‹</button>
+        <button class="mini-btn" id="fcToday">Сегодня</button>
+        <button class="mini-btn" id="fcNext">›</button>
+      </div>
+      <button class="btn btn-primary" id="fcAddEvent">+ Событие</button>
+    </div>
+    <div id="fcBody"></div>
+    <div class="modal-actions"><button class="btn" id="fcClose">Закрыть</button></div>
+  `;
+  document.getElementById('fcClose').onclick=closeFullCalendar;
+  document.getElementById('fcToday').onclick=()=>{ FULLCAL_DATE=todayISO(); renderFullCalendarModal(); };
+  document.getElementById('fcAddEvent').onclick=()=>openEventForm(null, FULLCAL_DATE, renderFullCalendarModal);
+  document.getElementById('fcPrev').onclick=()=>{ FULLCAL_DATE=addMonths(FULLCAL_DATE,-1); renderFullCalendarModal(); };
+  document.getElementById('fcNext').onclick=()=>{ FULLCAL_DATE=addMonths(FULLCAL_DATE,1); renderFullCalendarModal(); };
+  renderFullCalMonth();
+}
+
+function renderFullCalMonth(){
+  const body = document.getElementById('fcBody');
+  const d = new Date(FULLCAL_DATE+"T00:00:00");
+  const y=d.getFullYear(), m=d.getMonth()+1;
+  document.getElementById('fcTitle').textContent = monthTitle(y,m);
+  let html = `<div class="fullcal-grid">`;
+  ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(dw=>html+=`<div class="fullcal-dow">${dw}</div>`);
+  const first = new Date(y,m-1,1);
+  let startDow = first.getDay(); startDow = startDow===0?6:startDow-1;
+  for(let i=0;i<startDow;i++) html += '<div class="fullcal-cell empty"></div>';
+  const daysInMonth = new Date(y,m,0).getDate();
+  const today = todayISO();
+  for(let dnum=1; dnum<=daysInMonth; dnum++){
+    const iso = `${y}-${String(m).padStart(2,'0')}-${String(dnum).padStart(2,'0')}`;
+    const evs = (STORE.calEvents||[]).filter(e=>e.date===iso).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+    const shown = evs.slice(0,2);
+    const more = evs.length-shown.length;
+    html += `<div class="fullcal-cell ${iso===today?'today':''}" data-date="${iso}">
+      <span class="fc-daynum">${dnum}</span>
+      ${shown.map(e=>`<span class="fc-event-chip" data-event="${e.id}" style="background:${calColorVar(e.color)}">${e.time?esc(e.time)+' ':''}${esc(e.title)}</span>`).join('')}
+      ${more>0?`<span class="fc-more">+${more} ещё</span>`:''}
+    </div>`;
+  }
+  html += `</div>`;
+  body.innerHTML = html;
+  body.querySelectorAll('.fullcal-cell[data-date]').forEach(cell=>{
+    cell.addEventListener('click',(e)=>{
+      if(e.target.closest('[data-event]')) return;
+      openEventForm(null, cell.dataset.date, renderFullCalendarModal);
+    });
+  });
+  body.querySelectorAll('[data-event]').forEach(chip=>{
+    chip.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const ev = (STORE.calEvents||[]).find(x=>x.id===chip.dataset.event);
+      if(ev) openEventForm(ev, null, renderFullCalendarModal);
+    });
+  });
+}
+
+/* ---------- Боковая панель: полный календарь на неделю, рядом с мини-календарём ---------- */
+let FULLSIDE_VISIBLE = true;
+let FULLSIDE_DATE = todayISO();
+
+function renderFullCalSide(){
+  const wrap = document.getElementById('fullCalSide');
+  if(!wrap) return;
+  wrap.innerHTML = `
+    <button class="fcs-toggle" id="fcsToggle">${FULLSIDE_VISIBLE?'Скрыть полный календарь':'Показать полный календарь'}</button>
+    ${FULLSIDE_VISIBLE ? `
+      <div class="fcs-panel">
+        <div class="fcs-nav">
+          <button class="mini-btn" id="fcsPrev">‹</button>
+          <span class="fcs-range" id="fcsRange"></span>
+          <button class="mini-btn" id="fcsNext">›</button>
+          <button class="mini-btn" id="fcsToday">Сегодня</button>
+          <button class="btn" id="fcsMonth" style="margin-left:auto">Месяц ⤢</button>
+          <button class="btn btn-primary" id="fcsAdd">+ Событие</button>
+        </div>
+        <div class="fcs-days" id="fcsDays"></div>
+      </div>
+    ` : ''}
+  `;
+  document.getElementById('fcsToggle').onclick=()=>{ FULLSIDE_VISIBLE=!FULLSIDE_VISIBLE; renderFullCalSide(); };
+  if(!FULLSIDE_VISIBLE) return;
+  document.getElementById('fcsPrev').onclick=()=>{ FULLSIDE_DATE=addDays(FULLSIDE_DATE,-7); renderFullSideDays(); };
+  document.getElementById('fcsNext').onclick=()=>{ FULLSIDE_DATE=addDays(FULLSIDE_DATE,7); renderFullSideDays(); };
+  document.getElementById('fcsToday').onclick=()=>{ FULLSIDE_DATE=todayISO(); renderFullSideDays(); };
+  document.getElementById('fcsMonth').onclick=()=>openFullCalendar(FULLSIDE_DATE);
+  document.getElementById('fcsAdd').onclick=()=>openEventForm(null, FULLSIDE_DATE, ()=>{ closeOverlay(); renderFullSideDays(); renderCalendarInto(document.getElementById('calWrap')); });
+  renderFullSideDays();
+}
+
+function renderFullSideDays(){
+  const start = isoWeekStart(FULLSIDE_DATE);
+  const rangeEl = document.getElementById('fcsRange');
+  if(rangeEl) rangeEl.textContent = `${fmtDate(start)} – ${fmtDate(addDays(start,6))}`;
+  const dayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  const today = todayISO();
+  const onDone = ()=>{ closeOverlay(); renderFullSideDays(); renderCalendarInto(document.getElementById('calWrap')); };
+  let html = '';
+  for(let i=0;i<7;i++){
+    const iso = addDays(start,i);
+    const d = new Date(iso+"T00:00:00");
+    const evs = (STORE.calEvents||[]).filter(e=>e.date===iso).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+    html += `<div class="fcs-day ${iso===today?'today':''}" data-date="${iso}">
+      <div class="fcs-day-head">${dayNames[i]}<b>${d.getDate()}</b></div>
+      ${evs.map(e=>`<div class="fc-event-row" data-event="${e.id}"><span class="fc-event-dot" style="background:${calColorVar(e.color)}"></span>${e.time?`<span class="fc-event-time">${esc(e.time)}</span>`:''}<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.title)}</span></div>`).join('') || '<div class="fcs-empty">Пусто</div>'}
+      <button class="fc-week-add" data-add="${iso}">+ Событие</button>
+    </div>`;
+  }
+  const wrap = document.getElementById('fcsDays');
+  if(!wrap) return;
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('[data-event]').forEach(row=>{
+    row.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      const ev = (STORE.calEvents||[]).find(x=>x.id===row.dataset.event);
+      if(ev) openEventForm(ev, null, onDone);
+    });
+  });
+  wrap.querySelectorAll('[data-add]').forEach(btn=>{
+    btn.addEventListener('click',(e)=>{ e.stopPropagation(); openEventForm(null, btn.dataset.add, onDone); });
+  });
+}
+
+function openEventForm(event, prefillDate, returnFn){
+  returnFn = returnFn || renderFullCalendarModal;
+  const modal = document.getElementById('modalBody');
+  if(!modal.classList.contains('modal-cal')) modal.classList.add('modal-lg');
+  openOverlay();
+  const isEdit = !!event;
+  const ev = event || {id:null, title:'', date:prefillDate||FULLCAL_DATE, time:'', place:'', category:'', color:CAL_COLORS[0].id};
+  let selectedColor = ev.color || CAL_COLORS[0].id;
+  modal.innerHTML = `
+    <h3>${isEdit?'Редактировать событие':'Новое событие'}</h3>
+    <div class="field"><label>Название</label><input id="evTitle" value="${esc(ev.title)}" placeholder="Например: Экзамен по латыни"></div>
+    <div class="field"><label>Категория</label>
+      <select id="evCategory">
+        <option value="">Без категории</option>
+        ${CAL_EVENT_TYPES.map(t=>`<option value="${esc(t)}" ${ev.category===t?'selected':''}>${esc(t)}</option>`).join('')}
+        ${allCategoryKeys().map(k=>`<option value="${esc(getCategoryDisplayName(k))}" ${ev.category===getCategoryDisplayName(k)?'selected':''}>${esc(getCategoryDisplayName(k))}</option>`).join('')}
+      </select>
+    </div>
+    <div style="display:flex;gap:10px">
+      <div class="field" style="flex:1"><label>Дата</label><input type="date" id="evDate" value="${ev.date}"></div>
+      <div class="field" style="flex:1"><label>Время (необязательно)</label><input type="time" id="evTime" value="${ev.time||''}"></div>
+    </div>
+    <div class="field"><label>Место (необязательно)</label><input id="evPlace" value="${esc(ev.place||'')}" placeholder="Например: Ауд. 204"></div>
+    <label style="display:block;font-size:11.5px;color:var(--text-faint);margin-bottom:5px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.5px">Цвет</label>
+    <div class="fc-color-pick">
+      ${CAL_COLORS.map(c=>`<span class="fc-color-dot ${selectedColor===c.id?'sel':''}" data-color="${c.id}" style="background:${c.v}"></span>`).join('')}
+    </div>
+    <div class="modal-actions">
+      ${isEdit?'<button class="btn" id="evDelete" style="margin-right:auto;color:var(--bad)">Удалить</button>':''}
+      <button class="btn" id="evBack">Назад</button>
+      <button class="btn btn-primary" id="evSave">Сохранить</button>
+    </div>
+  `;
+  modal.querySelectorAll('.fc-color-dot').forEach(dot=>{
+    dot.onclick=()=>{ selectedColor=dot.dataset.color; modal.querySelectorAll('.fc-color-dot').forEach(x=>x.classList.remove('sel')); dot.classList.add('sel'); };
+  });
+  document.getElementById('evBack').onclick=()=>returnFn();
+  if(isEdit){
+    document.getElementById('evDelete').onclick=()=>{
+      if(!confirm('Точно удалить событие? Это безвозвратно.')) return;
+      STORE.calEvents = STORE.calEvents.filter(x=>x.id!==ev.id);
+      saveStore();
+      returnFn();
+    };
+  }
+  document.getElementById('evSave').onclick=()=>{
+    const title = document.getElementById('evTitle').value.trim();
+    if(!title){ document.getElementById('evTitle').focus(); return; }
+    const date = document.getElementById('evDate').value || todayISO();
+    const time = document.getElementById('evTime').value || '';
+    const place = document.getElementById('evPlace').value.trim();
+    const category = document.getElementById('evCategory').value;
+    if(isEdit){
+      Object.assign(ev, {title,date,time,place,category,color:selectedColor});
+    } else {
+      STORE.calEvents.push({id:uid('ev'), title,date,time,place,category,color:selectedColor});
+    }
+    saveStore();
+    FULLCAL_DATE = date;
+    FULLSIDE_DATE = date;
+    returnFn();
+  };
+}
+
 /* ---------- Кольца прогресса по предметам (с раскрытием по темам) ---------- */
 function renderProgressRingsInto(grid){
   let html='';
@@ -2478,11 +2803,11 @@ function renderProgressRingsInto(grid){
   grid.querySelectorAll('.subj-card').forEach(card=>card.addEventListener('click',()=>card.classList.toggle('expanded')));
 }
 function donutSVG(pct){
-  const r=26, c=2*Math.PI*r, off=c*(1-pct/100);
-  return `<svg width="64" height="64" viewBox="0 0 64 64">
-    <circle cx="32" cy="32" r="${r}" fill="none" style="stroke:var(--border)" stroke-width="7"/>
-    <circle cx="32" cy="32" r="${r}" fill="none" style="stroke:var(--khaki-ring)" stroke-width="7" stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round" transform="rotate(-90 32 32)"/>
-    <text x="32" y="37" text-anchor="middle" font-size="14" style="fill:var(--text)" font-family="Montserrat">${pct}%</text>
+  const r=21, c=2*Math.PI*r, off=c*(1-pct/100), s=54, mid=s/2;
+  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">
+    <circle cx="${mid}" cy="${mid}" r="${r}" fill="none" style="stroke:var(--border)" stroke-width="6"/>
+    <circle cx="${mid}" cy="${mid}" r="${r}" fill="none" style="stroke:var(--khaki-ring)" stroke-width="6" stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="round" transform="rotate(-90 ${mid} ${mid})"/>
+    <text x="${mid}" y="${mid+5}" text-anchor="middle" font-size="12" style="fill:var(--text)" font-family="Onest">${pct}%</text>
   </svg>`;
 }
 
@@ -2529,7 +2854,6 @@ function renderTopicsTab(body, key){
       const isPinned = pinned.includes(t.id);
       const cnt = APP_DATA[key].cards.filter(c=>getCardTopicId(key,c)===t.id).length;
       html += `<div class="topic-row" data-id="${t.id}">
-        <span class="drag-handle" data-drag="${t.id}" title="Перетащи, чтобы изменить порядок">≡</span>
         <button class="mini-btn ${isPinned?'pin-on':''}" data-pin-topic="${t.id}" title="Закрепить">•</button>
         <input class="topic-name-input" data-id="${t.id}" value="${esc(t.name)}">
         <span style="font-size:11px;color:var(--text-faint);font-family:var(--font-mono);min-width:52px;text-align:right">${cnt} карт.</span>
@@ -2556,67 +2880,101 @@ function renderTopicsTab(body, key){
   draw();
 }
 
-/* ---------- Перетаскивание тем пальцем/мышью вместо стрелочек ---------- */
+/* ---------- Перетаскивание тем пальцем/мышью: весь ряд, без ручки, с плавной анимацией соседей (FLIP) ---------- */
 function initTopicDrag(container, key, onCommit){
   if(!container) return;
-  let dragEl = null, dragId = null, startY = 0, startTop = 0, rows = [];
+  const THRESHOLD = 6; // px вертикального сдвига, после которого тап превращается в драг
+  let dragEl = null, dragId = null, startY = 0, startTop = 0, pointerId = null;
+  let pending = null; // {row, id, startX, startY, pointerId} — ждём, тап это или начало драга
 
-  function rowsInfo(){
-    return [...container.querySelectorAll('.topic-row')].map(el=>({el, id:el.dataset.id, rect:el.getBoundingClientRect()}));
-  }
-  container.querySelectorAll('[data-drag]').forEach(handle=>{
-    handle.addEventListener('pointerdown',(e)=>{
-      dragEl = handle.closest('.topic-row');
-      dragId = handle.dataset.drag;
-      startY = e.clientY;
-      startTop = dragEl.offsetTop;
-      rows = rowsInfo();
-      dragEl.classList.add('dragging');
-      dragEl.style.zIndex = 5;
-      try{ handle.setPointerCapture(e.pointerId); }catch(err){}
+  // FLIP: запоминаем позиции до перестановки DOM, затем проигрываем разницу как анимацию
+  function reorderSmoothly(mutate){
+    const before = new Map();
+    container.querySelectorAll('.topic-row').forEach(el=>{
+      if(el!==dragEl) before.set(el.dataset.id, el.getBoundingClientRect().top);
     });
-    handle.addEventListener('pointermove',(e)=>{
-      if(!dragEl) return;
-      const delta = e.clientY - startY;
-      dragEl.style.transform = `translateY(${delta}px)`;
-      dragEl.style.position = 'relative';
-      const dragCenter = startTop + delta + dragEl.offsetHeight/2;
-      const others = rows.filter(r=>r.id!==dragId);
-      let targetIndex = others.length;
-      for(let i=0;i<others.length;i++){
-        const rowMidOffset = others[i].el.offsetTop + others[i].el.offsetHeight/2;
-        if(dragCenter < rowMidOffset){ targetIndex = i; break; }
+    mutate();
+    container.querySelectorAll('.topic-row').forEach(el=>{
+      if(el===dragEl) return;
+      const prevTop = before.get(el.dataset.id);
+      if(prevTop==null) return;
+      const dy = prevTop - el.getBoundingClientRect().top;
+      if(dy){
+        el.style.transition = 'none';
+        el.style.transform = `translateY(${dy}px)`;
+        requestAnimationFrame(()=>{
+          el.style.transition = '';
+          el.style.transform = '';
+        });
       }
-      const currentOrder = [...container.querySelectorAll('.topic-row')].map(el=>el.dataset.id);
-      const withoutDrag = currentOrder.filter(id=>id!==dragId);
-      withoutDrag.splice(targetIndex, 0, dragId);
-      if(withoutDrag.join(',') !== currentOrder.join(',')){
+    });
+  }
+
+  function applyDrag(clientY){
+    const delta = clientY - startY;
+    dragEl.style.transform = `translateY(${delta}px)`;
+    const dragCenter = startTop + delta + dragEl.offsetHeight/2;
+    const others = [...container.querySelectorAll('.topic-row')].filter(el=>el!==dragEl);
+    let targetIndex = others.length;
+    for(let i=0;i<others.length;i++){
+      const rowMidOffset = others[i].offsetTop + others[i].offsetHeight/2;
+      if(dragCenter < rowMidOffset){ targetIndex = i; break; }
+    }
+    const currentOrder = [...container.querySelectorAll('.topic-row')].map(el=>el.dataset.id);
+    const withoutDrag = currentOrder.filter(id=>id!==dragId);
+    withoutDrag.splice(targetIndex, 0, dragId);
+    if(withoutDrag.join(',') !== currentOrder.join(',')){
+      reorderSmoothly(()=>{
         withoutDrag.forEach(id=>{
           if(id===dragId) return;
           const el = container.querySelector(`.topic-row[data-id="${id}"]`);
-          if(el) container.insertBefore(el, null);
+          if(el) container.appendChild(el);
         });
-        // переставляем DOM в новом порядке (кроме перетаскиваемого, который визуально смещён transform'ом)
-        const orderedEls = withoutDrag.map(id=>container.querySelector(`.topic-row[data-id="${id}"]`)).filter(Boolean);
-        orderedEls.forEach(el=>container.appendChild(el));
-        rows = rowsInfo();
-      }
-    });
-    const end = (e)=>{
-      if(!dragEl) return;
-      dragEl.classList.remove('dragging');
-      dragEl.style.transform = '';
-      dragEl.style.position = '';
-      dragEl.style.zIndex = '';
-      const finalOrder = [...container.querySelectorAll('.topic-row')].map(el=>el.dataset.id);
-      STORE.topicOrder[key] = finalOrder;
-      saveStore();
-      dragEl = null; dragId = null;
-      onCommit();
-    };
-    handle.addEventListener('pointerup', end);
-    handle.addEventListener('pointercancel', end);
+      });
+    }
+  }
+
+  function beginDrag(row, id, anchorY, pid){
+    dragEl = row; dragId = id; startY = anchorY; startTop = row.offsetTop; pointerId = pid;
+    if(document.activeElement && row.contains(document.activeElement)) document.activeElement.blur();
+    dragEl.style.position = 'relative';
+    dragEl.classList.add('dragging');
+    dragEl.style.zIndex = 5;
+    try{ dragEl.setPointerCapture(pid); }catch(err){}
+  }
+
+  container.addEventListener('pointerdown',(e)=>{
+    if(e.target.closest('button')) return; // кнопки (закрепить/удалить) — обычный тап, без драга
+    const row = e.target.closest('.topic-row');
+    if(!row) return;
+    pending = {row, id: row.dataset.id, startX: e.clientX, startY: e.clientY, pointerId: e.pointerId};
   });
+  container.addEventListener('pointermove',(e)=>{
+    if(dragEl && e.pointerId===pointerId){ applyDrag(e.clientY); return; }
+    if(pending && e.pointerId===pending.pointerId){
+      const dx = e.clientX - pending.startX, dy = e.clientY - pending.startY;
+      if(Math.abs(dy) > THRESHOLD && Math.abs(dy) > Math.abs(dx)){
+        const p = pending; pending = null;
+        beginDrag(p.row, p.id, p.startY, p.pointerId);
+        applyDrag(e.clientY);
+      }
+    }
+  });
+  const end = (e)=>{
+    if(pending && e.pointerId===pending.pointerId) pending = null;
+    if(!dragEl || e.pointerId!==pointerId) return;
+    dragEl.classList.remove('dragging');
+    dragEl.style.transform = '';
+    dragEl.style.position = '';
+    dragEl.style.zIndex = '';
+    const finalOrder = [...container.querySelectorAll('.topic-row')].map(el=>el.dataset.id);
+    STORE.topicOrder[key] = finalOrder;
+    saveStore();
+    dragEl = null; dragId = null; pointerId = null;
+    onCommit();
+  };
+  container.addEventListener('pointerup', end);
+  container.addEventListener('pointercancel', end);
 }
 
 function renderCardsGrid(body,key){
@@ -3859,7 +4217,7 @@ function renderRno(main){
    18. МОДАЛКИ: карточка / категория / темы / инфо
    ========================================================================== */
 function openOverlay(){ document.getElementById('overlay').classList.add('show'); }
-function closeOverlay(){ document.getElementById('overlay').classList.remove('show'); document.getElementById('modalBody').classList.remove('modal-lg'); }
+function closeOverlay(){ document.getElementById('overlay').classList.remove('show'); document.getElementById('modalBody').classList.remove('modal-lg','modal-cal'); }
 document.getElementById('overlay').addEventListener('click',(e)=>{ if(e.target.id==='overlay'){ STUDY_SESSION=null; closeOverlay(); } });
 
 function openAddToReviewModal(main){
@@ -4438,9 +4796,9 @@ document.getElementById('coverInput').addEventListener('change', (e)=>{
   reader.onload = () => {
     const img = new Image();
     img.onload = () => {
-      // Сохраняем оригинальное разрешение (до разумного предела) и высокое
-      // качество JPEG — полоса тонкая, но retina-экраны показывают её чётко.
-      const maxW = Math.min(img.width, 2600);
+      // Сохраняем оригинальное разрешение (до разумного предела) и максимально
+      // высокое качество JPEG — полоса тонкая, но retina-экраны показывают её чётко.
+      const maxW = Math.min(img.width, 3000);
       const scale = maxW / img.width;
       const canvas = document.createElement('canvas');
       canvas.width = Math.round(img.width*scale);
@@ -4449,7 +4807,7 @@ document.getElementById('coverInput').addEventListener('change', (e)=>{
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      STORE.coverImage = canvas.toDataURL('image/jpeg', 0.93);
+      STORE.coverImage = canvas.toDataURL('image/jpeg', 0.97);
       saveStore();
       applyCoverImage();
     };
@@ -4464,22 +4822,6 @@ function applySidebarWidth(w){
 }
 applySidebarWidth(STORE.sidebarWidth || 256);
 
-/* ---------- Сворачивание сайдбара ---------- */
-(function initSidebarToggle(){
-  const appEl = document.getElementById('app');
-  const toggleBtn = document.getElementById('sidebarToggle');
-  function apply(){
-    appEl.classList.toggle('sidebar-collapsed', !!STORE.sidebarCollapsed);
-    toggleBtn.textContent = STORE.sidebarCollapsed ? '›' : '‹';
-    if(!STORE.sidebarCollapsed) applySidebarWidth(STORE.sidebarWidth || 256);
-  }
-  toggleBtn.addEventListener('click',()=>{
-    STORE.sidebarCollapsed = !STORE.sidebarCollapsed;
-    saveStore();
-    apply();
-  });
-  apply();
-})();
 (function initSidebarResize(){
   const resizer = document.getElementById('sidebarResizer');
   let dragging = false;
@@ -4502,6 +4844,42 @@ applySidebarWidth(STORE.sidebarWidth || 256);
   resizer.addEventListener('touchstart', (e)=>start(e), {passive:false});
   document.addEventListener('touchmove', (e)=>{ if(dragging && e.touches[0]) move(e.touches[0].clientX); }, {passive:false});
   document.addEventListener('touchend', end);
+})();
+
+/* ---------- Линия под подзаголовком: пересчитывается от реальной ширины текста,
+   а не от захардкоженных px — иначе съезжает при ресайзе сайдбара ---------- */
+(function initBrandDivider(){
+  const brand = document.querySelector('.brand');
+  const h1 = document.querySelector('.brand h1');
+  const sub = document.querySelector('.brand .sub');
+  const divider = document.querySelector('.brand-divider');
+  if(!brand || !h1 || !sub || !divider) return;
+  const MM = 96/25.4; // 1мм в css-px
+  const GAP_BELOW = 1.48; // фиксированный зазор линия→подзаголовок — двигаются как единый блок
+
+  function layout(){
+    const brandRect = brand.getBoundingClientRect();
+    if(!brandRect.width) return; // сайдбар свёрнут — блок скрыт, считать нечего
+
+    const prevWidth = sub.style.width;
+    sub.style.width = 'max-content';
+    const textRect = sub.getBoundingClientRect();
+    sub.style.width = prevWidth;
+    const subRect = sub.getBoundingClientRect();
+
+    const left = (textRect.left - brandRect.left) - MM;
+    const maxWidth = brandRect.width - left - 4;
+    const width = Math.max(0, Math.min(textRect.width + MM*2, maxWidth));
+    const top = (subRect.top - brandRect.top) - GAP_BELOW;
+
+    divider.style.left = left + 'px';
+    divider.style.width = width + 'px';
+    divider.style.top = top + 'px';
+  }
+
+  new ResizeObserver(layout).observe(brand);
+  document.fonts && document.fonts.ready.then(layout);
+  layout();
 })();
 
 /* ==========================================================================
