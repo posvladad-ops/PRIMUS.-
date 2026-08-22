@@ -371,15 +371,16 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .fullcal-nav{display:flex;align-items:center;gap:6px;}
 .fullcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
 .fullcal-dow{text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-faint);text-transform:uppercase;padding-bottom:4px;}
-.fullcal-cell{aspect-ratio:1;border:1px dashed var(--border);border-radius:var(--radius-s);padding:6px;display:flex;flex-direction:column;gap:3px;cursor:pointer;background:var(--bg-soft);overflow:visible;}
+.fullcal-cell{aspect-ratio:1;border:1px dashed var(--border);border-radius:var(--radius-s);padding:6px;display:flex;flex-direction:column;gap:3px;cursor:pointer;background:var(--bg-soft);overflow:visible;min-width:0;}
 .fullcal-cell:hover{border-color:var(--accent);}
 .fullcal-cell.empty{border:none;background:transparent;cursor:default;}
 .fullcal-cell.today{border-style:solid;border-color:var(--accent);}
 .fullcal-cell .fc-daynum{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
-.fc-event-chip{font-size:10px;padding:2px 5px;border-radius:4px;color:#fff;white-space:normal;word-break:break-word;line-height:1.3;cursor:pointer;}
+.fc-event-chip{font-size:10px;padding:2px 5px;border-radius:4px;color:#fff;white-space:normal;word-break:break-word;line-height:1.3;cursor:pointer;min-width:0;max-width:100%;}
 .fc-week-add{width:100%;padding:5px;border:1px dashed var(--border);border-radius:6px;background:transparent;color:var(--text-faint);font-size:10.5px;margin-top:auto;}
 .fc-week-add:hover{border-color:var(--accent);color:var(--accent-strong);}
-.fc-event-row{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 6px;border-radius:5px;background:var(--surface);margin-bottom:4px;cursor:pointer;border:1px solid var(--border);}
+.fc-event-row{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 6px;border-radius:5px;background:var(--surface);margin-bottom:4px;cursor:pointer;border:1px solid var(--border);min-width:0;}
+.fc-event-row > span{min-width:0;}
 .fc-event-row:hover{border-color:var(--accent);}
 .fc-event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .fc-event-time{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);}
@@ -447,6 +448,20 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .theory-block{margin-bottom:10px;}
 .theory-block .tb-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);margin-bottom:3px;}
 .theory-block .tb-body{font-size:13px;color:var(--text-dim);line-height:1.6;}
+.theory-block .tb-body h3{font-family:var(--font-display);font-size:13.5px;font-weight:700;color:var(--text);margin:10px 0 4px;}
+.theory-block .tb-body ul,.theory-block .tb-body ol{margin:4px 0;padding-left:20px;}
+.theory-block .tb-body li{margin-bottom:3px;}
+.theory-block .tb-body b,.theory-block .tb-body strong{color:var(--text);}
+
+/* ---------- Тест / проверка знаний ---------- */
+.ft-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:16px 18px;margin-bottom:14px;}
+.ft-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;}
+.ft-title{font-family:var(--font-display);font-size:15px;font-weight:700;}
+.ft-deadline{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);border:1px dashed var(--border);border-radius:10px;padding:3px 9px;white-space:nowrap;}
+.ft-deadline.bad{color:var(--bad);border-color:var(--bad);}
+.ft-progress-bar{height:5px;border-radius:3px;background:var(--bg-soft);margin-top:12px;overflow:hidden;}
+.ft-progress-fill{height:100%;background:var(--khaki-ring);border-radius:3px;}
+.ft-sub{font-size:11px;color:var(--text-faint);margin-top:5px;}
 .theory-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
 .btn-good{background:var(--good);border-color:var(--good);color:#fff;}
 .theory-title-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:6px;padding-right:26px;}
@@ -1784,7 +1799,8 @@ function defaultStore(){
     schedule:[], // {id,day,time,subject,room,professor}
     calEvents:[], // {id,title,date,time,place,category,color}
     customTasks:{}, // catKey -> [{id,mode,topic,prompt,options,answer,explanation}]
-    notebooks:{} // catKey -> [{id,name,pages:[{id,bg,paper,strokes:[]}]}]
+    notebooks:{}, // catKey -> [{id,name,pages:[{id,bg,paper,strokes:[]}]}]
+    finalTests:{} // catKey -> [{id,topicId,title,deadline,createdDate,completed,completedDate,sections:{key:[],full:[],cases:[],questions:[],fun:[]}}]
   };
 }
 function loadStore(){
@@ -3232,6 +3248,7 @@ function renderCategoryView(main, key){
         <button class="btn ${sub==='cards'?'btn-primary':''}" id="tabCards">Карточки</button>
         <button class="btn ${sub==='notebook'?'btn-primary':''}" id="tabNotebook">Тетрадь</button>
         <button class="btn ${sub==='practice'?'btn-primary':''}" id="tabPractice">Практика</button>
+        <button class="btn ${sub==='finaltest'?'btn-primary':''}" id="tabFinalTest">Тест</button>
       </div>
     </div>
     <div id="catBody"></div>
@@ -3241,11 +3258,13 @@ function renderCategoryView(main, key){
   document.getElementById("tabCards").onclick=()=>{ CAT_SUBVIEW[key]='cards'; renderAll(); };
   document.getElementById("tabNotebook").onclick=()=>{ CAT_SUBVIEW[key]='notebook'; renderAll(); };
   document.getElementById("tabPractice").onclick=()=>{ CAT_SUBVIEW[key]='practice'; renderAll(); };
+  document.getElementById("tabFinalTest").onclick=()=>{ CAT_SUBVIEW[key]='finaltest'; renderAll(); };
   const body = document.getElementById("catBody");
   if(sub==='topics') renderTopicsTab(body,key);
   else if(sub==='theory') renderTheory(body,key);
   else if(sub==='cards') renderCardsGrid(body,key);
   else if(sub==='notebook') renderNotebookTab(body,key);
+  else if(sub==='finaltest') renderFinalTest(body,key);
   else renderPractice(body,key);
 }
 
@@ -4113,7 +4132,7 @@ function renderTheory(body,key){
     <input type="file" id="importTheoryFile" accept="application/json" style="display:none">
   </div>
   <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:16px;line-height:1.6">
-    Импорт ждёт JSON вида <code>{"materials":[{"topic","title","mainQuestions","explanation","facts","connections","application"}],"cards":[{"topic","fields":{...}}]}</code> — такой файл готовит Claude в чате из твоей лекции.
+    Импорт ждёт JSON вида <code>{"materials":[{"title","dateStart","mainQuestions","materialText","explanation","facts","connections","application","cards":[{"fields":{${(APP_DATA[key].meta.fields||['front','back']).map(f=>`"${f}"`).join(',')}}}]}]}</code> — карточки внутри <code>cards</code> лекции автоматически попадают в её собственную тему (сет), поля карточек этой категории — именно эти ключи. Такой файл готовит Claude в чате из твоей лекции.
   </div>`;
   if(materials.length===0){
     html += `<div class="empty-state">Пока нет конспектов. Открой лекцию, запиши тему и дату, а материал и остальное — по шагам.</div>`;
@@ -4268,6 +4287,28 @@ function renderTheoryEditor(body, key){
     drawKeywords();
   });
 
+  // Новая лекция по умолчанию — свой отдельный сет карточек, названный по теме лекции.
+  // Если пользователь сам вручную выбрал существующую тему курса в списке — уважаем этот выбор
+  // (значит, осознанно объединяет несколько лекций в одну тему) и больше не трогаем его автоматически.
+  let topicManuallySet = !!editing;
+  const theoryTopicSelectEl = document.getElementById('theoryTopicSelect');
+  if(theoryTopicSelectEl){
+    theoryTopicSelectEl.addEventListener('change', ()=>{ topicManuallySet = true; });
+  }
+  document.getElementById('theTitle').addEventListener('blur', ()=>{
+    if(topicManuallySet) return;
+    const title = document.getElementById('theTitle').value.trim();
+    if(!title) return;
+    const tId = resolveTopicByName(key, title);
+    if(theoryTopicSelectEl){
+      if(!theoryTopicSelectEl.querySelector(`option[value="${tId}"]`)){
+        const t = getCategoryTopics(key).find(t=>t.id===tId);
+        if(t) theoryTopicSelectEl.insertAdjacentHTML('beforeend', `<option value="${t.id}">${esc(t.name)}</option>`);
+      }
+      theoryTopicSelectEl.value = tId;
+    }
+  });
+
   document.getElementById('teCancel').onclick=()=>{
     if(!confirm('Закрыть без сохранения? Несохранённые изменения потеряются.')) return;
     THEORY_EDIT_STATE=null; renderTheory(body,key);
@@ -4326,6 +4367,7 @@ function showCopyFallback(text){
 function buildTheoryAiExport(key, d){
   const catName = APP_DATA[key] ? APP_DATA[key].meta.name : key;
   const dateStr = d.dateEnd && d.dateEnd!==d.dateStart ? `${d.dateStart} — ${d.dateEnd}` : d.dateStart;
+  const fieldKeys = APP_DATA[key] ? (APP_DATA[key].meta.fields || ['front','back']) : ['front','back'];
   return `ПРЕДМЕТ: ${catName}
 ТЕМА: ${d.title}
 ДАТА: ${dateStr}
@@ -4342,8 +4384,13 @@ ${stripHtml(d.materialText)}
 ${stripHtml(d.notes)}
 
 ---
-Обработай это по шаблону PRIMUS. и верни JSON вида:
-{"mainQuestions":"...", "keywords":["...","..."], "explanation":"...", "facts":"...", "connections":"...", "application":"...", "cards":[{"topic":"${'название темы'}", "fields":{...}}]}`;
+Обработай это по шаблону PRIMUS. и верни JSON. Требования к содержимому:
+- "explanation"/"facts"/"connections"/"application" — HTML, не один сплошной абзац: используй <h3> для подзаголовков, <b> для ключевых терминов, и <ol><li>...</li></ol>/<ul><li>...</li></ul> для любого перечисления (этапы, признаки, примеры) — каждый пункт на своей строке, по порядку.
+- "application" ("как использовать") — самый подробный и разжёванный раздел: не просто одна фраза, а развёрнутый ответ, который явно отвечает на каждый из главных вопросов и явно проговаривает связь с другими темами/предметами — примеры, где именно и как это применить (эссе, устный ответ, кейс).
+- "cards" — карточки по этой лекции. Не указывай "topic" у карточек — они и так все попадут в один сет по названию лекции. Поля карточек этого предмета строго такие ключи (без замены и пропусков): ${fieldKeys.map(f=>`"${f}"`).join(', ')}.
+
+Верни JSON вида:
+{"mainQuestions":"...", "keywords":["...","..."], "explanation":"...", "facts":"...", "connections":"...", "application":"...", "cards":[{"fields":{${fieldKeys.map(f=>`"${f}":"..."`).join(', ')}}}]}`;
 }
 function openTheoryAiImportModal(key, body){
   document.getElementById('modalBody').innerHTML = `
@@ -4357,6 +4404,7 @@ function openTheoryAiImportModal(key, body){
     try{ parsed = JSON.parse(document.getElementById('aiJson').value); }
     catch(e){ openInfoModal('Ошибка','Не удалось прочитать JSON — проверь формат.'); return; }
     if(parsed.mainQuestions) document.getElementById('theQuestions').value = stripHtml(parsed.mainQuestions);
+    if(parsed.materialText) document.getElementById('theMaterial').innerHTML = parsed.materialText;
     if(parsed.explanation) document.getElementById('theExplain').innerHTML = parsed.explanation;
     if(parsed.facts) document.getElementById('theFacts').innerHTML = parsed.facts;
     if(parsed.connections) document.getElementById('theConn').innerHTML = parsed.connections;
@@ -4372,12 +4420,23 @@ function openTheoryAiImportModal(key, body){
       const data = APP_DATA[key];
       const isCustom = !CATEGORY_META.find(m=>m.key===key);
       const fieldKeys = (data.meta.fields || (data.meta.type==='custom'?['front','back','note']:['front','back']));
+      // Все карточки одной лекции — в одну тему (сет), названную по лекции: 1 лекция = 1 сет карточек,
+      // не разбитый по темам, которые могла бы напридумывать AI для отдельных карточек.
+      const titleVal = document.getElementById('theTitle').value.trim() || 'Без названия';
+      const lectureTopicId = resolveTopicByName(key, titleVal);
+      const topicSelectEl = document.getElementById('theoryTopicSelect');
+      if(topicSelectEl){
+        if(!topicSelectEl.querySelector(`option[value="${lectureTopicId}"]`)){
+          const t = getCategoryTopics(key).find(t=>t.id===lectureTopicId);
+          if(t) topicSelectEl.insertAdjacentHTML('beforeend', `<option value="${t.id}">${esc(t.name)}</option>`);
+        }
+        topicSelectEl.value = lectureTopicId;
+      }
       parsed.cards.forEach(c=>{
-        const topicId = resolveTopicByName(key, c.topic);
         const vals = {};
         fieldKeys.forEach(f=>{ vals[f] = (c.fields && c.fields[f]) || ''; });
         const id = uid(key);
-        const newCard = Object.assign({id, catKey:key, level:0, next_review:todayISO(), topicId}, vals);
+        const newCard = Object.assign({id, catKey:key, level:0, next_review:todayISO(), topicId:lectureTopicId}, vals);
         if(isCustom){ if(!STORE.customCards[key]) STORE.customCards[key]=[]; STORE.customCards[key].push(newCard); }
         else { if(!STORE.extraCards[key]) STORE.extraCards[key]=[]; STORE.extraCards[key].push(newCard); }
         cardCount++;
@@ -4618,6 +4677,188 @@ function renderMatchTask(el, task, key, body){
   el.querySelectorAll('#matchLeft .match-item').forEach(i=>i.onclick=()=>selectItem(i,'left'));
   el.querySelectorAll('#matchRight .match-item').forEach(i=>i.onclick=()=>selectItem(i,'right'));
   document.getElementById('btnNextMatch').onclick=()=>{ renderPractice(body,key); };
+}
+
+/* ---------- Тест / проверка знаний — финальное закрепление темы с дедлайном ---------- */
+const FT_SECTIONS = [
+  {id:'key', label:'Проверка самого главного'},
+  {id:'full', label:'Полный тест'},
+  {id:'cases', label:'Кейсы'},
+  {id:'questions', label:'Ответы на вопросы'},
+  {id:'fun', label:'Интересные задания'}
+];
+function ftItemCount(t){ return FT_SECTIONS.reduce((n,s)=>n+((t.sections[s.id]||[]).length),0); }
+function ftDoneCount(t){ return FT_SECTIONS.reduce((n,s)=>n+((t.sections[s.id]||[]).filter(i=>i.done).length),0); }
+function renderFinalTest(body, key){
+  if(!STORE.finalTests[key]) STORE.finalTests[key] = [];
+  const tests = STORE.finalTests[key];
+  const today = todayISO();
+  let html = `<div class="btn-row" style="margin-bottom:10px"><button class="btn btn-primary" id="btnAddFinalTest">Добавить тест по теме</button></div>
+  <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:16px;line-height:1.6">
+    Финальное закрепление темы, с дедлайном. Вставляешь по теме задания, которые сделает ИИ по материалу лекции: проверка самого главного, полный тест, кейсы, ответы на вопросы, интересные задания.
+  </div>`;
+  if(tests.length===0){
+    html += `<div class="empty-state">Пока нет тестов. Сначала пройди тему в Теории/Карточках/Практике, потом закрепи здесь финальной проверкой.</div>`;
+  } else {
+    tests.slice().sort((a,b)=>(a.deadline||'9999')<(b.deadline||'9999')?-1:1).forEach(t=>{
+      const total = ftItemCount(t), done = ftDoneCount(t);
+      const pct = total ? Math.round(100*done/total) : 0;
+      const overdue = t.deadline && t.deadline < today && !t.completed;
+      const deadlineLabel = t.deadline ? `${overdue?'Просрочено — ':'Дедлайн: '}${esc(fmtDate(t.deadline))}` : 'Без дедлайна';
+      html += `<div class="ft-item" data-ft="${t.id}">
+        <div class="ft-top">
+          <div><div class="theory-topic">${esc(topicName(key,t.topicId))}</div><div class="ft-title">${esc(t.title)}${t.completed?' <span class="theory-sr" style="color:var(--good)">пройден ✓</span>':''}</div></div>
+          <div class="ft-deadline ${overdue?'bad':''}">${deadlineLabel}</div>
+        </div>
+        <div class="ft-progress-bar"><div class="ft-progress-fill" style="width:${pct}%"></div></div>
+        <div class="ft-sub">${done} из ${total} пройдено · ${pct}%</div>
+        <div class="theory-actions">
+          <button class="btn btn-primary" data-ft-go="${t.id}">${total?'Пройти':'Добавить задания'}</button>
+          <button class="btn" data-ft-edit="${t.id}">Изменить</button>
+          <button class="btn" data-ft-del="${t.id}">Удалить</button>
+        </div>
+      </div>`;
+    });
+  }
+  body.innerHTML = html;
+  document.getElementById('btnAddFinalTest').onclick=()=>openFinalTestModal(key, null, body);
+  body.querySelectorAll('[data-ft-go]').forEach(btn=>btn.onclick=()=>{
+    const t = tests.find(x=>x.id===btn.dataset.ftGo);
+    if(!t) return;
+    if(ftItemCount(t)===0) openFinalTestModal(key, t, body);
+    else startFinalTestSession(key, t, body);
+  });
+  body.querySelectorAll('[data-ft-edit]').forEach(btn=>btn.onclick=()=>openFinalTestModal(key, tests.find(x=>x.id===btn.dataset.ftEdit), body));
+  body.querySelectorAll('[data-ft-del]').forEach(btn=>btn.onclick=()=>{
+    if(!confirm('Точно удалить этот тест? Это безвозвратно.')) return;
+    STORE.finalTests[key] = tests.filter(x=>x.id!==btn.dataset.ftDel);
+    saveStore(); renderFinalTest(body,key);
+  });
+}
+
+function buildFinalTestAiExport(key, topicNameStr){
+  const catName = APP_DATA[key] ? APP_DATA[key].meta.name : key;
+  const sectionsHint = FT_SECTIONS.map(s=>`"${s.id}"`).join(', ');
+  return `ПРЕДМЕТ: ${catName}
+ТЕМА: ${topicNameStr}
+
+Собери финальную проверку знаний по этой теме (используй мою лекцию и карточки по ней, которые я тебе даю отдельно/выше в чате) по шаблону PRIMUS. Нужно 5 разделов:
+1) Проверка самого главного — 4-6 коротких вопросов на ключевые факты/определения.
+2) Полный тест — 8-12 вопросов, которые целиком покрывают тему.
+3) Кейсы — 2-3 прикладные ситуации с разбором.
+4) Ответы на вопросы — открытые вопросы на понимание и рассуждение (не факт-чек).
+5) Интересные задания — 2-3 нестандартных/творческих задания, необязательно с одним верным ответом.
+
+Каждый пункт — вопрос/задание (q) и подробный образцовый ответ (a, можно HTML с <b>/<ul><li>). Верни JSON вида:
+{"key":[{"q":"...","a":"..."}], "full":[{"q":"...","a":"..."}], "cases":[{"q":"...","a":"..."}], "questions":[{"q":"...","a":"..."}], "fun":[{"q":"...","a":"..."}]}
+Ключи ровно такие: ${sectionsHint}.`;
+}
+
+function openFinalTestModal(key, editing, listBody){
+  const topics = getCategoryTopics(key);
+  let topicSelect = `<select id="ftTopicSelect">`;
+  topics.forEach(t=>{ topicSelect += `<option value="${t.id}" ${(editing?editing.topicId:'general')===t.id?'selected':''}>${esc(t.name)}</option>`; });
+  topicSelect += `</select>`;
+  document.getElementById('modalBody').innerHTML = `
+    <h3>${editing?'Изменить тест':'Добавить тест по теме'}</h3>
+    <div class="field"><label>Тема</label>${topicSelect}</div>
+    <div class="field"><label>Название теста</label><input id="ftTitle" value="${esc(editing?editing.title:'')}" placeholder="Например: Итоговая проверка — Конституционное право"></div>
+    <div class="field"><label>Дедлайн</label><input type="date" id="ftDeadline" value="${editing&&editing.deadline?editing.deadline:''}"></div>
+    <div class="btn-row" style="margin-bottom:8px"><button class="btn" id="btnCopyFtAi">Скопировать запрос для ИИ</button></div>
+    <div class="field"><label>Вставь сюда JSON от ИИ ${editing&&ftItemCount(editing)?'(необязательно — оставь пустым, чтобы не менять задания)':''}</label><textarea id="ftJson" style="min-height:160px" placeholder='{"key":[...],"full":[...],"cases":[...],"questions":[...],"fun":[...]}'></textarea></div>
+    <div class="modal-actions"><button class="btn" id="mCancelFt">Отмена</button><button class="btn btn-primary" id="mSaveFt">Сохранить</button></div>
+  `;
+  document.getElementById('btnCopyFtAi').onclick=()=>{
+    const tId = document.getElementById('ftTopicSelect').value;
+    const text = buildFinalTestAiExport(key, topicName(key,tId));
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(()=>openInfoModal('Скопировано','Запрос скопирован — вставь его в чат с Claude вместе с материалом лекции.')).catch(()=>showCopyFallback(text));
+    } else showCopyFallback(text);
+  };
+  document.getElementById('mCancelFt').onclick=closeOverlay;
+  document.getElementById('mSaveFt').onclick=()=>{
+    const title = document.getElementById('ftTitle').value.trim() || 'Без названия';
+    const topicId = document.getElementById('ftTopicSelect').value;
+    const deadline = document.getElementById('ftDeadline').value || null;
+    const jsonRaw = document.getElementById('ftJson').value.trim();
+    let sections = editing ? editing.sections : {key:[],full:[],cases:[],questions:[],fun:[]};
+    if(jsonRaw){
+      let parsed;
+      try{ parsed = JSON.parse(jsonRaw); }
+      catch(e){ openInfoModal('Ошибка','Не удалось прочитать JSON — проверь формат.'); return; }
+      sections = {};
+      FT_SECTIONS.forEach(s=>{
+        sections[s.id] = (Array.isArray(parsed[s.id]) ? parsed[s.id] : []).map(it=>({q:it.q||'', a:it.a||'', done:false}));
+      });
+    }
+    if(!STORE.finalTests[key]) STORE.finalTests[key] = [];
+    if(editing){
+      Object.assign(editing, {title, topicId, deadline, sections});
+    } else {
+      STORE.finalTests[key].push({id:uid('ft'), topicId, title, deadline, createdDate:todayISO(), completed:false, completedDate:null, sections});
+    }
+    saveStore();
+    closeOverlay();
+    renderFinalTest(listBody, key);
+  };
+  openOverlay();
+}
+
+let FT_SESSION = null; // {key, testId, items:[{sectionLabel,q,a,done}], idx, revealed}
+function startFinalTestSession(key, t, listBody){
+  const items = [];
+  FT_SECTIONS.forEach(s=>{
+    (t.sections[s.id]||[]).forEach(it=>items.push({sectionLabel:s.label, sectionId:s.id, q:it.q, a:it.a, done:!!it.done}));
+  });
+  if(items.length===0) return;
+  FT_SESSION = {key, testId:t.id, items, idx:0, revealed:false};
+  renderFinalTestSession(listBody);
+  openOverlay();
+}
+function renderFinalTestSession(listBody){
+  const s = FT_SESSION;
+  const it = s.items[s.idx];
+  const doneCount = s.items.filter(i=>i.done).length;
+  document.getElementById('modalBody').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span class="art-cat">${esc(it.sectionLabel)}</span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-faint)">${s.idx+1} / ${s.items.length} · пройдено ${doneCount}</span>
+    </div>
+    <div class="theory-block"><div class="tb-label">Задание</div><div class="tb-body" style="font-size:14px;color:var(--text)">${it.q||'<span style="opacity:.5">пусто</span>'}</div></div>
+    ${s.revealed ? `<div class="theory-block"><div class="tb-label">Ответ</div><div class="tb-body">${it.a||'<span style="opacity:.5">пусто</span>'}</div></div>` : `<div class="btn-row" style="margin-bottom:12px"><button class="btn" id="ftReveal">Показать ответ</button></div>`}
+    <div class="toggle-row" style="margin-bottom:10px"><button class="switch ${it.done?'on':''}" id="ftMarkDone"></button> Пройдено</div>
+    <div class="modal-actions">
+      <button class="btn" id="ftClose">Закрыть</button>
+      <button class="btn" id="ftPrev" ${s.idx===0?'disabled':''}>‹ Назад</button>
+      <button class="btn btn-primary" id="ftNext">${s.idx===s.items.length-1?'Завершить':'Вперёд ›'}</button>
+    </div>
+  `;
+  document.getElementById('ftClose').onclick=()=>{ finishFinalTestSession(listBody); };
+  const revealBtn = document.getElementById('ftReveal');
+  if(revealBtn) revealBtn.onclick=()=>{ s.revealed=true; renderFinalTestSession(listBody); };
+  document.getElementById('ftMarkDone').onclick=()=>{ it.done=!it.done; renderFinalTestSession(listBody); };
+  document.getElementById('ftPrev').onclick=()=>{ if(s.idx>0){ s.idx--; s.revealed=false; renderFinalTestSession(listBody); } };
+  document.getElementById('ftNext').onclick=()=>{
+    if(s.idx<s.items.length-1){ s.idx++; s.revealed=false; renderFinalTestSession(listBody); }
+    else finishFinalTestSession(listBody);
+  };
+}
+function finishFinalTestSession(listBody){
+  const s = FT_SESSION;
+  const key = s.key;
+  const t = (STORE.finalTests[key]||[]).find(x=>x.id===s.testId);
+  if(t){
+    let i = 0;
+    FT_SECTIONS.forEach(sec=>{
+      (t.sections[sec.id]||[]).forEach(item=>{ item.done = s.items[i].done; i++; });
+    });
+    const total = ftItemCount(t), done = ftDoneCount(t);
+    if(total>0 && done===total){ t.completed = true; t.completedDate = todayISO(); }
+    saveStore();
+  }
+  FT_SESSION = null;
+  closeOverlay();
+  renderFinalTest(listBody, key);
 }
 
 /* ==========================================================================
@@ -4901,6 +5142,18 @@ function richField(id, label, html, placeholder){
     <div class="rt-editable" contenteditable="true" id="${id}" data-f="${id}" data-placeholder="${esc(placeholder||'')}">${html||''}</div>
   </div>`;
 }
+// Вставка текста в любое редактируемое поле платформы всегда идёт шрифтом/стилем платформы,
+// а не тем, что принёс источник (Word/Google Docs/сайт/чат с ИИ) — исходное форматирование обрезается,
+// переносы строк сохраняются. Делегирование на document — работает для полей, отрисованных когда угодно.
+document.addEventListener('paste', function(e){
+  const editable = e.target.closest && e.target.closest('.rt-editable[contenteditable="true"], [contenteditable="true"]');
+  if(!editable) return;
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+  const html = esc(text).replace(/\r\n|\r|\n/g, '<br>');
+  document.execCommand('insertHTML', false, html);
+});
+
 function wireRichToolbars(){
   document.querySelectorAll('.rt-toolbar .rt-btn').forEach(btn=>{
     btn.addEventListener('mousedown',(e)=>e.preventDefault());
@@ -4934,32 +5187,43 @@ function importTheoryJSON(key, file, body){
     const fieldKeys = (data.meta.fields || (data.meta.type==='custom'?['front','back','note']:['front','back'])).slice();
     let matCount=0, cardCount=0;
 
-    (parsed.materials||[]).forEach(m=>{
-      const topicId = resolveTopicByName(key, m.topic);
-      if(!STORE.materials[key]) STORE.materials[key]=[];
-      STORE.materials[key].push({
-        id:uid('mat'), topicId,
-        title: m.title||'Без названия', mainQuestion: m.mainQuestion||'', explanation: m.explanation||'',
-        facts: m.facts||'', connections: m.connections||'', application: m.application||'', date: todayISO()
+    function pushCards(cardsArr, forcedTopicId){
+      (cardsArr||[]).forEach(c=>{
+        const topicId = forcedTopicId || resolveTopicByName(key, c.topic);
+        const vals = {};
+        fieldKeys.forEach(f=>{ vals[f] = (c.fields && c.fields[f]) || ''; });
+        const id = uid(key);
+        const newCard = Object.assign({id, catKey:key, level:0, next_review:todayISO(), topicId}, vals);
+        if(isCustom){ if(!STORE.customCards[key]) STORE.customCards[key]=[]; STORE.customCards[key].push(newCard); }
+        else { if(!STORE.extraCards[key]) STORE.extraCards[key]=[]; STORE.extraCards[key].push(newCard); }
+        cardCount++;
       });
+    }
+
+    // Каждая лекция — ровно один сет карточек: тема сета = тема лекции (resolveTopicByName по названию лекции,
+    // либо явно переданный m.topic, если лекция сознательно филится в уже существующую более широкую тему).
+    (parsed.materials||[]).forEach(m=>{
+      const dateStart = m.dateStart || m.date || todayISO();
+      const topicId = m.topic ? resolveTopicByName(key, m.topic) : resolveTopicByName(key, m.title||'Без названия');
+      if(!STORE.materials[key]) STORE.materials[key]=[];
+      const mat = {
+        id:uid('mat'), topicId,
+        title: m.title||'Без названия', dateStart, dateEnd: m.dateEnd||'',
+        mainQuestions: m.mainQuestions || m.mainQuestion || '',
+        keywords: Array.isArray(m.keywords) ? m.keywords : [],
+        materialText: m.materialText || '', notes: m.notes || '',
+        explanation: m.explanation||'', facts: m.facts||'', connections: m.connections||'', application: m.application||'',
+        date: dateStart
+      };
+      scheduleLectureInitial(mat, key, dateStart);
+      STORE.materials[key].push(mat);
       matCount++;
+      // карточки, вложенные в саму лекцию — все идут в её собственную тему, без исключений
+      if(Array.isArray(m.cards) && m.cards.length) pushCards(m.cards, topicId);
     });
 
-    (parsed.cards||[]).forEach(c=>{
-      const topicId = resolveTopicByName(key, c.topic);
-      const vals = {};
-      fieldKeys.forEach(f=>{ vals[f] = (c.fields && c.fields[f]) || ''; });
-      const id = uid(key);
-      const newCard = Object.assign({id, catKey:key, level:0, next_review:todayISO(), topicId}, vals);
-      if(isCustom){
-        if(!STORE.customCards[key]) STORE.customCards[key]=[];
-        STORE.customCards[key].push(newCard);
-      } else {
-        if(!STORE.extraCards[key]) STORE.extraCards[key]=[];
-        STORE.extraCards[key].push(newCard);
-      }
-      cardCount++;
-    });
+    // карточки верхнего уровня, не привязанные ни к одной лекции — старое поведение (тема по c.topic)
+    pushCards(parsed.cards, null);
 
     saveStore();
     buildAllData();
