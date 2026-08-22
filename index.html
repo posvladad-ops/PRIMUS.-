@@ -2,7 +2,7 @@
 <html lang="ru" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>PRIMUS.</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#10141C">
@@ -258,6 +258,19 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .icon-btn:hover{color:var(--bad);border-color:var(--bad);}
 .icon-btn.edit:hover{color:var(--accent);border-color:var(--accent);}
 
+.cards-topic-group{margin-bottom:20px;}
+.cards-topic-head{display:flex;align-items:center;gap:9px;cursor:pointer;padding:6px 0;margin-bottom:10px;border-bottom:1px solid var(--border);}
+.cards-topic-collapse{width:20px;height:20px;flex-shrink:0;border-radius:50%;background:var(--bg-soft);border:1px solid var(--border);color:var(--text-faint);font-size:9px;display:flex;align-items:center;justify-content:center;line-height:1;}
+.cards-topic-head:hover .cards-topic-collapse{color:var(--accent-strong);border-color:var(--accent);}
+.cards-topic-name{font-family:var(--font-display);font-size:13.5px;font-weight:700;}
+.cards-topic-count{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);margin-left:auto;}
+.cards-topic-body.collapsed{display:none;}
+
+.scale-block{max-width:360px;}
+.scale-label{font-size:13px;color:var(--text-dim);margin-bottom:8px;display:flex;justify-content:space-between;}
+.scale-label span{font-family:var(--font-mono);color:var(--accent-strong);font-weight:600;}
+#fontScaleRange{width:100%;accent-color:var(--accent);}
+
 /* Practice */
 .practice-wrap{max-width:700px;margin-top:4px;}
 .mode-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
@@ -332,14 +345,19 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .fcs-panel{margin-top:10px;}
 .fcs-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
 .fcs-range{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);}
-.fcs-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
-.fcs-day{border:1px dashed var(--border);border-radius:var(--radius-s);padding:8px;min-height:150px;display:flex;flex-direction:column;background:var(--bg-soft);}
+.fcs-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:stretch;}
+/* Все ячейки недели — одинаковый фиксированный размер; события — только начало названия + цвет,
+   без переноса и раздувания ячейки; если событий много, список внутри скроллится, а не растягивает карточку. */
+.fcs-day{border:1px dashed var(--border);border-radius:var(--radius-s);padding:8px;height:150px;display:flex;flex-direction:column;background:var(--bg-soft);}
 .fcs-day.today{border-style:solid;border-color:var(--accent);}
-.fcs-day-head{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);text-transform:uppercase;text-align:center;margin-bottom:6px;}
+.fcs-day-head{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);text-transform:uppercase;text-align:center;margin-bottom:6px;flex-shrink:0;}
 .fcs-day-head b{display:block;font-family:var(--font-display);font-size:13px;color:var(--text);font-weight:700;}
+.fcs-day-events{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:4px;}
+.fcs-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .fcs-empty{font-size:10px;color:var(--text-faint);text-align:center;padding:6px 0;opacity:.6;}
 @media (max-width:820px){
   .cal-row{flex-direction:column;min-width:0;}
+  .cal-wrap{max-width:100%;width:100%;}
   .fullcal-side{min-width:0;width:100%;}
   .fcs-days{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:8px;-webkit-overflow-scrolling:touch;min-width:0;}
   .fcs-day{min-width:150px;flex-shrink:0;scroll-snap-align:start;}
@@ -376,7 +394,15 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .fullcal-cell.empty{border:none;background:transparent;cursor:default;}
 .fullcal-cell.today{border-style:solid;border-color:var(--accent);}
 .fullcal-cell .fc-daynum{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
+.fullcal-cell.selected{border-style:solid;border-color:var(--accent-strong);background:var(--accent-soft);}
+.fc-stripes{display:flex;flex-direction:column;gap:2px;margin-top:auto;}
+.fc-stripe{height:4px;border-radius:2px;width:100%;flex-shrink:0;}
 .fc-event-chip{font-size:10px;padding:2px 5px;border-radius:4px;color:#fff;white-space:normal;word-break:break-word;line-height:1.3;cursor:pointer;min-width:0;max-width:100%;}
+.fc-day-detail{margin-top:16px;border:1px solid var(--border);border-radius:var(--radius-m);background:var(--surface);padding:18px;}
+.fc-dd-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.fc-dd-dow{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.5px;}
+.fc-dd-num{font-family:var(--font-display);font-size:22px;font-weight:800;}
+.fc-dd-events{display:flex;flex-direction:column;gap:6px;}
 .fc-week-add{width:100%;padding:5px;border:1px dashed var(--border);border-radius:6px;background:transparent;color:var(--text-faint);font-size:10.5px;margin-top:auto;}
 .fc-week-add:hover{border-color:var(--accent);color:var(--accent-strong);}
 .fc-event-row{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 6px;border-radius:5px;background:var(--surface);margin-bottom:4px;cursor:pointer;border:1px solid var(--border);min-width:0;}
@@ -414,19 +440,22 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 /* Study / flip mode (Quizlet-style) */
 .study-card-wrap{perspective:1200px;margin:10px 0 18px;}
 .study-card{
-  min-height:230px;border-radius:var(--radius-l);border:1px solid var(--border);background:var(--surface);
-  box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;text-align:center;
-  padding:30px;cursor:pointer;position:relative;touch-action:pan-y;user-select:none;
+  min-height:320px;border-radius:var(--radius-l);border:1px solid var(--border);background:var(--surface);
+  box-shadow:var(--shadow);display:flex;flex-direction:column;text-align:center;
+  padding:38px 26px 30px;cursor:pointer;position:relative;touch-action:pan-y;user-select:none;
 }
 .study-card.dragging{transition:none;}
 .study-card:not(.dragging){transition:transform .25s ease;}
-.study-card .sc-swipe-hint{position:absolute;top:14px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:6px;opacity:0;pointer-events:none;}
+.study-card .sc-swipe-hint{position:absolute;top:14px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:6px;opacity:0;pointer-events:none;z-index:3;background:var(--surface);}
 .study-card .sc-swipe-hint.know{right:14px;color:var(--good);border:2px solid var(--good);transform:rotate(8deg);}
 .study-card .sc-swipe-hint.dont{left:14px;color:var(--bad);border:2px solid var(--bad);transform:rotate(-8deg);}
-.study-card .sc-hint{position:absolute;bottom:12px;left:0;right:0;font-size:10.5px;color:var(--text-faint);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.6px;}
-.study-card .sc-topic{position:absolute;top:12px;left:16px;font-size:10px;color:var(--text-faint);font-family:var(--font-mono);text-transform:uppercase;}
-.study-card .sc-main{font-family:var(--font-display);font-size:21px;font-weight:700;}
-.study-card .sc-sub{font-size:13px;color:var(--text-dim);margin-top:10px;line-height:1.5;}
+/* Тема сверху и подсказка снизу теперь в обычном потоке (не absolute) — центральный блок с вопросом/ответом
+   растёт между ними и никогда не может наехать на них, сколько бы ни было текста. */
+.study-card .sc-hint{display:block;flex-shrink:0;margin-top:14px;font-size:10.5px;color:var(--text-faint);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.6px;}
+.study-card .sc-topic{display:block;flex-shrink:0;margin-bottom:16px;font-size:10px;color:var(--text-faint);font-family:var(--font-mono);text-transform:uppercase;text-align:left;}
+.study-card > div{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:0;}
+.study-card .sc-main{font-family:var(--font-display);font-size:22px;font-weight:700;}
+.study-card .sc-sub{font-size:14px;color:var(--text-dim);margin-top:12px;line-height:1.6;}
 .study-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
 .study-nav .btn{padding:6px 12px;font-size:12px;}
 .study-progress{font-size:12px;color:var(--text-faint);text-align:center;margin:0;}
@@ -1800,6 +1829,8 @@ function defaultStore(){
     calEvents:[], // {id,title,date,time,place,category,color}
     customTasks:{}, // catKey -> [{id,mode,topic,prompt,options,answer,explanation}]
     notebooks:{}, // catKey -> [{id,name,pages:[{id,bg,paper,strokes:[]}]}]
+    studySessions:{}, // catKey -> {queue,idx,seen,knew,savedAt} — незавершённая сессия изучения карточек, чтобы не слетала при закрытии
+    fontScale:1, // масштаб всего интерфейса (0.85–1.3), регулируется на странице Storage
     finalTests:{} // catKey -> [{id,topicId,title,deadline,createdDate,completed,completedDate,sections:{key:[],full:[],cases:[],questions:[],fun:[]}}]
   };
 }
@@ -2271,6 +2302,7 @@ let VIEW = "progress";
 let PRACTICE_STATE = { cat:null, mode:"task", idx:0, correct:0, total:0, olympiadOnly:false, revealed:false, matchLeft:null, matchDone:[] };
 let CAT_SUBVIEW = {};
 let CAT_TOPIC_FILTER = {};
+let CARDS_TOPIC_COLLAPSED = {}; // catKey -> {topicId: true} — свёрнутые группы тем на вкладке «Карточки»
 let STUDY_SESSION = null; // {catKey, queue:[cardId], idx, flipped, stats:{seen,knew}}
 
 /* ==========================================================================
@@ -2344,13 +2376,23 @@ function renderNotesPage(main){
 function renderStoragePage(main){
   main.innerHTML = `
     <div class="topbar"><div><h2>Storage</h2><div class="desc">Перенос на другое устройство</div></div></div>
-    <div class="desc" style="margin-bottom:12px">localStorage не синхронизируется между телефоном и компьютером сам по себе — прогресс переносится вручную через файл</div>
+    <div class="scale-block">
+      <div class="scale-label">Масштаб интерфейса <span id="scaleValLabel">${Math.round((STORE.fontScale||1)*100)}%</span></div>
+      <input type="range" id="fontScaleRange" min="0.85" max="1.3" step="0.05" value="${STORE.fontScale||1}">
+    </div>
+    <div class="desc" style="margin:20px 0 12px">localStorage не синхронизируется между телефоном и компьютером сам по себе — прогресс переносится вручную через файл</div>
     <div class="btn-row">
       <button class="btn btn-primary" id="btnExportData">Экспорт моего прогресса</button>
       <button class="btn" id="btnImportData">Импорт прогресса из файла</button>
       <input type="file" id="importDataFile" accept="application/json" style="display:none">
     </div>
   `;
+  document.getElementById('fontScaleRange').addEventListener('input', (e)=>{
+    STORE.fontScale = parseFloat(e.target.value);
+    document.getElementById('scaleValLabel').textContent = Math.round(STORE.fontScale*100)+'%';
+    applyFontScale();
+  });
+  document.getElementById('fontScaleRange').addEventListener('change', saveStore);
   document.getElementById('btnExportData').onclick=exportStoreJSON;
   document.getElementById('btnImportData').onclick=()=>document.getElementById('importDataFile').click();
   document.getElementById('importDataFile').onchange=(e)=>{
@@ -2990,9 +3032,11 @@ function addMonths(iso,n){ const d=new Date(iso+"T00:00:00"); d.setMonth(d.getMo
 function monthTitle(y,m){ const names=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']; return `${names[m-1]} ${y}`; }
 
 let FULLCAL_DATE = todayISO();
+let FULLCAL_SELECTED_DAY = null;
 
 function openFullCalendar(prefillDate){
   FULLCAL_DATE = prefillDate || todayISO();
+  FULLCAL_SELECTED_DAY = prefillDate || null;
   document.getElementById('modalBody').classList.add('modal-cal');
   renderFullCalendarModal();
   openOverlay();
@@ -3021,13 +3065,15 @@ function renderFullCalendarModal(){
     <div class="modal-actions"><button class="btn" id="fcClose">Закрыть</button></div>
   `;
   document.getElementById('fcClose').onclick=closeFullCalendar;
-  document.getElementById('fcToday').onclick=()=>{ FULLCAL_DATE=todayISO(); renderFullCalendarModal(); };
-  document.getElementById('fcAddEvent').onclick=()=>openEventForm(null, FULLCAL_DATE, renderFullCalendarModal);
-  document.getElementById('fcPrev').onclick=()=>{ FULLCAL_DATE=addMonths(FULLCAL_DATE,-1); renderFullCalendarModal(); };
-  document.getElementById('fcNext').onclick=()=>{ FULLCAL_DATE=addMonths(FULLCAL_DATE,1); renderFullCalendarModal(); };
+  document.getElementById('fcToday').onclick=()=>{ FULLCAL_DATE=todayISO(); FULLCAL_SELECTED_DAY=FULLCAL_DATE; renderFullCalendarModal(); };
+  document.getElementById('fcAddEvent').onclick=()=>openEventForm(null, FULLCAL_SELECTED_DAY||FULLCAL_DATE, renderFullCalendarModal);
+  document.getElementById('fcPrev').onclick=()=>{ FULLCAL_DATE=addMonths(FULLCAL_DATE,-1); FULLCAL_SELECTED_DAY=null; renderFullCalendarModal(); };
+  document.getElementById('fcNext').onclick=()=>{ FULLCAL_DATE=addMonths(FULLCAL_DATE,1); FULLCAL_SELECTED_DAY=null; renderFullCalendarModal(); };
   renderFullCalMonth();
 }
 
+// Дни — ровные квадраты: события показаны тонкими цветными полосками (без текста), чтобы высота
+// ячеек не «гуляла». Клик по дню разворачивает его отдельным аккуратным блоком с полным списком.
 function renderFullCalMonth(){
   const body = document.getElementById('fcBody');
   const d = new Date(FULLCAL_DATE+"T00:00:00");
@@ -3043,23 +3089,50 @@ function renderFullCalMonth(){
   for(let dnum=1; dnum<=daysInMonth; dnum++){
     const iso = `${y}-${String(m).padStart(2,'0')}-${String(dnum).padStart(2,'0')}`;
     const evs = (STORE.calEvents||[]).filter(e=>e.date===iso).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
-    html += `<div class="fullcal-cell ${iso===today?'today':''}" data-date="${iso}">
+    html += `<div class="fullcal-cell ${iso===today?'today':''} ${iso===FULLCAL_SELECTED_DAY?'selected':''}" data-date="${iso}">
       <span class="fc-daynum">${dnum}</span>
-      ${evs.map(e=>`<span class="fc-event-chip" data-event="${e.id}" style="background:${calColorVar(e.color)}">${e.time?esc(e.time)+' ':''}${esc(e.title)}</span>`).join('')}
+      ${evs.length?`<div class="fc-stripes">${evs.slice(0,6).map(e=>`<span class="fc-stripe" style="background:${calColorVar(e.color)}"></span>`).join('')}</div>`:''}
     </div>`;
   }
   html += `</div>`;
+  html += renderFullCalDayDetail();
   body.innerHTML = html;
   body.querySelectorAll('.fullcal-cell[data-date]').forEach(cell=>{
-    cell.addEventListener('click',(e)=>{
-      if(e.target.closest('[data-event]')) return;
-      openEventForm(null, cell.dataset.date, renderFullCalendarModal);
+    cell.addEventListener('click',()=>{
+      FULLCAL_SELECTED_DAY = cell.dataset.date;
+      renderFullCalMonth();
     });
   });
-  body.querySelectorAll('[data-event]').forEach(chip=>{
-    chip.addEventListener('click',(e)=>{
+  wireFullCalDayDetail();
+}
+
+function renderFullCalDayDetail(){
+  if(!FULLCAL_SELECTED_DAY) return '';
+  const iso = FULLCAL_SELECTED_DAY;
+  const dd = new Date(iso+"T00:00:00");
+  const dayNames = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
+  const dow = dd.getDay()===0?6:dd.getDay()-1;
+  const evs = (STORE.calEvents||[]).filter(e=>e.date===iso).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  return `<div class="fc-day-detail">
+    <div class="fc-dd-head">
+      <div><div class="fc-dd-dow">${dayNames[dow]}</div><div class="fc-dd-num">${dd.getDate()} ${monthTitle(dd.getFullYear(),dd.getMonth()+1).split(' ')[0]}</div></div>
+      <button class="mini-btn" id="fcDdClose">✕</button>
+    </div>
+    <div class="fc-dd-events">
+      ${evs.length ? evs.map(e=>`<div class="fc-event-row" data-event="${e.id}"><span class="fc-event-dot" style="background:${calColorVar(e.color)}"></span>${e.time?`<span class="fc-event-time">${esc(e.time)}</span>`:''}<span style="flex:1;word-break:break-word">${esc(e.title)}</span></div>`).join('') : '<div class="fcs-empty">На этот день пока пусто</div>'}
+    </div>
+    <button class="btn btn-primary" id="fcDdAdd" style="width:100%;margin-top:10px">+ Добавить событие</button>
+  </div>`;
+}
+function wireFullCalDayDetail(){
+  const closeBtn = document.getElementById('fcDdClose');
+  if(closeBtn) closeBtn.onclick=(e)=>{ e.stopPropagation(); FULLCAL_SELECTED_DAY=null; renderFullCalMonth(); };
+  const addBtn = document.getElementById('fcDdAdd');
+  if(addBtn) addBtn.onclick=(e)=>{ e.stopPropagation(); openEventForm(null, FULLCAL_SELECTED_DAY, renderFullCalendarModal); };
+  document.querySelectorAll('.fc-day-detail [data-event]').forEach(row=>{
+    row.addEventListener('click',(e)=>{
       e.stopPropagation();
-      const ev = (STORE.calEvents||[]).find(x=>x.id===chip.dataset.event);
+      const ev = (STORE.calEvents||[]).find(x=>x.id===row.dataset.event);
       if(ev) openEventForm(ev, null, renderFullCalendarModal);
     });
   });
@@ -3112,7 +3185,9 @@ function renderFullSideDays(){
     const evs = (STORE.calEvents||[]).filter(e=>e.date===iso).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
     html += `<div class="fcs-day ${iso===today?'today':''}" data-date="${iso}">
       <div class="fcs-day-head">${dayNames[i]}<b>${d.getDate()}</b></div>
-      ${evs.map(e=>`<div class="fc-event-row" data-event="${e.id}"><span class="fc-event-dot" style="background:${calColorVar(e.color)}"></span>${e.time?`<span class="fc-event-time">${esc(e.time)}</span>`:''}<span style="flex:1;word-break:break-word">${esc(e.title)}</span></div>`).join('') || '<div class="fcs-empty">Пусто</div>'}
+      <div class="fcs-day-events">
+      ${evs.map(e=>`<div class="fc-event-row" data-event="${e.id}"><span class="fc-event-dot" style="background:${calColorVar(e.color)}"></span><span class="fcs-title">${esc(e.title)}</span></div>`).join('') || '<div class="fcs-empty">Пусто</div>'}
+      </div>
       <button class="fc-week-add" data-add="${iso}">+ Событие</button>
     </div>`;
   }
@@ -3420,11 +3495,10 @@ function renderCardsGrid(body,key){
 
   const type = data.meta.type || "custom";
   const shown = filter==='all' ? data.cards : data.cards.filter(c=>getCardTopicId(key,c)===filter);
-  let html = filterHtml + `<div class="btn-row" style="margin-bottom:14px"><button class="btn btn-primary" id="btnStudy">Изучить (${shown.length})</button><button class="btn" id="btnAddCard2">Добавить карточку</button><button class="btn" id="btnCardSet">Сделать сет карточек</button></div><div class="grid">`;
-  shown.forEach(c=>{
+  function cardHtml(c){
     const {top,sub,body:cardBody,usage} = renderCardFace(type,c);
     const badgeClass = c.level>=3?'mastered':'';
-    html += `<div class="flashcard" data-open="${c.id}">
+    return `<div class="flashcard" data-open="${c.id}">
       <div class="level-badge ${badgeClass}">ур. ${c.level}</div>
       <div class="fc-topic">${esc(topicName(key,getCardTopicId(key,c)))}</div>
       <div class="fc-top">${top}</div>
@@ -3437,10 +3511,34 @@ function renderCardsGrid(body,key){
         <button class="icon-btn" data-del="${c.id}" title="Удалить">Удал.</button>
       </div>
     </div>`;
-  });
-  html += '</div>';
+  }
+  let html = filterHtml + `<div class="btn-row" style="margin-bottom:14px"><button class="btn btn-primary" id="btnStudy">Изучить (${shown.length})</button><button class="btn" id="btnAddCard2">Добавить карточку</button><button class="btn" id="btnCardSet">Сделать сет карточек</button></div>`;
+  if(!CARDS_TOPIC_COLLAPSED[key]) CARDS_TOPIC_COLLAPSED[key] = {};
+  if(filter==='all'){
+    // Группируем по темам — каждую можно свернуть лаконичной кнопкой, чтобы не листать все карточки разом.
+    topics.forEach(t=>{
+      const tCards = shown.filter(c=>getCardTopicId(key,c)===t.id);
+      if(tCards.length===0) return;
+      const collapsed = !!CARDS_TOPIC_COLLAPSED[key][t.id];
+      html += `<div class="cards-topic-group">
+        <div class="cards-topic-head" data-ctg-toggle="${t.id}">
+          <button class="cards-topic-collapse" title="${collapsed?'Развернуть':'Свернуть'}">${collapsed?'▾':'▴'}</button>
+          <span class="cards-topic-name">${esc(t.name)}</span>
+          <span class="cards-topic-count">${tCards.length}</span>
+        </div>
+        <div class="grid cards-topic-body ${collapsed?'collapsed':''}">${tCards.map(cardHtml).join('')}</div>
+      </div>`;
+    });
+  } else {
+    html += `<div class="grid">${shown.map(cardHtml).join('')}</div>`;
+  }
   body.innerHTML = html;
   body.querySelectorAll('.chip').forEach(chip=>chip.onclick=()=>{ CAT_TOPIC_FILTER[key]=chip.dataset.t; renderCardsGrid(body,key); });
+  body.querySelectorAll('[data-ctg-toggle]').forEach(head=>head.onclick=()=>{
+    const tId = head.dataset.ctgToggle;
+    CARDS_TOPIC_COLLAPSED[key][tId] = !CARDS_TOPIC_COLLAPSED[key][tId];
+    renderCardsGrid(body,key);
+  });
   body.querySelectorAll('[data-edit]').forEach(el=>el.onclick=(e)=>{ e.stopPropagation(); openCardModal(key, el.dataset.edit); });
   body.querySelectorAll('[data-del]').forEach(el=>el.onclick=(e)=>{ e.stopPropagation(); if(!confirm('Точно удалить карточку? Это безвозвратно.')) return; deleteCard(key, el.dataset.del); });
   body.querySelectorAll('.flashcard').forEach(card=>card.addEventListener('click',(e)=>{
@@ -3956,8 +4054,29 @@ function redrawCanvas(canvas, ctx, page){
 
 /* ---------- Изучение карточек в стиле Quizlet: флип + Знаю/Не знаю/Повторю ещё ---------- */
 
+// Сохраняет прогресс текущей сессии, чтобы при закрытии (крестик/«Закрыть сессию») она не слетала —
+// при следующем открытии этой же категории предложим продолжить, как в Quizlet.
+function saveStudySessionProgress(){
+  const s = STUDY_SESSION;
+  if(!s) return;
+  if(!STORE.studySessions) STORE.studySessions = {};
+  if(s.queue.length===0){ delete STORE.studySessions[s.catKey]; }
+  else { STORE.studySessions[s.catKey] = {queue:s.queue.slice(), idx:s.idx, seen:s.seen, knew:s.knew, savedAt:todayISO()}; }
+  saveStore();
+}
 function startStudySession(catKey, cardIds, startId){
   if(cardIds.length===0) return;
+  const saved = STORE.studySessions && STORE.studySessions[catKey];
+  if(saved && saved.queue && saved.queue.length>0 && !startId){
+    const stillValid = saved.queue.filter(id=>findCard(catKey,id));
+    if(stillValid.length>0 && confirm(`Есть незавершённая сессия по этой категории (осталось ${stillValid.length} карточек). Продолжить?`)){
+      STUDY_SESSION = { catKey, queue:stillValid, idx:Math.min(saved.idx,stillValid.length-1), flipped:false, seen:saved.seen||0, knew:saved.knew||0 };
+      renderStudyModal();
+      openOverlay();
+      return;
+    }
+    delete STORE.studySessions[catKey]; saveStore();
+  }
   let ids = cardIds.slice();
   if(startId){ ids = [startId, ...ids.filter(id=>id!==startId)]; }
   STUDY_SESSION = { catKey, queue: shuffle(ids), idx:0, flipped:false, seen:0, knew:0 };
@@ -3970,6 +4089,8 @@ function renderStudyModal(){
   const modal = document.getElementById('modalBody');
   modal.classList.add('modal-lg');
   if(!s || s.queue.length===0){
+    if(s && STORE.studySessions) delete STORE.studySessions[s.catKey];
+    saveStore();
     modal.innerHTML = `<h3>Сессия завершена</h3><div class="empty-state">Все карточки пройдены: «Знаю» — ${s?s.knew:0} из ${s?s.seen:0} попыток.</div><div class="modal-actions"><button class="btn btn-primary" id="mCloseStudy">Готово</button></div>`;
     document.getElementById('mCloseStudy').onclick=()=>{ modal.classList.remove('modal-lg'); STUDY_SESSION=null; closeOverlay(); buildAllData(); renderAll(); };
     return;
@@ -4005,7 +4126,7 @@ function renderStudyModal(){
     </div>
     <div class="modal-actions"><button class="btn" id="mCloseStudy2">Закрыть сессию</button></div>
   `;
-  const closeAndRefresh = ()=>{ modal.classList.remove('modal-lg'); STUDY_SESSION=null; closeOverlay(); buildAllData(); renderAll(); };
+  const closeAndRefresh = ()=>{ saveStudySessionProgress(); modal.classList.remove('modal-lg'); STUDY_SESSION=null; closeOverlay(); buildAllData(); renderAll(); };
   document.getElementById('mCloseStudy2').onclick=closeAndRefresh;
 
   function goPrev(){ s.idx = (s.idx-1+s.queue.length)%s.queue.length; s.flipped=false; renderStudyModal(); }
@@ -4019,6 +4140,7 @@ function renderStudyModal(){
     if(s.idx >= s.queue.length) s.idx = 0;
     s.flipped = false;
     s.seen++;
+    saveStudySessionProgress();
     renderStudyModal();
   }
   function markKnow(){
@@ -4026,6 +4148,7 @@ function renderStudyModal(){
     s.queue.splice(s.idx,1);
     if(s.idx >= s.queue.length) s.idx = 0;
     s.flipped=false; s.seen++; s.knew++;
+    saveStudySessionProgress();
     renderStudyModal();
   }
   function markDontKnow(){
@@ -4092,12 +4215,17 @@ function renderStudyModal(){
 let THEORY_EDIT_STATE = null; // {catKey, materialId} — полноэкранный редактор (не модалка!)
 let THEORY_COLLAPSED = {}; // materialId -> false, если явно развёрнута (по умолчанию все свёрнуты — видно только тему)
 
-// Ставит в планер сводную задачу-напоминание на дату повторения лекции (одна на дату+категорию).
+// Ставит в планер задачу-напоминание на дату повторения лекции. На одну дату+категорию — одна задача
+// в планере (чтобы не засорять план), но КАЖДАЯ лекция обязательно туда попадает: если на эту дату уже
+// есть задача по этой категории (от другой лекции), название новой лекции дописывается в неё, а не теряется.
 function scheduleLectureReviewReminder(catKey, date, title){
   if(!STORE.planTasks) STORE.planTasks = [];
-  const exists = STORE.planTasks.some(t=>t.srAutoLec && t.srCat===catKey && t.date===date && !t.done);
-  if(exists) return;
   const name = getCategoryDisplayName(catKey);
+  const existing = STORE.planTasks.find(t=>t.srAutoLec && t.srCat===catKey && t.date===date && !t.done);
+  if(existing){
+    if(!existing.text.includes(title)) existing.text += `, ${title}`;
+    return;
+  }
   STORE.planTasks.push({
     id: uid('plan'), done:false, createdDate:todayISO(), date,
     text: `Повторить лекцию: ${name} — ${title}`, tier:'min', quadrant:'uiq', deadline:null,
@@ -4387,7 +4515,7 @@ ${stripHtml(d.notes)}
 Обработай это по шаблону PRIMUS. и верни JSON. Требования к содержимому:
 - "explanation"/"facts"/"connections"/"application" — HTML, не один сплошной абзац: используй <h3> для подзаголовков, <b> для ключевых терминов, и <ol><li>...</li></ol>/<ul><li>...</li></ul> для любого перечисления (этапы, признаки, примеры) — каждый пункт на своей строке, по порядку.
 - "application" ("как использовать") — самый подробный и разжёванный раздел: не просто одна фраза, а развёрнутый ответ, который явно отвечает на каждый из главных вопросов и явно проговаривает связь с другими темами/предметами — примеры, где именно и как это применить (эссе, устный ответ, кейс).
-- "cards" — карточки по этой лекции. Не указывай "topic" у карточек — они и так все попадут в один сет по названию лекции. Поля карточек этого предмета строго такие ключи (без замены и пропусков): ${fieldKeys.map(f=>`"${f}"`).join(', ')}.
+- "cards" — карточки по этой лекции. Не указывай "topic" у карточек — они и так все попадут в один сет по названию лекции. Поля карточек этого предмета строго такие ключи (без замены и пропусков): ${fieldKeys.map(f=>`"${f}"`).join(', ')}. Содержимое карточек делай чуть подробнее (не голый факт в одно слово, а короткое пояснение), и там, где уместно — рядом с русским термином добавляй английскую аббревиатуру/название (ООН — UN/UNSC, МУС — ICC, ЕС — EU и т.п.), это важно для юридического английского.
 
 Верни JSON вида:
 {"mainQuestions":"...", "keywords":["...","..."], "explanation":"...", "facts":"...", "connections":"...", "application":"...", "cards":[{"fields":{${fieldKeys.map(f=>`"${f}":"..."`).join(', ')}}}]}`;
@@ -5243,7 +5371,7 @@ function openQuickAddModal(key){
     <h3>Быстрое добавление карточек</h3>
     <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:10px;line-height:1.6">
       По одной карточке на строку, поля через <b>::</b>. Для этой категории нужно ${fieldCount} полей: ${esc((data.meta.fields||[]).join(' :: ') || 'front :: back')}.<br>
-      Совет: вставь конспект лекции в чат с Claude и попроси оформить его в этом формате — вставишь готовый результат сюда.
+      Совет: вставь конспект лекции в чат с Claude и попроси оформить его в этом формате — вставишь готовый результат сюда. Попроси делать пояснения чуть подробнее и добавлять английские аббревиатуры рядом с русскими терминами, где уместно (ООН — UN/UNSC и т.п.).
     </div>
     <div class="field"><label>Тема для всех карточек</label>${topicSelect}</div>
     <div class="field"><label>Карточки</label><textarea id="qaText" style="min-height:160px" placeholder="термин :: перевод :: пояснение :: пример
@@ -5549,6 +5677,12 @@ document.getElementById('themeSwitch').addEventListener('click',()=>{
   STORE.theme = STORE.theme==='dark' ? 'light' : 'dark';
   saveStore(); applyTheme();
 });
+
+/* ---------- Масштаб интерфейса ---------- */
+function applyFontScale(){
+  document.getElementById('app').style.zoom = STORE.fontScale || 1;
+}
+applyFontScale();
 document.getElementById('btnAddCategory').addEventListener('click', openCategoryModal);
 document.getElementById('btnManageCategories').addEventListener('click', openManageCategoriesModal);
 
