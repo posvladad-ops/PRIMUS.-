@@ -135,10 +135,13 @@ html[data-theme="dark"] .brand-divider{background:var(--khaki);}
   transform:scaleX(1.15) scaleY(0.94);transform-origin:left center;
   display:inline-block;white-space:nowrap;
   color:var(--text);
+  min-width:192px; /* держит ширину логотипа стабильной, пока грузится шрифт Unbounded (иначе на медленной
+                       сети виден "прыжок" ширины при смене запасного шрифта на настоящий) */
 }
 .brand-dot{display:inline-block;transform:scaleX(0.86957) scaleY(1.06383);transform-origin:center;}
 html[data-theme="light"] .brand h1{ color:var(--choc-bitter); }
 .brand .sub{font-family:var(--font-mono);font-size:10.5px;font-weight:400;text-transform:uppercase;color:var(--text-dim);opacity:.55;margin-top:-11px;letter-spacing:1.4px;transform:scaleX(1.06) scaleY(0.9);transform-origin:left top;}
+.auth-greeting{margin:0 8px;font-size:11.5px;color:var(--text-faint);text-align:center;}
 .aura-badge{margin:10px 8px 16px;padding:8px 12px;border-radius:var(--radius-s);background:var(--accent-soft);color:var(--accent-strong);font-family:var(--font-mono);font-size:11.5px;font-weight:600;text-align:center;}
 
 .nav-group{margin-bottom:6px;}
@@ -258,14 +261,23 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .icon-btn:hover{color:var(--bad);border-color:var(--bad);}
 .icon-btn.edit:hover{color:var(--accent);border-color:var(--accent);}
 
-.cards-topic-group{margin-bottom:20px;}
-.cards-topic-head{display:flex;align-items:center;gap:9px;cursor:pointer;padding:6px 0;margin-bottom:10px;border-bottom:1px solid var(--border);}
-.cards-topic-collapse{width:20px;height:20px;flex-shrink:0;border-radius:50%;background:var(--bg-soft);border:1px solid var(--border);color:var(--text-faint);font-size:9px;display:flex;align-items:center;justify-content:center;line-height:1;}
-.cards-topic-head:hover .cards-topic-collapse{color:var(--accent-strong);border-color:var(--accent);}
-.cards-topic-name{font-family:var(--font-display);font-size:13.5px;font-weight:700;}
-.cards-topic-count{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);margin-left:auto;}
+.cards-topic-body{margin-bottom:20px;}
 .cards-topic-body.collapsed{display:none;}
+.resume-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--khaki-soft);border:1px solid var(--khaki);border-radius:var(--radius-s);padding:12px 16px;margin-bottom:14px;font-size:12.5px;color:var(--khaki);}
 
+.ai-instructions{background:var(--bg-soft);border:1px dashed var(--border);border-radius:var(--radius-s);padding:14px 16px;margin:10px 0 16px;}
+.ai-instructions-title{font-family:var(--font-display);font-size:12.5px;font-weight:700;color:var(--accent-strong);margin-bottom:6px;}
+.ai-instructions ol{margin:0;padding-left:18px;font-size:12px;color:var(--text-dim);line-height:1.7;}
+.ai-instructions li{margin-bottom:2px;}
+.ai-instructions code{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:11px;}
+
+.guide-info-head{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-faint);margin:26px 0 10px;padding-top:14px;border-top:1px solid var(--border);}
+.guide-copyright{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);text-align:center;margin:22px 0 8px;opacity:.8;}
+.trash-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-s);margin-bottom:6px;font-size:12.5px;flex-wrap:wrap;}
+.trash-type{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent-strong);background:var(--accent-soft);padding:2px 7px;border-radius:10px;flex-shrink:0;}
+.trash-label{flex:1;min-width:0;word-break:break-word;}
+.trash-date{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);flex-shrink:0;}
+.trash-row .btn{padding:5px 10px;font-size:11.5px;}
 .scale-block{max-width:360px;}
 .scale-label{font-size:13px;color:var(--text-dim);margin-bottom:8px;display:flex;justify-content:space-between;}
 .scale-label span{font-family:var(--font-mono);color:var(--accent-strong);font-weight:600;}
@@ -383,6 +395,21 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .modal.modal-lg{max-width:640px;}
 .modal.modal-cal{max-width:880px;}
 
+/* ---------- Экран входа — вежливый вахтёр, закрыть нельзя без верного пароля ---------- */
+.auth-gate{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px;}
+.auth-gate.hidden{display:none;}
+.auth-box{width:100%;max-width:360px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-l);padding:38px 30px 30px;box-shadow:var(--shadow);text-align:center;}
+.auth-brand{padding:0;margin-bottom:8px;display:inline-block;}
+.auth-sub{font-family:var(--font-mono);font-size:11px;font-weight:300;color:var(--text-faint);text-transform:lowercase;letter-spacing:.6px;margin-bottom:26px;}
+.auth-box .field{text-align:left;margin-bottom:14px;}
+.auth-error{color:var(--bad);font-size:12px;margin:-6px 0 14px;min-height:14px;text-align:left;}
+.auth-btn{width:100%;}
+
+/* ---------- Добро пожаловать — один раз сразу после входа ---------- */
+.welcome-box{text-align:center;padding:6px 4px;}
+.welcome-title{font-family:var(--font-display);font-size:18px;font-weight:800;margin-bottom:14px;}
+.welcome-text{font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:14px;text-align:left;}
+
 /* ---------- Полный календарь ---------- */
 .fullcal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
 .fullcal-title{font-family:var(--font-display);font-weight:800;font-size:18px;text-transform:uppercase;letter-spacing:.5px;}
@@ -477,7 +504,8 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .theory-block{margin-bottom:10px;}
 .theory-block .tb-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);margin-bottom:3px;}
 .theory-block .tb-body{font-size:13px;color:var(--text-dim);line-height:1.6;}
-.theory-block .tb-body h3{font-family:var(--font-display);font-size:13.5px;font-weight:700;color:var(--text);margin:10px 0 4px;}
+.theory-block .tb-body h3{font-family:var(--font-display);font-size:15px;font-weight:800;color:var(--text);margin:12px 0 5px;}
+.theory-block .tb-body h4{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--text);margin:9px 0 4px;}
 .theory-block .tb-body ul,.theory-block .tb-body ol{margin:4px 0;padding-left:20px;}
 .theory-block .tb-body li{margin-bottom:3px;}
 .theory-block .tb-body b,.theory-block .tb-body strong{color:var(--text);}
@@ -654,19 +682,9 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
 .btn-timer-secondary{background:var(--khaki-ring);border-color:var(--khaki-ring);color:#fff;border-radius:3px;}
 .btn-timer-ghost{background:var(--choc-bitter);border-color:var(--choc-bitter);color:#fff;border-radius:3px;}
 .time-records{margin-top:24px;}
-.time-record-row{display:flex;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border);font-size:12.5px;}
+.time-record-row{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border);font-size:12.5px;}
 .time-record-row .tr-subject{font-weight:500;}
 .time-record-row .tr-dur{font-family:var(--font-mono);color:var(--text-faint);}
-
-/* ---------- Расписание ---------- */
-.sched-day{margin-bottom:18px;}
-.sched-day-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--accent-strong);margin-bottom:8px;}
-.sched-item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;background:var(--surface);
-  border:1px solid var(--border);border-radius:var(--radius-s);padding:10px 14px;margin-bottom:6px;}
-.sched-item .si-time{font-family:var(--font-mono);font-size:12px;color:var(--accent-strong);font-weight:600;}
-.sched-item .si-main{font-size:13px;}
-.sched-item .si-meta{font-size:11px;color:var(--text-faint);margin-top:2px;}
-.sched-item .si-del{border:none;background:transparent;color:var(--text-faint);cursor:pointer;font-size:12px;}
 
 /* ---------- Прогресс: предметы с раскрытием тем ---------- */
 .subj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:13px;cursor:pointer;}
@@ -685,15 +703,55 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
 .topics-tab-list{display:flex;flex-direction:column;gap:8px;max-width:520px;}
 
 /* ---------- Rich text toolbar для карточек ---------- */
-.rt-toolbar{display:flex;gap:4px;margin-bottom:4px;}
-.rt-btn{width:26px;height:26px;border:1px solid var(--border);background:var(--surface);border-radius:5px;font-size:12px;color:var(--text-dim);cursor:pointer;}
+.rt-toolbar{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap;align-items:center;}
+.rt-btn{width:26px;height:26px;border:1px solid var(--border);background:var(--surface);border-radius:5px;font-size:12px;color:var(--text-dim);cursor:pointer;flex-shrink:0;padding:0;}
 .rt-btn:hover{border-color:var(--accent);color:var(--accent-strong);}
 .rt-btn.b{font-weight:800;}
 .rt-btn.i{font-style:italic;}
 .rt-btn.s{text-decoration:line-through;}
 .rt-btn.u{text-decoration:underline;}
+.rt-btn.rt-h1{font-family:var(--font-display);font-weight:800;font-size:11px;}
+.rt-btn.rt-h2{font-family:var(--font-display);font-weight:700;font-size:9.5px;}
+.rt-btn-wide{width:auto;padding:0 10px;font-size:11px;white-space:nowrap;}
+.rt-btn.rt-kw{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-strong);font-weight:600;}
+.rt-sep{width:1px;height:18px;background:var(--border);margin:0 3px;flex-shrink:0;}
+/* Слово, помеченное как ключевое: тот же лаконичный овал, что и в списке ключевых слов */
+.kw-mark{display:inline;background:var(--accent-soft);color:var(--accent-strong);border-radius:10px;padding:1px 7px;font-weight:500;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+/* Разделитель внутри лекции — та же тонкая линия, что под логотипом */
+hr.lecture-divider{border:none;height:1px;background:var(--accent);opacity:.5;margin:16px 0;}
+html[data-theme="dark"] hr.lecture-divider{background:var(--khaki);}
+/* Список чёрточками */
+ul.dash-list{list-style:none;padding-left:18px;}
+ul.dash-list > li{position:relative;}
+ul.dash-list > li::before{content:'—';position:absolute;left:-18px;color:var(--text-faint);}
+/* Таблица как в заметках iPhone */
+table.lec-table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12.5px;table-layout:fixed;}
+table.lec-table th,table.lec-table td{border:1px solid var(--border);padding:8px 9px;text-align:left;min-width:40px;word-break:break-word;vertical-align:top;}
+table.lec-table th{background:var(--bg-soft);font-weight:600;}
+.rt-editable table.lec-table td:focus,.rt-editable table.lec-table th:focus{outline:2px solid var(--accent);outline-offset:-2px;}
+/* Панель управления таблицей — появляется, когда курсор внутри таблицы */
+.tbl-tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:6px;padding:7px 9px;border:1px dashed var(--accent);border-radius:var(--radius-s);background:var(--accent-soft);}
+.tbl-tools[hidden]{display:none;}
+.tbl-tools-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent-strong);margin-right:2px;}
+.tbl-tools .btn{padding:4px 9px;font-size:11.5px;}
+/* Файлы, прикреплённые к лекции */
+.te-files{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.te-file-chip{display:inline-flex;align-items:center;gap:7px;background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:4px 10px;font-size:11.5px;}
+.te-file-chip a{color:var(--accent-strong);text-decoration:none;}
+.te-file-chip a:hover{text-decoration:underline;}
+.te-file-size{color:var(--text-faint);font-family:var(--font-mono);font-size:10px;}
+.te-file-chip button{border:none;background:transparent;color:var(--text-faint);cursor:pointer;font-size:11px;padding:0;}
+.te-file-hint{font-size:11px;color:var(--text-faint);margin-top:6px;}
+/* Напоминание сохранить материал */
+.te-save-note{border:1px dashed var(--khaki);background:var(--khaki-soft);color:var(--khaki);border-radius:var(--radius-s);padding:12px 16px;font-size:12px;line-height:1.6;margin:18px 0 10px;}
+.te-dirty{font-size:11.5px;color:var(--bad);align-self:center;}
 .rt-editable{min-height:56px;padding:9px 11px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text);
   font-family:var(--font-body);font-size:13px;border-radius:var(--radius-s);outline:none;}
+/* Заголовки, списки и таблицы выглядят в редакторе так же, как потом в готовой лекции */
+.rt-editable h3{font-family:var(--font-display);font-size:15px;font-weight:800;margin:12px 0 5px;}
+.rt-editable h4{font-family:var(--font-display);font-size:13px;font-weight:700;margin:9px 0 4px;}
+.rt-editable ul,.rt-editable ol{margin:4px 0;padding-left:20px;}
+.rt-editable li{margin-bottom:3px;}
 .rt-attach-row{display:flex;align-items:center;gap:10px;margin-top:6px;}
 .rt-attach-thumb{width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--border);}
 .rt-attach-chip{font-size:11px;color:var(--text-dim);background:var(--bg-soft);padding:5px 10px;border-radius:14px;border:1px solid var(--border);}
@@ -746,13 +804,14 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
       <div class="brand-divider"></div>
       <div class="sub">the best platform for successful studying</div>
     </div>
+    <div class="auth-greeting" id="authGreeting"></div>
     <div class="aura-badge" id="auraBadge">0 Aura · ур. 1</div>
     <div id="navCategories"></div>
     <button class="nav-add" id="btnAddCategory">Добавить категорию</button>
     <button class="nav-add" id="btnManageCategories">Управление категориями</button>
     <div class="nav-group">
       <div class="nav-label">Overview</div>
-      <div class="nav-item" data-view="schedule"><span class="mono-badge">SC</span>Schedule</div>
+      <div class="nav-item" data-view="guide"><span class="mono-badge">GD</span>Инструкция + инфо</div>
       <div class="nav-item" data-view="progress"><span class="mono-badge">PG</span>Progress</div>
       <div class="nav-item" data-view="timers"><span class="mono-badge">TM</span>Timers</div>
       <div class="nav-item" data-view="rno"><span class="mono-badge">WN</span>WON<span class="count" id="cntRno"></span></div>
@@ -772,6 +831,17 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
       <input type="file" id="coverInput" accept="image/*" style="display:none">
     </div>
     <main class="main" id="main"></main>
+  </div>
+</div>
+
+<div class="auth-gate" id="authGate">
+  <div class="auth-box">
+    <div class="brand auth-brand"><h1>PRIMUS<span class="brand-dot">.</span></h1></div>
+    <div class="auth-sub">вход по личному паролю</div>
+    <div class="field"><label>Имя и фамилия</label><input id="authName" placeholder="Как тебя называть внутри платформы" autocomplete="off"></div>
+    <div class="field"><label>Пароль</label><input id="authPass" type="password" placeholder="Пароль" autocomplete="off"></div>
+    <div class="auth-error" id="authError"></div>
+    <button class="btn btn-primary auth-btn" id="authSubmit">Войти</button>
   </div>
 </div>
 
@@ -1792,6 +1862,15 @@ function uid(prefix){ return prefix+"_"+Math.random().toString(36).slice(2,9); }
 function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 function sample(arr,n){ return shuffle(arr).slice(0,n); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// Единый лаконичный блок-инструкция «как это использовать» — вместо разрозненных одностроч-подсказок
+// про JSON/импорт. title — заголовок, steps — массив строк (нумеруется автоматически).
+function aiInstructionsHtml(title, steps){
+  return `<div class="ai-instructions">
+    <div class="ai-instructions-title">${esc(title)}</div>
+    <ol>${steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+  </div>`;
+}
 function stripHtml(html){
   if(html==null) return '';
   const tmp = document.createElement('div');
@@ -1807,6 +1886,17 @@ function renderCardFacePlain(type,c){
    1. STORAGE
    ========================================================================== */
 const STORE_KEY = "primus_stud_v2";
+// Список личных паролей — каждый выдаётся вручную одному человеку. Не защита от взлома (пароли видны
+// в исходном коде технически подкованному человеку), это осознанно: сейчас нужен не сейф, а "вежливый
+// вахтёр" для узкого круга людей. Когда подключится Supabase — эта же форма пойдёт на реальную серверную
+// проверку, интерфейс менять не придётся.
+const ACCESS_CODES = [
+  "veritas24","iustitia7","primus2026","lexmundi9","aequitas3",
+  "corpus114","praesumo8","themis21","forum99","edictum5",
+  "nexus17","ratio88","dominium6","auctoritas2","imperium33",
+  "tribunal4","clausula19","delegatus1","custodia7","sapientia0"
+];
+
 function defaultStore(){
   return {
     theme:"dark",
@@ -1825,12 +1915,15 @@ function defaultStore(){
     planTasks:[], // {id,text,tier:'min'|'max',quadrant:'uiq'|'inq'|'uniq'|'ninq',done,deadline,createdDate}
     notes:[], // {id,title,body,date}
     timeRecords:[], // {id,subject,seconds,date,type}
-    schedule:[], // {id,day,time,subject,room,professor}
     calEvents:[], // {id,title,date,time,place,category,color}
     customTasks:{}, // catKey -> [{id,mode,topic,prompt,options,answer,explanation}]
     notebooks:{}, // catKey -> [{id,name,pages:[{id,bg,paper,strokes:[]}]}]
     studySessions:{}, // catKey -> {queue,idx,seen,knew,savedAt} — незавершённая сессия изучения карточек, чтобы не слетала при закрытии
     fontScale:1, // масштаб всего интерфейса (0.85–1.3), регулируется на странице Storage
+    auth:null, // {name, loginAt} — заполняется после входа по паролю, см. ACCESS_CODES
+    demoLectureV1:false, // лекция-пример по истории поставлена (один раз для нового человека)
+    trash:[], // корзина: [{id,type,label,sub,catKey,deletedAt,payload}] — недавно удалённое, можно вернуть
+    theoryDraft:null, // автосохранённый черновик открытой лекции — подстраховка на случай закрытия без сохранения
     finalTests:{} // catKey -> [{id,topicId,title,deadline,createdDate,completed,completedDate,sections:{key:[],full:[],cases:[],questions:[],fun:[]}}]
   };
 }
@@ -1960,6 +2053,16 @@ function getOrderedCategoryKeys(){
 function deleteCategory(catKey){
   const isCustom = !CATEGORY_META.find(m=>m.key===catKey);
   if(isCustom){
+    const cat = STORE.customCategories.find(c=>c.key===catKey);
+    if(cat){
+      trashPush('category', getCategoryDisplayName(catKey), {
+        category: JSON.parse(JSON.stringify(cat)),
+        cards: JSON.parse(JSON.stringify(STORE.customCards[catKey]||[])),
+        materials: JSON.parse(JSON.stringify(STORE.materials[catKey]||[])),
+        notebooks: JSON.parse(JSON.stringify(STORE.notebooks[catKey]||[])),
+        topics: JSON.parse(JSON.stringify(STORE.customTopics[catKey]||[]))
+      }, catKey, `${(STORE.customCards[catKey]||[]).length} карточек`);
+    }
     STORE.customCategories = STORE.customCategories.filter(c=>c.key!==catKey);
     delete STORE.customCards[catKey];
     delete STORE.materials[catKey];
@@ -2020,10 +2123,21 @@ function buildExtraCard(catKey, c){
     topicId: STORE.cardTopicOverride[c.id] || c.topicId || "general"
   });
 }
+// Для новых людей (никогда не разблокировавших полный контент-пак) платформа стартует чистой:
+// только примеры — 5 карточек по истории, 5 по юридическому английскому и одна лекция по истории
+// (см. seedDemoLecture). Всё остальное человек наполняет сам.
+// Личный контент автора (contentPackV1=true в его собственном STORE) при этом не трогается.
+const DEMO_CARD_COUNTS = {legal:5, hist:5};
 function buildAllData(){
   APP_DATA = {};
+  const fullContent = !!STORE.contentPackV1;
+  const hidden = STORE.hiddenCategories || [];
   CATEGORY_META.forEach(meta=>{
-    let cards = meta.raw
+    // Скрытый (удалённый) предмет вообще не попадает в APP_DATA — значит, вместе с ним
+    // сразу исчезают и его карточки из повторения, и его окошко прогресса, и задания.
+    if(hidden.includes(meta.key)) return;
+    const rawSource = fullContent ? meta.raw : meta.raw.slice(0, DEMO_CARD_COUNTS[meta.key]||0);
+    let cards = rawSource
       .map((row,idx)=>buildCardFromRaw(meta.key,meta,row,meta.fields,idx))
       .filter(c=>!STORE.deletedCards.includes(c.id));
     const extra = (STORE.extraCards[meta.key]||[]).map(c=>buildExtraCard(meta.key,c));
@@ -2272,7 +2386,7 @@ function review(card, correct, ctx){
   } else {
     card.level = 0;
     card.next_review = today;
-    markMistake(card.id);
+    if(!ctx.skipMistake) markMistake(card.id);
     awardAura(1);
   }
   bumpDaily("tasks");
@@ -2301,8 +2415,7 @@ function rnoDueCards(){
 let VIEW = "progress";
 let PRACTICE_STATE = { cat:null, mode:"task", idx:0, correct:0, total:0, olympiadOnly:false, revealed:false, matchLeft:null, matchDone:[] };
 let CAT_SUBVIEW = {};
-let CAT_TOPIC_FILTER = {};
-let CARDS_TOPIC_COLLAPSED = {}; // catKey -> {topicId: true} — свёрнутые группы тем на вкладке «Карточки»
+let CARDS_TOPIC_COLLAPSED = {}; // catKey -> {topicId: true} — свёрнутые темы-овалы на вкладке «Карточки»
 let STUDY_SESSION = null; // {catKey, queue:[cardId], idx, flipped, stats:{seen,knew}}
 
 /* ==========================================================================
@@ -2318,13 +2431,17 @@ function renderNav(){
   });
   html += '</div>';
   nav.innerHTML = html;
-  nav.querySelectorAll(".nav-item").forEach(el=>el.addEventListener("click",()=>{ VIEW=el.dataset.view; renderAll(); }));
+  nav.querySelectorAll(".nav-item").forEach(el=>el.addEventListener("click",()=>{
+    if(!confirmLeaveTheory()) return;
+    THEORY_EDIT_STATE = null;
+    VIEW=el.dataset.view; renderAll();
+  }));
 
   document.querySelectorAll('.sidebar .nav-item[data-view]').forEach(el=>{
-    const toolViews = ["schedule","progress","timers","rno","review","notes","storage"];
+    const toolViews = ["guide","progress","timers","rno","review","notes","storage"];
     if(toolViews.includes(el.dataset.view)) el.classList.toggle("active", VIEW===el.dataset.view);
   });
-  const dueCount = reviewDueCards().length;
+  const dueCount = reviewDueCards().length + reviewDueMaterials().length;
   const mistakeCount = rnoDueCards().length;
   const elReview = document.getElementById("cntReview"); if(elReview) elReview.textContent = dueCount>0 ? dueCount : "";
   const elRno = document.getElementById("cntRno"); if(elRno) elRno.textContent = mistakeCount>0 ? mistakeCount : "";
@@ -2338,8 +2455,12 @@ function navItemHtml(key,name,count,pinned){
 document.querySelector(".sidebar").addEventListener("click",(e)=>{
   const item = e.target.closest(".nav-item[data-view]");
   if(!item) return;
-  const toolViews = ["schedule","progress","timers","rno","review","notes","storage"];
-  if(toolViews.includes(item.dataset.view)){ VIEW = item.dataset.view; renderAll(); }
+  const toolViews = ["guide","progress","timers","rno","review","notes","storage"];
+  if(toolViews.includes(item.dataset.view)){
+    if(!confirmLeaveTheory()) return;
+    THEORY_EDIT_STATE = null;
+    VIEW = item.dataset.view; renderAll();
+  }
 });
 
 /* ==========================================================================
@@ -2349,7 +2470,7 @@ function renderAll(){
   renderNav();
   const main = document.getElementById("main");
   if(APP_DATA[VIEW]) return renderCategoryView(main, VIEW);
-  if(VIEW==="schedule") return renderSchedulePage(main);
+  if(VIEW==="guide") return renderGuidePage(main);
   if(VIEW==="progress") return renderProgressPage(main);
   if(VIEW==="timers") return renderTimersPage(main);
   if(VIEW==="rno") return renderRno(main);
@@ -2359,15 +2480,95 @@ function renderAll(){
 }
 
 /* ==========================================================================
-   10. SCHEDULE / PROGRESS / TIMERS / NOTES / STORAGE — самостоятельные страницы
+   10. PROGRESS / TIMERS / NOTES / STORAGE — самостоятельные страницы
    ========================================================================== */
-function renderSchedulePage(main){
-  main.innerHTML = `<div class="topbar"><div><h2>Schedule</h2><div class="desc">Расписание занятий — кабинеты, преподаватели, время</div></div></div><div id="ovBody"></div>`;
-  renderOvSchedule(document.getElementById('ovBody'));
-}
 function renderTimersPage(main){
   main.innerHTML = `<div class="topbar"><div><h2>Timers</h2><div class="desc">Pomodoro и секундомер — сколько времени ушло на каждый предмет</div></div></div><div id="ovBody"></div>`;
   renderOvTimer(document.getElementById('ovBody'));
+}
+
+/* ---------- Инструкция: подробный, но лаконичный гид по всем разделам платформы ---------- */
+let GUIDE_COLLAPSED = {}; // sectionId -> false, если явно развёрнут (по умолчанию свёрнуто)
+const GUIDE_SECTIONS = [
+  {id:'topics', title:'Темы', body:`Список тем внутри предмета. Темы можно <b>перетаскивать</b> пальцем/мышью, чтобы менять порядок, закреплять важные (значок •) и переименовывать. Новые темы появляются сами, когда ты создаёшь лекцию или карточку с новым названием — заводить их вручную не обязательно.`},
+  {id:'theory', title:'Теория', body:`Конспекты лекций. <b>«Добавить материал»</b> — создать лекцию: тема, дата, текст.
+    <h4>Панель форматирования</h4>
+    <ul>
+      <li><b>B / I / U / S</b> — жирный, курсив, подчёркнутый, зачёркнутый. Жирный — это просто жирный, в карточки он больше ничего не отправляет.</li>
+      <li><b>H1 / H2 / ¶</b> — заголовок, подзаголовок, обычный текст.</li>
+      <li><b>• / 1. / —</b> — списки точками, цифрами и чёрточками.</li>
+      <li><b>⎯</b> — разделительная линия внутри лекции, <b>▦</b> — таблица (как в заметках iPhone).</li>
+      <li><b>Маркеры</b> — жёлтый, винный, хаки и тёмно-синий, все полупрозрачные, текст под ними читается. Крестик убирает выделение.</li>
+      <li><b>«Ключевое слово + карточка»</b> — выдели слово и нажми: оно подсветится овалом, попадёт в ключевые слова, а при сохранении по нему заведётся карточка (на обороте — предложение из лекции).</li>
+    </ul>
+    <h4>Знак (?)</h4>
+    <p>Поставь <b>(?)</b> рядом с местом, которое не понял(а). Когда отправишь лекцию в ИИ, он разберёт каждое такое место отдельно — с нуля, простым языком и со связью с темой лекции. Разбор придёт в поле «Разбор непонятного».</p>
+    <h4>Файлы</h4>
+    <p>К лекции можно прикрепить любой файл до 2 МБ — презентацию, скан, фото доски. Он хранится прямо в лекции и скачивается по клику.</p>
+    <h4>Таблица</h4>
+    <p>Поставь курсор в любую ячейку — над полем появится панель управления таблицей: <b>+ строка</b>, <b>− строка</b>, <b>+ столбец</b>, <b>− столбец</b>, <b>Шапка вкл/выкл</b> и <b>Удалить таблицу</b>. Строка и столбец добавляются рядом с той ячейкой, в которой стоит курсор — как в заметках iPhone. Панель прячется, как только выходишь из таблицы.</p>
+    <h4>ИИ и повторение</h4>
+    <p><b>«Скопировать для ИИ» / «Вставить обработку от ИИ»</b> — ИИ разбирает лекцию и делает по ней карточки (все карточки одной лекции идут в один сет).</p>
+    <p><b>Сразу после сохранения новой лекции</b> платформа спросит, отправить ли её на повторение — нажми <b>«Отправить на повторение»</b>, и лекция попадёт в spaced repetition: напоминания придут через 1, 3, 7, 14 и 30 дней. Если нажать «Позже», лекция останется без повторения, но у неё в списке будет своя кнопка <b>«Добавить в spaced repetition»</b> — можно отправить в любой момент. Кнопка <b>«Повторил ✓»</b> продвигает лекцию на следующий интервал.</p>
+    <p><b>Важно:</b> лекция сохраняется только по кнопке «Сохранить материал». Если уйти на другую вкладку с несохранёнными правками — платформа напомнит.</p>`},
+  {id:'cards', title:'Карточки', body:`Овалы сверху — это темы: клик по овалу сворачивает или разворачивает карточки этой темы (сами овалы и есть кнопка свёрнуть/развернуть).<br><b>«Изучить»</b> запускает сессию в стиле Quizlet: тап — перевернуть карточку, свайп вправо/влево или кнопки «Знаю» / «Не знаю» — оценить, стрелки «Назад»/«Вперёд» — просто полистать. Если закрыть сессию не закончив — прогресс сохранится, и наверху появится баннер «Продолжить» / «Начать заново».`},
+  {id:'notebook', title:'Тетрадь', body:`Рисование от руки — стилусом или мышью (палец только скроллит и зумит). Перо, карандаш (с текстурой), маркер, ластик — у каждого своя толщина. Страницы пролистываются вниз бесконечно, можно менять цвет/разлиновку бумаги.`},
+  {id:'practice', title:'Практика', body:`5 режимов заданий: Задачи, Кейсы, Соответствие, Вставка слова, Открытый вопрос — переключаются вкладками сверху. <b>«Добавить задания по теме»</b> — вставить готовые задания, которые оформит ИИ по материалу лекции.<br>Именно здесь (а не в обычном изучении карточек) ошибки попадают в раздел <b>WON</b>.`},
+  {id:'test', title:'Тест', body:`Финальная проверка темы целиком, можно с дедлайном. 5 разделов: проверка самого главного, полный тест, кейсы, ответы на вопросы, интересные задания. Задания вставляются от ИИ так же, как в лекциях и практике — своей кнопкой «Скопировать запрос для ИИ».`},
+  {id:'review', title:'Spaced Repetition', body:`Всё, что «созрело» для повторения сегодня — отдельно карточки, отдельно лекции (переключение вкладками сверху). Карточки можно сгруппировать по теме и повторить только нужную группу.`},
+  {id:'won', title:'WON — работа над ошибками', body:`Карточки, в которых была ошибка именно в <b>Практике</b> или заданиях (не в обычном изучении карточек) — отдельный список для прицельного повторения слабых мест.`},
+  {id:'progress', title:'Progress', body:`Aura и уровень наверху, недельный планер (базовый минимум / роскошный максимум), матрица Эйзенхауэра для срочных/важных дел, и календарь — маленькая сетка «ударного режима» (стрик выполненных дней) плюс полноценный календарь с событиями по неделям и месяцам.`},
+  {id:'timers', title:'Timers', body:`Pomodoro (25 минут работы / 5 минут перерыва) и обычный секундомер. «Старт» — начать, «Стоп»/«Продолжить» — приостановить без сохранения, <b>«Закончить»</b> — сохранить время в записи внизу. Записи можно удалить (с подтверждением).`},
+  {id:'notes', title:'Notes', body:`Свободные заметки с форматированием — как на iPhone.`},
+  {id:'storage', title:'Storage', body:`Экспорт и импорт всего прогресса файлом (перенос между устройствами — localStorage сам не синхронизируется), регулировка масштаба интерфейса и <b>корзина</b> — там лежит всё недавно удалённое, любую запись можно вернуть.`}
+];
+// Информационный блок — идёт отдельно от инструкции, внизу страницы.
+const INFO_SECTIONS = [
+  {id:'info-responsibility', title:'Ответственность за материалы', body:`Все лекции, карточки, тетради и прикреплённые файлы хранятся <b>локально на твоём устройстве</b> (в памяти браузера), а не на сервере платформы.<br><br>Это значит: <b>ответственность за сохранность своих материалов лежит на пользователе</b>. Платформа не хранит копий и не может ничего восстановить за тебя.<br><br>Что из этого следует практически:
+    <ul>
+      <li>Материал лекции записывается только по кнопке <b>«Сохранить материал»</b> — черновик подстраховывает, но полагаться на него не стоит.</li>
+      <li>Регулярно делай <b>экспорт прогресса</b> в разделе Storage и храни файл отдельно — это единственная настоящая резервная копия.</li>
+      <li>Очистка данных браузера, удаление приложения или переустановка устройства стирают всё безвозвратно.</li>
+      <li>Недавно удалённое можно вернуть из <b>корзины</b> в разделе Storage, но она хранит ограниченное число последних записей.</li>
+    </ul>`},
+  {id:'info-access', title:'Доступ по коду', body:`Вход на платформу — по личному коду.<br><br><b>Один код рассчитан на одного человека.</b> Код выдаётся лично и не предназначен для передачи другим: он не групповой и не общий. Передача своего кода третьим лицам не предполагается.<br><br>Код привязывается к устройству при первом входе: после успешного входа платформа больше не спрашивает пароль на этом устройстве.`},
+  {id:'info-copyright', title:'Авторские права', body:`© PRIMUS. Все права защищены.<br><br>Платформа PRIMUS., её интерфейс, структура, методика работы с материалом и учебное наполнение являются объектами авторского права и принадлежат автору платформы.<br><br>Без отдельного разрешения автора не допускается:
+    <ul>
+      <li>копирование, распространение и публикация платформы или её частей;</li>
+      <li>использование материалов платформы в коммерческих целях;</li>
+      <li>передача доступа третьим лицам, публикация кода доступа.</li>
+    </ul>
+    Материалы, которые пользователь создаёт сам (свои лекции, карточки, заметки, файлы), принадлежат самому пользователю.`}
+];
+function renderGuidePage(main){
+  main.innerHTML = `<div class="topbar"><div><h2>Инструкция + инфо</h2><div class="desc">Как пользоваться платформой — по разделам, и важная информация</div></div></div><div id="guideBody"></div>`;
+  const body = document.getElementById('guideBody');
+  let html = '';
+  GUIDE_SECTIONS.forEach(s=>{
+    const collapsed = GUIDE_COLLAPSED[s.id] !== false;
+    html += `<div class="theory-item ${collapsed?'collapsed':''}" data-guide="${s.id}">
+      <button class="theory-collapse" data-guide-toggle="${s.id}" title="${collapsed?'Развернуть':'Свернуть'}">${collapsed?'▾':'▴'}</button>
+      <div class="theory-title-row"><div class="theory-title">${esc(s.title)}</div></div>
+      <div class="theory-collapsible"><div class="theory-block"><div class="tb-body">${s.body}</div></div></div>
+    </div>`;
+  });
+  html += `<div class="guide-info-head">Инфо</div>`;
+  INFO_SECTIONS.forEach(s=>{
+    const collapsed = GUIDE_COLLAPSED[s.id] !== false;
+    html += `<div class="theory-item ${collapsed?'collapsed':''}" data-guide="${s.id}">
+      <button class="theory-collapse" data-guide-toggle="${s.id}" title="${collapsed?'Развернуть':'Свернуть'}">${collapsed?'▾':'▴'}</button>
+      <div class="theory-title-row"><div class="theory-title">${esc(s.title)}</div></div>
+      <div class="theory-collapsible"><div class="theory-block"><div class="tb-body">${s.body}</div></div></div>
+    </div>`;
+  });
+  html += `<div class="guide-copyright">© PRIMUS. ${new Date().getFullYear()} · Все права защищены</div>`;
+  body.innerHTML = html;
+  body.querySelectorAll('[data-guide-toggle]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
+    const id = btn.dataset.guideToggle;
+    GUIDE_COLLAPSED[id] = !(GUIDE_COLLAPSED[id]!==false);
+    renderGuidePage(main);
+  });
 }
 function renderNotesPage(main){
   main.innerHTML = `<div class="topbar"><div><h2>Notes</h2><div class="desc">Заметки — как на iPhone</div></div></div><div id="ovBody"></div>`;
@@ -2386,6 +2587,7 @@ function renderStoragePage(main){
       <button class="btn" id="btnImportData">Импорт прогресса из файла</button>
       <input type="file" id="importDataFile" accept="application/json" style="display:none">
     </div>
+    <div id="trashBlock" style="margin-top:28px"></div>
   `;
   document.getElementById('fontScaleRange').addEventListener('input', (e)=>{
     STORE.fontScale = parseFloat(e.target.value);
@@ -2399,6 +2601,45 @@ function renderStoragePage(main){
     const file = e.target.files[0];
     if(file) importStoreJSON(file);
   };
+  renderTrashBlock(main);
+}
+
+function renderTrashBlock(main){
+  const wrap = document.getElementById('trashBlock');
+  if(!wrap) return;
+  const trash = STORE.trash || [];
+  let html = `<h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:6px">Корзина</h3>
+    <div class="desc" style="margin-bottom:12px">Последнее удалённое — на случай, если удалили случайно. Хранятся ${TRASH_LIMIT} последних записей.</div>`;
+  if(trash.length===0){
+    html += `<div class="empty-state">Корзина пуста.</div>`;
+    wrap.innerHTML = html;
+    return;
+  }
+  html += `<div class="btn-row" style="margin-bottom:12px"><button class="btn" id="btnClearTrash">Очистить корзину</button></div>`;
+  trash.forEach(t=>{
+    const when = t.deletedAt ? fmtDate(t.deletedAt.slice(0,10)) : '';
+    html += `<div class="trash-row">
+      <span class="trash-type">${esc(TRASH_TYPE_LABELS[t.type]||t.type)}</span>
+      <span class="trash-label">${esc(t.label)}${t.sub?` <span style="color:var(--text-faint)">· ${esc(t.sub)}</span>`:''}</span>
+      <span class="trash-date">${esc(when)}</span>
+      <button class="btn btn-good" data-restore-trash="${t.id}">Вернуть</button>
+      <button class="icon-btn" data-purge-trash="${t.id}">Удал.</button>
+    </div>`;
+  });
+  wrap.innerHTML = html;
+  document.getElementById('btnClearTrash').onclick=()=>{
+    if(!confirm('Очистить корзину полностью? После этого вернуть уже ничего нельзя — это безвозвратно.')) return;
+    STORE.trash = []; saveStore(); renderTrashBlock(main);
+  };
+  wrap.querySelectorAll('[data-restore-trash]').forEach(btn=>btn.onclick=()=>{
+    if(restoreFromTrash(btn.dataset.restoreTrash)){ renderAll(); }
+    else openInfoModal('Не получилось', 'Не удалось вернуть эту запись.');
+  });
+  wrap.querySelectorAll('[data-purge-trash]').forEach(btn=>btn.onclick=()=>{
+    if(!confirm('Удалить эту запись из корзины навсегда? Это безвозвратно.')) return;
+    STORE.trash = (STORE.trash||[]).filter(t=>t.id!==btn.dataset.purgeTrash);
+    saveStore(); renderTrashBlock(main);
+  });
 }
 
 /* ==========================================================================
@@ -2708,7 +2949,9 @@ function renderOvNotes(body){
   document.getElementById('btnAddNote').onclick=()=>openNoteModal(body);
   grid.querySelectorAll('[data-editnote]').forEach(b=>b.onclick=()=>openNoteModal(body, b.dataset.editnote));
   grid.querySelectorAll('[data-delnote]').forEach(b=>b.onclick=()=>{
-    if(!confirm('Точно удалить заметку? Это безвозвратно.')) return;
+    if(!confirm('Удалить заметку? Её можно будет вернуть из корзины в разделе Storage.')) return;
+    const note = STORE.notes.find(n=>n.id===b.dataset.delnote);
+    if(note) trashPush('note', note.title||'Без названия', {note:JSON.parse(JSON.stringify(note))}, null, fmtDate(note.date));
     STORE.notes = STORE.notes.filter(n=>n.id!==b.dataset.delnote);
     saveStore(); renderOvNotes(body);
   });
@@ -2783,9 +3026,13 @@ function renderOvTimer(body){
       <div class="flip-clock" id="timerDisplay">${flipTilesHtml(fmtSeconds2(TIMER_MODE==='pomodoro'?TIMER_STATE.seconds:TIMER_STATE.stopwatchSeconds))}</div>
     </div>
     <div class="timer-controls">
-      <button class="btn btn-timer-primary" id="timerStartPause">${TIMER_STATE.running?'Пауза':'Старт'}</button>
-      <button class="btn btn-timer-secondary" id="timerReset">Сброс</button>
-      ${TIMER_MODE==='pomodoro'?'<button class="btn btn-timer-ghost" id="pomoSkip">Пропустить</button>':''}
+      ${timerHasProgress() ? `
+        <button class="btn btn-timer-primary" id="timerStartPause">${TIMER_STATE.running?'Стоп':'Продолжить'}</button>
+        <button class="btn btn-timer-secondary" id="timerFinish">Закончить</button>
+      ` : `
+        <button class="btn btn-timer-primary" id="timerStartPause">Старт</button>
+      `}
+      ${TIMER_MODE==='pomodoro'&&TIMER_STATE.running?'<button class="btn btn-timer-ghost" id="pomoSkip">Пропустить</button>':''}
     </div>
     <div class="time-records">
       <h3>Последние записи</h3>
@@ -2796,10 +3043,15 @@ function renderOvTimer(body){
   document.getElementById('tPomodoro').onclick=()=>{ if(TIMER_STATE.running) return; TIMER_MODE='pomodoro'; TIMER_STATE.seconds=25*60; renderOvTimer(body); };
   document.getElementById('tStopwatch').onclick=()=>{ if(TIMER_STATE.running) return; TIMER_MODE='stopwatch'; renderOvTimer(body); };
   document.getElementById('timerStartPause').onclick=()=>toggleTimer(body);
-  document.getElementById('timerReset').onclick=()=>resetTimer(body);
+  const finishBtn = document.getElementById('timerFinish');
+  if(finishBtn) finishBtn.onclick=()=>finishAndSave(body);
   const skip = document.getElementById('pomoSkip');
   if(skip) skip.onclick=()=>{ finishPomodoroSession(body); };
   renderRecordsList();
+}
+// Есть ли незафиксированный прогресс (таймер шёл или на паузе, но ещё не сохранён кнопкой «Закончить»).
+function timerHasProgress(){
+  return TIMER_STATE.running || (TIMER_MODE==='pomodoro' ? TIMER_STATE.seconds < (TIMER_STATE.isBreak?5*60:25*60) : TIMER_STATE.stopwatchSeconds>0);
 }
 function fmtSeconds2(s){ s=Math.max(0,Math.round(s)); const h=Math.floor(s/3600); const m=Math.floor((s%3600)/60); const r=s%60;
   return h>0? `${h}:${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}` : `${m}:${String(r).padStart(2,'0')}`; }
@@ -2846,7 +3098,7 @@ function toggleTimer(body){
       updateFlipTime(document.getElementById('timerDisplay'), fmtSeconds2(TIMER_STATE.stopwatchSeconds));
     }
   },1000);
-  const btn = document.getElementById('timerStartPause'); if(btn) btn.textContent='Пауза';
+  renderOvTimer(body);
 }
 function finishPomodoroSession(body){
   clearInterval(TIMER_STATE.intervalId); TIMER_STATE.running=false;
@@ -2858,7 +3110,8 @@ function finishPomodoroSession(body){
   TIMER_STATE.seconds = TIMER_STATE.isBreak? 5*60 : 25*60;
   renderOvTimer(body);
 }
-function resetTimer(body){
+// «Закончить» — останавливает таймер, сохраняет запись (если прошло больше 10 секунд) и сбрасывает к чистому состоянию.
+function finishAndSave(body){
   clearInterval(TIMER_STATE.intervalId);
   TIMER_STATE.running=false;
   if(TIMER_MODE==='pomodoro'){
@@ -2883,85 +3136,15 @@ function renderRecordsList(){
   if(!list) return;
   const recent = STORE.timeRecords.slice().reverse().slice(0,15);
   list.innerHTML = recent.length ? recent.map(r=>`
-    <div class="time-record-row"><span class="tr-subject">${esc(r.subject)} <span style="color:var(--text-faint);font-size:10px">(${r.type==='pomodoro'?'Pomodoro':'Секундомер'})</span></span><span class="tr-dur">${fmtSeconds2(r.seconds)} · ${fmtDate(r.date)}</span></div>
+    <div class="time-record-row"><span class="tr-subject">${esc(r.subject)} <span style="color:var(--text-faint);font-size:10px">(${r.type==='pomodoro'?'Pomodoro':'Секундомер'})</span></span><span class="tr-dur">${fmtSeconds2(r.seconds)} · ${fmtDate(r.date)}</span><button class="icon-btn" data-delrec="${r.id}" title="Удалить">Удал.</button></div>
   `).join('') : `<div style="font-size:12px;color:var(--text-faint)">Записей пока нет</div>`;
-}
-
-/* ---------- Расписание ---------- */
-const SCHED_DAYS = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
-function renderOvSchedule(body){
-  let html = `<div class="btn-row" style="margin-bottom:18px">
-    <button class="btn btn-primary" id="btnAddSched">+ Добавить пару</button>
-    <button class="btn" id="btnImportSched">Импортировать из файла</button>
-    <input type="file" id="importSchedFile" accept="application/json" style="display:none">
-  </div>
-  <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:16px;line-height:1.6">
-    Пришли расписание (pdf/docx) мне в чат — я извлеку кабинеты, этажи и преподавателей и соберу файл вида
-    <code>{"schedule":[{"day","time","subject","room","professor"}]}</code>, который импортируется сюда одной кнопкой.
-  </div>`;
-  if(STORE.schedule.length===0){
-    html += `<div class="empty-state">Расписание пока пустое.</div>`;
-  } else {
-    SCHED_DAYS.forEach(day=>{
-      const items = STORE.schedule.filter(s=>s.day===day).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
-      if(items.length===0) return;
-      html += `<div class="sched-day"><div class="sched-day-title">${day}</div>`;
-      items.forEach(s=>{
-        html += `<div class="sched-item">
-          <div class="si-time">${esc(s.time||'')}</div>
-          <div><div class="si-main">${esc(s.subject||'')}</div><div class="si-meta">${[s.room?`ауд. ${esc(s.room)}`:'', s.professor?esc(s.professor):''].filter(Boolean).join(' · ')}</div></div>
-          <button class="si-del" data-delsched="${s.id}">✕</button>
-        </div>`;
-      });
-      html += `</div>`;
-    });
-  }
-  body.innerHTML = html;
-  document.getElementById('btnAddSched').onclick=()=>openScheduleModal(body);
-  document.getElementById('btnImportSched').onclick=()=>document.getElementById('importSchedFile').click();
-  document.getElementById('importSchedFile').onchange=(e)=>{
-    const file = e.target.files[0]; if(file) importScheduleJSON(file, body);
-  };
-  body.querySelectorAll('[data-delsched]').forEach(b=>b.onclick=()=>{
-    STORE.schedule = STORE.schedule.filter(s=>s.id!==b.dataset.delsched);
-    saveStore(); renderOvSchedule(body);
+  list.querySelectorAll('[data-delrec]').forEach(btn=>btn.onclick=()=>{
+    if(!confirm('Удалить эту запись? Её можно будет вернуть из корзины в разделе Storage.')) return;
+    const rec = STORE.timeRecords.find(x=>x.id===btn.dataset.delrec);
+    if(rec) trashPush('timerecord', rec.subject, {record:JSON.parse(JSON.stringify(rec))}, null, `${fmtSeconds2(rec.seconds)} · ${fmtDate(rec.date)}`);
+    STORE.timeRecords = STORE.timeRecords.filter(x=>x.id!==btn.dataset.delrec);
+    saveStore(); renderRecordsList();
   });
-}
-function openScheduleModal(body){
-  document.getElementById('modalBody').innerHTML = `
-    <h3>Новая пара</h3>
-    <div class="field"><label>День недели</label><select id="schDay">${SCHED_DAYS.map(d=>`<option>${d}</option>`).join('')}</select></div>
-    <div class="field"><label>Время</label><input id="schTime" placeholder="09:00–10:30"></div>
-    <div class="field"><label>Предмет</label><input id="schSubject"></div>
-    <div class="field"><label>Аудитория / этаж</label><input id="schRoom" placeholder="Например: 315, 3 этаж"></div>
-    <div class="field"><label>Преподаватель</label><input id="schProf"></div>
-    <div class="modal-actions"><button class="btn" id="mCancelSch">Отмена</button><button class="btn btn-primary" id="mSaveSch">Сохранить</button></div>
-  `;
-  document.getElementById('mCancelSch').onclick=closeOverlay;
-  document.getElementById('mSaveSch').onclick=()=>{
-    const subject = document.getElementById('schSubject').value.trim();
-    if(!subject) return;
-    STORE.schedule.push({
-      id:uid('sch'), day:document.getElementById('schDay').value, time:document.getElementById('schTime').value.trim(),
-      subject, room:document.getElementById('schRoom').value.trim(), professor:document.getElementById('schProf').value.trim()
-    });
-    saveStore(); closeOverlay(); renderOvSchedule(body);
-  };
-  openOverlay();
-}
-function importScheduleJSON(file, body){
-  const reader = new FileReader();
-  reader.onload = ()=>{
-    try{
-      const parsed = JSON.parse(reader.result);
-      (parsed.schedule||[]).forEach(s=>{
-        STORE.schedule.push(Object.assign({id:uid('sch')}, s));
-      });
-      saveStore(); renderOvSchedule(body);
-      openInfoModal('Готово', `Импортировано пар: <b>${(parsed.schedule||[]).length}</b>.`);
-    }catch(e){ openInfoModal('Ошибка', 'Не удалось прочитать файл.'); }
-  };
-  reader.readAsText(file);
 }
 
 /* ---------- Календарь (компактный, с навигацией Авг 2026 → Дек 2027) ---------- */
@@ -3328,12 +3511,18 @@ function renderCategoryView(main, key){
     </div>
     <div id="catBody"></div>
   `;
-  document.getElementById("tabTopics").onclick=()=>{ CAT_SUBVIEW[key]='topics'; renderAll(); };
-  document.getElementById("tabTheory").onclick=()=>{ CAT_SUBVIEW[key]='theory'; renderAll(); };
-  document.getElementById("tabCards").onclick=()=>{ CAT_SUBVIEW[key]='cards'; renderAll(); };
-  document.getElementById("tabNotebook").onclick=()=>{ CAT_SUBVIEW[key]='notebook'; renderAll(); };
-  document.getElementById("tabPractice").onclick=()=>{ CAT_SUBVIEW[key]='practice'; renderAll(); };
-  document.getElementById("tabFinalTest").onclick=()=>{ CAT_SUBVIEW[key]='finaltest'; renderAll(); };
+  // Уход с вкладки при открытой лекции — тоже через напоминание сохранить материал.
+  const goTab = (name)=>()=>{
+    if(!confirmLeaveTheory()) return;
+    if(name!=='theory') THEORY_EDIT_STATE = null;
+    CAT_SUBVIEW[key]=name; renderAll();
+  };
+  document.getElementById("tabTopics").onclick=goTab('topics');
+  document.getElementById("tabTheory").onclick=goTab('theory');
+  document.getElementById("tabCards").onclick=goTab('cards');
+  document.getElementById("tabNotebook").onclick=goTab('notebook');
+  document.getElementById("tabPractice").onclick=goTab('practice');
+  document.getElementById("tabFinalTest").onclick=goTab('finaltest');
   const body = document.getElementById("catBody");
   if(sub==='topics') renderTopicsTab(body,key);
   else if(sub==='theory') renderTheory(body,key);
@@ -3476,25 +3665,20 @@ function initTopicDrag(container, key, onCommit){
   container.addEventListener('pointercancel', end);
 }
 
+// Овалы с темами — это и фильтр-подпись, и кнопка свернуть/развернуть одновременно (не нужен
+// отдельный заголовок с отдельной кнопкой сверху секции — овал сам себе кнопка).
 function renderCardsGrid(body,key){
   const data = APP_DATA[key];
   const topics = getCategoryTopicsOrdered(key);
-  const filter = CAT_TOPIC_FILTER[key] || "all";
   if(data.cards.length===0){
     body.innerHTML = `<div class="empty-state">Пока нет карточек в этой теме.<br><button class="btn btn-primary" style="margin-top:12px" id="emptyAdd">Добавить первую карточку</button></div>`;
     body.querySelector('#emptyAdd').onclick=()=>openCardModal(key);
     return;
   }
-  let filterHtml = `<div class="filters" id="topicFilters"><div class="chip ${filter==='all'?'active':''}" data-t="all">Все темы</div>`;
-  topics.forEach(t=>{
-    const cnt = data.cards.filter(c=>getCardTopicId(key,c)===t.id).length;
-    if(cnt===0 && t.id==='general') return; // «Без темы» скрываем, если пусто — но новые темы показываем всегда
-    filterHtml += `<div class="chip ${filter===t.id?'active':''}" data-t="${t.id}">${esc(t.name)} (${cnt})</div>`;
-  });
-  filterHtml += '</div>';
-
+  if(!CARDS_TOPIC_COLLAPSED[key]) CARDS_TOPIC_COLLAPSED[key] = {};
+  const savedSession = STORE.studySessions && STORE.studySessions[key];
+  const savedValidCount = savedSession ? savedSession.queue.filter(id=>findCard(key,id)).length : 0;
   const type = data.meta.type || "custom";
-  const shown = filter==='all' ? data.cards : data.cards.filter(c=>getCardTopicId(key,c)===filter);
   function cardHtml(c){
     const {top,sub,body:cardBody,usage} = renderCardFace(type,c);
     const badgeClass = c.level>=3?'mastered':'';
@@ -3512,30 +3696,36 @@ function renderCardsGrid(body,key){
       </div>
     </div>`;
   }
-  let html = filterHtml + `<div class="btn-row" style="margin-bottom:14px"><button class="btn btn-primary" id="btnStudy">Изучить (${shown.length})</button><button class="btn" id="btnAddCard2">Добавить карточку</button><button class="btn" id="btnCardSet">Сделать сет карточек</button></div>`;
-  if(!CARDS_TOPIC_COLLAPSED[key]) CARDS_TOPIC_COLLAPSED[key] = {};
-  if(filter==='all'){
-    // Группируем по темам — каждую можно свернуть лаконичной кнопкой, чтобы не листать все карточки разом.
-    topics.forEach(t=>{
-      const tCards = shown.filter(c=>getCardTopicId(key,c)===t.id);
-      if(tCards.length===0) return;
-      const collapsed = !!CARDS_TOPIC_COLLAPSED[key][t.id];
-      html += `<div class="cards-topic-group">
-        <div class="cards-topic-head" data-ctg-toggle="${t.id}">
-          <button class="cards-topic-collapse" title="${collapsed?'Развернуть':'Свернуть'}">${collapsed?'▾':'▴'}</button>
-          <span class="cards-topic-name">${esc(t.name)}</span>
-          <span class="cards-topic-count">${tCards.length}</span>
-        </div>
-        <div class="grid cards-topic-body ${collapsed?'collapsed':''}">${tCards.map(cardHtml).join('')}</div>
-      </div>`;
-    });
-  } else {
-    html += `<div class="grid">${shown.map(cardHtml).join('')}</div>`;
-  }
+  let chipsHtml = `<div class="filters" id="topicFilters">`;
+  let sectionsHtml = '';
+  topics.forEach(t=>{
+    const tCards = data.cards.filter(c=>getCardTopicId(key,c)===t.id);
+    if(tCards.length===0) return;
+    const collapsed = !!CARDS_TOPIC_COLLAPSED[key][t.id];
+    chipsHtml += `<div class="chip ${collapsed?'':'active'}" data-ctg-toggle="${t.id}" title="${collapsed?'Развернуть':'Свернуть'}">${esc(t.name)} (${tCards.length})</div>`;
+    sectionsHtml += `<div class="grid cards-topic-body ${collapsed?'collapsed':''}" data-ctg-section="${t.id}">${tCards.map(cardHtml).join('')}</div>`;
+  });
+  chipsHtml += '</div>';
+  const resumeBanner = savedValidCount>0 ? `<div class="resume-banner">
+    <span>Есть незавершённая сессия изучения — осталось ${savedValidCount} карточек.</span>
+    <div class="btn-row" style="margin:0"><button class="btn btn-primary" id="btnResumeSession">Продолжить</button><button class="btn" id="btnDiscardSession">Начать заново</button></div>
+  </div>` : '';
+  let html = resumeBanner + chipsHtml + `<div class="btn-row" style="margin:14px 0"><button class="btn btn-primary" id="btnStudy">Изучить (${data.cards.length})</button><button class="btn" id="btnAddCard2">Добавить карточку</button><button class="btn" id="btnCardSet">Сделать сет карточек</button></div>` + sectionsHtml;
   body.innerHTML = html;
-  body.querySelectorAll('.chip').forEach(chip=>chip.onclick=()=>{ CAT_TOPIC_FILTER[key]=chip.dataset.t; renderCardsGrid(body,key); });
-  body.querySelectorAll('[data-ctg-toggle]').forEach(head=>head.onclick=()=>{
-    const tId = head.dataset.ctgToggle;
+  const resumeBtn = document.getElementById('btnResumeSession');
+  if(resumeBtn) resumeBtn.onclick=()=>{
+    STUDY_SESSION = { catKey:key, queue:savedSession.queue.filter(id=>findCard(key,id)), idx:Math.min(savedSession.idx,savedValidCount-1), flipped:false, seen:savedSession.seen||0, knew:savedSession.knew||0 };
+    renderStudyModal();
+    openOverlay();
+  };
+  const discardBtn = document.getElementById('btnDiscardSession');
+  if(discardBtn) discardBtn.onclick=()=>{
+    delete STORE.studySessions[key];
+    saveStore();
+    renderCardsGrid(body,key);
+  };
+  body.querySelectorAll('[data-ctg-toggle]').forEach(chip=>chip.onclick=()=>{
+    const tId = chip.dataset.ctgToggle;
     CARDS_TOPIC_COLLAPSED[key][tId] = !CARDS_TOPIC_COLLAPSED[key][tId];
     renderCardsGrid(body,key);
   });
@@ -3543,9 +3733,9 @@ function renderCardsGrid(body,key){
   body.querySelectorAll('[data-del]').forEach(el=>el.onclick=(e)=>{ e.stopPropagation(); if(!confirm('Точно удалить карточку? Это безвозвратно.')) return; deleteCard(key, el.dataset.del); });
   body.querySelectorAll('.flashcard').forEach(card=>card.addEventListener('click',(e)=>{
     if(e.target.closest('.icon-btn')) return;
-    startStudySession(key, shown.map(c=>c.id), card.dataset.open);
+    startStudySession(key, data.cards.map(c=>c.id), card.dataset.open);
   }));
-  document.getElementById('btnStudy').onclick=()=>startStudySession(key, shown.map(c=>c.id));
+  document.getElementById('btnStudy').onclick=()=>startStudySession(key, data.cards.map(c=>c.id));
   document.getElementById('btnAddCard2').onclick=()=>openCardModal(key);
   document.getElementById('btnCardSet').onclick=()=>openCardSetModal(key);
 }
@@ -3593,15 +3783,28 @@ function renderNotebookTab(body, key){
     html += `</div>`;
   }
   body.innerHTML = html;
+  // Название спрашиваем своей модалкой, а не системным prompt(): в PWA на телефоне системный
+  // диалог может не показаться вовсе, и тетрадь тогда просто не создаётся.
   document.getElementById('btnNewNotebook').onclick=()=>{
-    const name = prompt('Название тетради:', 'Новая тетрадь');
-    if(!name) return;
-    if(!STORE.notebooks[key]) STORE.notebooks[key]=[];
-    const nb = { id:uid('nb'), name, pages:[{ id:uid('pg'), bg:'lined', paper:'cream', strokes:[] }] };
-    STORE.notebooks[key].push(nb);
-    saveStore();
-    NOTEBOOK_STATE = { catKey:key, notebookId:nb.id, tool:'pen', color:NB_COLORS[0], width:NB_TOOL_DEFAULTS.pen.width, opacity:NB_TOOL_DEFAULTS.pen.opacity, redoStacks:{}, newPageBg:'lined', newPagePaper:'cream', zoom:1 };
-    renderNotebookTab(body,key);
+    document.getElementById('modalBody').innerHTML = `
+      <h3>Новая тетрадь</h3>
+      <div class="field"><label>Название</label><input id="nbName" value="Новая тетрадь"></div>
+      <div class="modal-actions"><button class="btn" id="mCancelNb">Отмена</button><button class="btn btn-primary" id="mSaveNb">Создать</button></div>
+    `;
+    document.getElementById('mCancelNb').onclick=closeOverlay;
+    document.getElementById('mSaveNb').onclick=()=>{
+      const name = document.getElementById('nbName').value.trim();
+      if(!name) return;
+      if(!STORE.notebooks[key]) STORE.notebooks[key]=[];
+      const nb = { id:uid('nb'), name, pages:[{ id:uid('pg'), bg:'lined', paper:'cream', strokes:[] }] };
+      STORE.notebooks[key].push(nb);
+      saveStore();
+      NOTEBOOK_STATE = { catKey:key, notebookId:nb.id, tool:'pen', color:NB_COLORS[0], width:NB_TOOL_DEFAULTS.pen.width, opacity:NB_TOOL_DEFAULTS.pen.opacity, redoStacks:{}, newPageBg:'lined', newPagePaper:'cream', zoom:1 };
+      closeOverlay();
+      renderNotebookTab(body,key);
+    };
+    document.getElementById('nbName').addEventListener('keydown',(e)=>{ if(e.key==='Enter') document.getElementById('mSaveNb').click(); });
+    openOverlay();
   };
   body.querySelectorAll('[data-open-nb]').forEach(el=>el.addEventListener('click',(e)=>{
     if(e.target.closest('[data-del-nb]')) return;
@@ -3610,7 +3813,9 @@ function renderNotebookTab(body, key){
   }));
   body.querySelectorAll('[data-del-nb]').forEach(el=>el.addEventListener('click',(e)=>{
     e.stopPropagation();
-    if(!confirm('Точно удалить тетрадь целиком, со всеми страницами? Это безвозвратно.')) return;
+    if(!confirm('Удалить тетрадь целиком, со всеми страницами? Её можно будет вернуть из корзины в разделе Storage.')) return;
+    const nb = (STORE.notebooks[key]||[]).find(n=>n.id===el.dataset.delNb);
+    if(nb) trashPush('notebook', nb.name, {notebook:JSON.parse(JSON.stringify(nb))}, key, `${getCategoryDisplayName(key)} · ${nb.pages.length} стр.`);
     STORE.notebooks[key] = (STORE.notebooks[key]||[]).filter(n=>n.id!==el.dataset.delNb);
     saveStore();
     renderNotebookTab(body,key);
@@ -4152,7 +4357,9 @@ function renderStudyModal(){
     renderStudyModal();
   }
   function markDontKnow(){
-    review(card, false);
+    // «Работа над ошибками» — только для практики/заданий, не для карточек: свайп «Не знаю» в
+    // Quizlet-режиме — обычная часть spaced repetition, не должен попадать в WON.
+    review(card, false, {skipMistake:true});
     requeue();
   }
   document.getElementById('btnKnow').onclick=markKnow;
@@ -4213,6 +4420,24 @@ function renderStudyModal(){
 
 /* ---------- Теория (Feynman): главный вопрос + факты + связи ---------- */
 let THEORY_EDIT_STATE = null; // {catKey, materialId} — полноэкранный редактор (не модалка!)
+let THEORY_DIRTY = false; // в открытой лекции есть несохранённые правки
+// Единая проверка перед любым уходом из открытой лекции: напоминаем сохранить материал.
+// Возвращает true, если уходить можно.
+let THEORY_FLUSH_DRAFT = null; // ставится редактором лекции: немедленно записать черновик
+function confirmLeaveTheory(){
+  if(!THEORY_EDIT_STATE || !THEORY_DIRTY) return true;
+  const ok = confirm('В открытой лекции есть несохранённые изменения.\n\nСначала нажми «Сохранить материал» — иначе они потеряются.\n\nВсё равно уйти без сохранения?');
+  if(ok){
+    // уходим — но черновик дописываем сразу, чтобы материал можно было поднять обратно
+    if(typeof THEORY_FLUSH_DRAFT === 'function'){ try{ THEORY_FLUSH_DRAFT(); }catch(e){} }
+    THEORY_DIRTY = false;
+  }
+  return ok;
+}
+// Закрытие вкладки/приложения с несохранённой лекцией — браузер сам спросит подтверждение.
+window.addEventListener('beforeunload', (e)=>{
+  if(THEORY_EDIT_STATE && THEORY_DIRTY){ e.preventDefault(); e.returnValue = ''; return ''; }
+});
 let THEORY_COLLAPSED = {}; // materialId -> false, если явно развёрнута (по умолчанию все свёрнуты — видно только тему)
 
 // Ставит в планер задачу-напоминание на дату повторения лекции. На одну дату+категорию — одна задача
@@ -4259,9 +4484,12 @@ function renderTheory(body,key){
     <button class="btn" id="btnImportTheory">Импортировать из файла</button>
     <input type="file" id="importTheoryFile" accept="application/json" style="display:none">
   </div>
-  <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:16px;line-height:1.6">
-    Импорт ждёт JSON вида <code>{"materials":[{"title","dateStart","mainQuestions","materialText","explanation","facts","connections","application","cards":[{"fields":{${(APP_DATA[key].meta.fields||['front','back']).map(f=>`"${f}"`).join(',')}}}]}]}</code> — карточки внутри <code>cards</code> лекции автоматически попадают в её собственную тему (сет), поля карточек этой категории — именно эти ключи. Такой файл готовит Claude в чате из твоей лекции.
-  </div>`;
+  ${aiInstructionsHtml('Как импортировать сразу несколько лекций из файла', [
+    'Отправь свои конспекты (текст/фото/pdf) в чат с любым ИИ-ассистентом и попроси собрать по ним материалы и карточки платформы PRIMUS.',
+    `Поля карточек этой категории строго такие ключи: <code>${(APP_DATA[key].meta.fields||['front','back']).join(', ')}</code>.`,
+    'Попроси сохранить результат как JSON-файл вида <code>{"materials":[{"title","dateStart","mainQuestions","materialText","explanation","facts","connections","application","cards":[{"fields":{...}}]}]}</code> — карточки внутри одной лекции автоматически попадут в её собственную тему.',
+    'Нажми «Импортировать из файла» и выбери получившийся файл — материалы и карточки добавятся сразу все.'
+  ])}`;
   if(materials.length===0){
     html += `<div class="empty-state">Пока нет конспектов. Открой лекцию, запиши тему и дату, а материал и остальное — по шагам.</div>`;
   } else {
@@ -4279,12 +4507,16 @@ function renderTheory(body,key){
         <div class="theory-block"><div class="tb-label">Материал лекции</div><div class="tb-body theory-material-preview">${m.materialText||'<span style="opacity:.5">пусто</span>'}</div></div>
         ${m.notes?`<div class="theory-block"><div class="tb-label">Заметки</div><div class="tb-body">${m.notes}</div></div>`:''}
         ${m.explanation?`<div class="theory-block"><div class="tb-label">Выжимка простыми словами</div><div class="tb-body">${m.explanation}</div></div>`:''}
+        ${m.unclear?`<div class="theory-block"><div class="tb-label">Разбор непонятного (?)</div><div class="tb-body">${m.unclear}</div></div>`:''}
         ${m.facts?`<div class="theory-block"><div class="tb-label">Интересные факты — копнуть глубже</div><div class="tb-body">${m.facts}</div></div>`:''}
         ${m.connections?`<div class="theory-block"><div class="tb-label">Связь с другими темами</div><div class="tb-body">${m.connections}</div></div>`:''}
         ${m.application?`<div class="theory-block"><div class="tb-label">Как использовать</div><div class="tb-body">${m.application}</div></div>`:''}
+        ${(m.attachments&&m.attachments.length)?`<div class="theory-block"><div class="tb-label">Файлы</div><div class="te-files">${m.attachments.map(a=>`<span class="te-file-chip"><a href="${a.data}" download="${esc(a.name)}">${esc(a.name)}</a><span class="te-file-size">${Math.round((a.size||0)/1024)} КБ</span></span>`).join('')}</div></div>`:''}
         <div class="theory-actions">
           <button class="btn btn-primary" data-mkcard="${m.id}">Сделать карточку</button>
-          <button class="btn btn-good" data-review-mat="${m.id}">Повторил ✓</button>
+          ${m.nextReview
+            ? `<button class="btn btn-good" data-review-mat="${m.id}">Повторил ✓</button>`
+            : `<button class="btn btn-good" data-addsr-mat="${m.id}">Добавить в spaced repetition</button>`}
           <button class="btn" data-edittheory="${m.id}">Изменить</button>
           <button class="btn" data-deltheory="${m.id}">Удалить</button>
         </div>
@@ -4315,9 +4547,16 @@ function renderTheory(body,key){
     if(m) reviewMaterial(m, key);
     renderTheory(body,key);
   });
+  body.querySelectorAll('[data-addsr-mat]').forEach(btn=>btn.onclick=()=>{
+    const m = materials.find(x=>x.id===btn.dataset.addsrMat);
+    if(m){ scheduleLectureInitial(m, key, todayISO()); saveStore(); }
+    renderTheory(body,key);
+  });
   body.querySelectorAll('[data-edittheory]').forEach(btn=>btn.onclick=()=>{ THEORY_EDIT_STATE={catKey:key, materialId:btn.dataset.edittheory}; renderTheory(body,key); });
   body.querySelectorAll('[data-deltheory]').forEach(btn=>btn.onclick=()=>{
-    if(!confirm('Точно удалить материал лекции? Это безвозвратно.')) return;
+    if(!confirm('Удалить материал лекции? Его можно будет вернуть из корзины в разделе Storage.')) return;
+    const mat = (STORE.materials[key]||[]).find(x=>x.id===btn.dataset.deltheory);
+    if(mat) trashPush('material', mat.title, {material:JSON.parse(JSON.stringify(mat))}, key, getCategoryDisplayName(key));
     STORE.materials[key] = (STORE.materials[key]||[]).filter(x=>x.id!==btn.dataset.deltheory);
     saveStore(); renderTheory(body,key);
   });
@@ -4329,17 +4568,46 @@ function extractKeywordsFromHtml(html){
   const div = document.createElement('div');
   div.innerHTML = html;
   const found = [];
-  div.querySelectorAll('b,strong').forEach(el=>{
+  // Ключевое слово — только то, что помечено кнопкой «Ключевое слово + карточка».
+  // Жирный текст больше в ключевые слова не попадает: жирный — это просто жирный.
+  div.querySelectorAll('.kw-mark').forEach(el=>{
     const t = el.textContent.trim();
     if(t && t.length<60 && !found.includes(t)) found.push(t);
   });
   return found;
 }
+// Раскладывает пару «слово → контекст» в поля карточки конкретного предмета так, чтобы
+// слово оказалось на лицевой стороне, а контекст — в основном описании (см. renderCardFace).
+function cardFieldsFromKeyword(catKey, word, context){
+  const type = (APP_DATA[catKey] && APP_DATA[catKey].meta.type) || 'custom';
+  switch(type){
+    case 'geo':    return {country:word, capital:'', fact1:context, fact2:'', usage:''};
+    case 'latin':  return {latin:word, translation:'', meaning:context, usage:''};
+    case 'legal':  return {term:word, translation:'', definition:context, example:''};
+    case 'law':    return {term:word, enTerm:'', definition:context, example:''};
+    case 'lit':    return {author:'', title:word, context:context, legalConn:''};
+    case 'art':    return {style:'', artist:'', work:word, period:'', usage:context};
+    case 'ita':    return {phrase:word, translation:'', grammar:context, usage:''};
+    case 'lingvo':
+    case 'hist':   return {kind:'', name:word, sub:'', description:context, connection:''};
+    default:       return {front:word, back:context, note:''};
+  }
+}
 
 function renderTheoryEditor(body, key){
   const editing = THEORY_EDIT_STATE.materialId ? (STORE.materials[key]||[]).find(m=>m.id===THEORY_EDIT_STATE.materialId) : null;
   const topics = getCategoryTopics(key);
-  const draft = editing || { title:'', dateStart:todayISO(), dateEnd:'', topicId:'general', mainQuestions:'', keywords:[], materialText:'', notes:'', explanation:'', facts:'', connections:'', application:'' };
+  let draft = editing || { title:'', dateStart:todayISO(), dateEnd:'', topicId:'general', mainQuestions:'', keywords:[], materialText:'', notes:'', explanation:'', unclear:'', facts:'', connections:'', application:'', attachments:[] };
+  // Если в прошлый раз лекцию закрыли не сохранив — предлагаем поднять черновик.
+  const sd = STORE.theoryDraft;
+  if(sd && sd.catKey===key && (sd.materialId||null)===(THEORY_EDIT_STATE.materialId||null) && (sd.title || sd.materialText)){
+    const when = sd.savedAt ? new Date(sd.savedAt).toLocaleString('ru-RU') : '';
+    if(confirm(`Есть несохранённый черновик этой лекции (${when}).\n\nВосстановить его?`)){
+      draft = Object.assign({}, draft, sd);
+    } else {
+      STORE.theoryDraft = null; saveStore();
+    }
+  }
 
   let topicSelect = `<select id="theoryTopicSelect">`;
   topics.forEach(t=>{ topicSelect += `<option value="${t.id}" ${draft.topicId===t.id?'selected':''}>${esc(t.name)}</option>`; });
@@ -4359,7 +4627,7 @@ function renderTheoryEditor(body, key){
       <div class="te-section">
         <div class="te-section-title">2 · Главные вопросы и ключевые слова</div>
         <div class="field"><label>Главные вопросы (можно заполнить после лекции)</label><textarea id="theQuestions" placeholder="На какие вопросы отвечает лекция? Можно списком.">${stripHtml(draft.mainQuestions||'')}</textarea></div>
-        <div class="field"><label>Ключевые слова — берутся из <b>жирного</b> текста материала ниже, можно править</label>
+        <div class="field"><label>Ключевые слова — то, что помечено кнопкой «Ключевое слово + карточка» в тексте лекции. По каждому заведётся карточка при сохранении.</label>
           <div class="kw-editor" id="kwEditor"></div>
           <input id="kwAddInput" placeholder="Добавить своё ключевое слово и нажать Enter">
         </div>
@@ -4367,13 +4635,21 @@ function renderTheoryEditor(body, key){
 
       <div class="te-section">
         <div class="te-section-title">3 · Материал лекции</div>
-        ${richFieldFull('theMaterial','Текст лекции — выделяй жирным или маркером то, что должно стать ключевыми словами и карточками', draft.materialText, true)}
-        ${richFieldFull('theNotes','Заметки и идеи по ходу лекции', draft.notes, false)}
+        ${richFieldFull('theMaterial','Текст лекции — выделяй кнопкой «Ключевое слово + карточка» то, что должно уйти в ключевые слова и в карточки. Знак (?) рядом с непонятным местом — ИИ разберёт его отдельно и подробно.', draft.materialText, true)}
+        ${richFieldFull('theNotes','Заметки, идеи и вопросы по ходу лекции', draft.notes, false)}
+        <div class="field">
+          <label>Файлы к лекции — презентация, скан, фото доски, что угодно</label>
+          <div class="te-files" id="teFiles"></div>
+          <button class="btn" id="btnAttachFile" type="button">Прикрепить файл</button>
+          <input type="file" id="theFileInput" style="display:none">
+          <div class="te-file-hint">До 2 МБ на файл — они лежат прямо в этой лекции на твоём устройстве.</div>
+        </div>
       </div>
 
       <div class="te-section te-section-later">
         <div class="te-section-title">4 · Осмысление — заполняется вручную или через ИИ после лекции</div>
         ${richFieldFull('theExplain','Выжимка простыми словами', draft.explanation, false)}
+        ${richFieldFull('theUnclear','Разбор непонятного — всё, что помечено в тексте знаком (?)', draft.unclear, false)}
         ${richFieldFull('theFacts','Интересные факты — копнуть глубже', draft.facts, false)}
         ${richFieldFull('theConn','Связь с другими темами', draft.connections, false)}
         ${richFieldFull('theApp','Как и где использовать', draft.application, false)}
@@ -4382,20 +4658,123 @@ function renderTheoryEditor(body, key){
       <div class="te-ai-row">
         <button class="btn" id="btnCopyForAi">Скопировать для ИИ</button>
         <button class="btn" id="btnImportAi">Вставить обработку от ИИ</button>
-        <span class="te-ai-hint">Скопируй, вставь в чат с Claude, попроси обработать по шаблону PRIMUS. — получишь готовый JSON для вставки обратно</span>
       </div>
+      ${aiInstructionsHtml('Как заполнить осмысление и карточки через ИИ', [
+        'Нажми «Скопировать для ИИ» — скопируется текст лекции и готовый запрос по шаблону PRIMUS.',
+        'Вставь скопированное в чат с любым ИИ-ассистентом (Claude, ChatGPT, Gemini и т.д.).',
+        'Дождись ответа — это будет JSON, скопируй его целиком.',
+        'Нажми «Вставить обработку от ИИ», вставь ответ и нажми «Применить» — поля осмысления и карточки заполнятся сами.',
+        'Проверь результат и нажми «Сохранить материал» внизу.'
+      ])}
 
+      <div class="te-save-note" id="teSaveNote">
+        <b>Не забудь сохранить материал.</b> Лекция записывается на устройство только по кнопке
+        «Сохранить материал» — черновик подстраховывает, но полагаться на него не стоит.
+        Ответственность за сохранность своих материалов и файлов лежит на пользователе:
+        делай экспорт прогресса в разделе Storage.
+      </div>
       <div class="te-footer">
         <button class="btn" id="teCancel">Отмена</button>
+        <span class="te-dirty" id="teDirty"></span>
         <button class="btn btn-primary" id="teSave">Сохранить материал</button>
       </div>
     </div>
   `;
   wireRichToolbars();
 
+  // ---- Черновик и защита от потери материала ----
+  // Всё, что набрано, каждые несколько секунд уходит в черновик (STORE.theoryDraft), а уход со
+  // страницы при несохранённых правках перехватывается. Сам материал всё равно записывается
+  // только кнопкой «Сохранить материал» — об этом прямо написано над кнопкой.
+  let dirty = false;
+  function markDirty(){
+    if(!dirty){
+      dirty = true;
+      const d = document.getElementById('teDirty');
+      if(d) d.textContent = 'Есть несохранённые изменения';
+    }
+    THEORY_DIRTY = true;
+    scheduleDraftSave();
+  }
+  function currentVals(){
+    return {
+      title: document.getElementById('theTitle').value.trim() || 'Без названия',
+      topicId: document.getElementById('theoryTopicSelect').value,
+      dateStart: document.getElementById('theDateStart').value || todayISO(),
+      dateEnd: document.getElementById('theDateEnd').value || '',
+      mainQuestions: esc(document.getElementById('theQuestions').value.trim()).replace(/\n/g,'<br>'),
+      keywords: keywords,
+      materialText: document.getElementById('theMaterial').innerHTML.trim(),
+      notes: document.getElementById('theNotes').innerHTML.trim(),
+      explanation: document.getElementById('theExplain').innerHTML.trim(),
+      unclear: document.getElementById('theUnclear').innerHTML.trim(),
+      facts: document.getElementById('theFacts').innerHTML.trim(),
+      connections: document.getElementById('theConn').innerHTML.trim(),
+      application: document.getElementById('theApp').innerHTML.trim(),
+      attachments: attachments
+    };
+  }
+  let draftTimer = null;
+  function flushDraft(){
+    try{
+      STORE.theoryDraft = Object.assign({catKey:key, materialId:THEORY_EDIT_STATE?THEORY_EDIT_STATE.materialId:null, savedAt:new Date().toISOString()}, currentVals());
+      saveStore();
+    }catch(e){}
+  }
+  THEORY_FLUSH_DRAFT = flushDraft;
+  function scheduleDraftSave(){
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(flushDraft, 1500);
+  }
+  function clearDraft(){
+    clearTimeout(draftTimer);
+    THEORY_FLUSH_DRAFT = null;
+    dirty = false; THEORY_DIRTY = false;
+    if(STORE.theoryDraft){ STORE.theoryDraft = null; saveStore(); }
+  }
+  ['theTitle','theQuestions','theDateStart','theDateEnd','theoryTopicSelect'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', markDirty);
+  });
+  ['theMaterial','theNotes','theExplain','theFacts','theConn','theApp'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', markDirty);
+  });
+
+  // ---- Файлы, прикреплённые к лекции ----
+  let attachments = (draft.attachments||[]).slice();
+  function drawAttachments(){
+    const wrap = document.getElementById('teFiles');
+    if(!wrap) return;
+    wrap.innerHTML = attachments.length
+      ? attachments.map((a,i)=>`<span class="te-file-chip"><a href="${a.data}" download="${esc(a.name)}">${esc(a.name)}</a><span class="te-file-size">${Math.round((a.size||0)/1024)} КБ</span><button type="button" data-delfile="${i}" title="Убрать">✕</button></span>`).join('')
+      : '<span style="font-size:11.5px;color:var(--text-faint)">Файлов пока нет</span>';
+    wrap.querySelectorAll('[data-delfile]').forEach(b=>b.onclick=()=>{
+      if(!confirm('Убрать этот файл из лекции?')) return;
+      attachments.splice(+b.dataset.delfile,1); drawAttachments(); markDirty();
+    });
+  }
+  drawAttachments();
+  document.getElementById('btnAttachFile').onclick=()=>document.getElementById('theFileInput').click();
+  document.getElementById('theFileInput').onchange=(e)=>{
+    const file = e.target.files[0];
+    e.target.value = '';
+    if(!file) return;
+    if(file.size > 2*1024*1024){
+      openInfoModal('Файл слишком большой', 'Файлы хранятся прямо на устройстве вместе с лекцией, поэтому лимит — 2 МБ. Сожми файл или приложи ссылку в заметках.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      attachments.push({name:file.name, type:file.type, size:file.size, data:reader.result});
+      drawAttachments(); markDirty();
+    };
+    reader.readAsDataURL(file);
+  };
+
   let keywords = (draft.keywords||[]).slice();
   function drawKeywords(){
-    document.getElementById('kwEditor').innerHTML = keywords.map((k,i)=>`<span class="kw-chip editable">${esc(k)}<button data-kwdel="${i}">✕</button></span>`).join('') || '<span style="font-size:11.5px;color:var(--text-faint)">Пока нет — начни выделять текст жирным ниже</span>';
+    document.getElementById('kwEditor').innerHTML = keywords.map((k,i)=>`<span class="kw-chip editable">${esc(k)}<button data-kwdel="${i}">✕</button></span>`).join('') || '<span style="font-size:11.5px;color:var(--text-faint)">Пока нет — выдели слово в тексте лекции и нажми «Ключевое слово + карточка»</span>';
     document.querySelectorAll('[data-kwdel]').forEach(btn=>btn.onclick=()=>{ keywords.splice(+btn.dataset.kwdel,1); drawKeywords(); });
   }
   drawKeywords();
@@ -4406,9 +4785,18 @@ function renderTheoryEditor(body, key){
       if(v && !keywords.includes(v)) keywords.push(v);
       e.target.value='';
       drawKeywords();
+      markDirty();
     }
   });
-  // автообновление ключевых слов при вводе жирного текста в материале
+  // Ключевые слова теперь берутся не из жирного текста, а только из того, что помечено
+  // кнопкой «Ключевое слово + карточка». Жирный — просто жирный.
+  let pendingKwCards = []; // [{word, context}] — по ним заведутся карточки при сохранении
+  onKeywordMarked = (word, context)=>{
+    if(!keywords.includes(word)) keywords.push(word);
+    if(!pendingKwCards.some(p=>p.word===word)) pendingKwCards.push({word, context});
+    drawKeywords();
+    markDirty();
+  };
   document.getElementById('theMaterial').addEventListener('blur',()=>{
     const found = extractKeywordsFromHtml(document.getElementById('theMaterial').innerHTML);
     found.forEach(k=>{ if(!keywords.includes(k)) keywords.push(k); });
@@ -4438,35 +4826,49 @@ function renderTheoryEditor(body, key){
   });
 
   document.getElementById('teCancel').onclick=()=>{
-    if(!confirm('Закрыть без сохранения? Несохранённые изменения потеряются.')) return;
+    if(dirty && !confirm('Закрыть без сохранения? Несохранённые изменения потеряются.')) return;
+    clearDraft();
     THEORY_EDIT_STATE=null; renderTheory(body,key);
   };
   document.getElementById('teSave').onclick=()=>{
-    const vals = {
-      title: document.getElementById('theTitle').value.trim() || 'Без названия',
-      topicId: document.getElementById('theoryTopicSelect').value,
-      dateStart: document.getElementById('theDateStart').value || todayISO(),
-      dateEnd: document.getElementById('theDateEnd').value || '',
-      mainQuestions: esc(document.getElementById('theQuestions').value.trim()).replace(/\n/g,'<br>'),
-      keywords: keywords,
-      materialText: document.getElementById('theMaterial').innerHTML.trim(),
-      notes: document.getElementById('theNotes').innerHTML.trim(),
-      explanation: document.getElementById('theExplain').innerHTML.trim(),
-      facts: document.getElementById('theFacts').innerHTML.trim(),
-      connections: document.getElementById('theConn').innerHTML.trim(),
-      application: document.getElementById('theApp').innerHTML.trim(),
-      date: draft.dateStart || todayISO()
-    };
+    const vals = Object.assign(currentVals(), { date: draft.dateStart || todayISO() });
     if(!STORE.materials[key]) STORE.materials[key]=[];
+    let createdMaterial = null;
     if(editing){ Object.assign(editing, vals); }
     else {
-      const m = Object.assign({id:uid('mat')}, vals);
-      scheduleLectureInitial(m, key, vals.dateStart); // сразу отправляем лекцию в spaced repetition и в план
-      STORE.materials[key].push(m);
+      createdMaterial = Object.assign({id:uid('mat')}, vals);
+      STORE.materials[key].push(createdMaterial);
     }
+    // Слова, помеченные кнопкой «Ключевое слово + карточка», заводятся карточками
+    // в теме этой лекции — одна лекция = один сет карточек.
+    let madeCards = 0;
+    if(pendingKwCards.length){
+      const isCustom = !CATEGORY_META.find(m=>m.key===key);
+      const existing = (APP_DATA[key] ? APP_DATA[key].cards : []);
+      const type = (APP_DATA[key] && APP_DATA[key].meta.type) || 'custom';
+      pendingKwCards.forEach(({word, context})=>{
+        const dup = existing.some(c=>{
+          const face = renderCardFace(type, c);
+          return face && stripHtml(String(face.top||'')).trim().toLowerCase() === word.toLowerCase();
+        });
+        if(dup) return;
+        const newCard = Object.assign(
+          {id:uid(key), catKey:key, level:0, next_review:todayISO(), topicId: vals.topicId},
+          cardFieldsFromKeyword(key, word, context)
+        );
+        if(isCustom){ if(!STORE.customCards[key]) STORE.customCards[key]=[]; STORE.customCards[key].push(newCard); }
+        else { if(!STORE.extraCards[key]) STORE.extraCards[key]=[]; STORE.extraCards[key].push(newCard); }
+        madeCards++;
+      });
+      pendingKwCards = [];
+    }
+    clearDraft();
     saveStore();
+    buildAllData();
     THEORY_EDIT_STATE=null;
     renderTheory(body,key);
+    if(createdMaterial) openLectureSavedModal(createdMaterial, key, madeCards, body);
+    else if(madeCards) openInfoModal('Сохранено', `Материал сохранён. По ключевым словам заведено карточек: <b>${madeCards}</b> — они в теме «${esc(topicName(key, vals.topicId))}».`);
   };
 
   document.getElementById('btnCopyForAi').onclick=()=>{
@@ -4480,7 +4882,7 @@ function renderTheoryEditor(body, key){
       notes: document.getElementById('theNotes').innerHTML
     });
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(()=>openInfoModal('Скопировано','Текст лекции скопирован — вставь его в чат с Claude.'))
+      navigator.clipboard.writeText(text).then(()=>openInfoModal('Скопировано','Текст лекции скопирован — вставь его в чат с любым ИИ.'))
         .catch(()=>showCopyFallback(text));
     } else showCopyFallback(text);
   };
@@ -4492,6 +4894,37 @@ function showCopyFallback(text){
   document.getElementById('mCloseCopy').onclick=closeOverlay;
   openOverlay();
 }
+// После создания новой лекции — сразу предлагаем отправить её на повторение.
+// Если нажать «Позже», лекция останется без повторения, но в списке у неё будет
+// своя кнопка «Добавить в spaced repetition», так что потеряться она не может.
+function openLectureSavedModal(m, key, madeCards, body){
+  const intervals = SR_INTERVALS.join(', ');
+  document.getElementById('modalBody').innerHTML = `
+    <h3>Материал сохранён</h3>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:10px">
+      Лекция «<b>${esc(m.title)}</b>» записана.${madeCards?` По ключевым словам заведено карточек: <b>${madeCards}</b>.`:''}
+    </p>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:14px">
+      Отправь её на повторение — платформа сама напомнит вернуться к ней через ${intervals} дней
+      и будет показывать её в разделе Spaced Repetition.
+    </p>
+    <div class="modal-actions">
+      <button class="btn" id="mLecLater">Позже</button>
+      <button class="btn btn-primary" id="mLecToSr">Отправить на повторение</button>
+    </div>
+  `;
+  document.getElementById('mLecLater').onclick=closeOverlay;
+  document.getElementById('mLecToSr').onclick=()=>{
+    scheduleLectureInitial(m, key, todayISO());
+    saveStore();
+    closeOverlay();
+    if(body) renderTheory(body, key);
+    renderNav();
+    openInfoModal('Отправлено на повторение', `Первое повторение — <b>${esc(fmtDate(m.nextReview))}</b>. Лекция появится в разделе Spaced Repetition на вкладке «Лекции».`);
+  };
+  openOverlay();
+}
+
 function buildTheoryAiExport(key, d){
   const catName = APP_DATA[key] ? APP_DATA[key].meta.name : key;
   const dateStr = d.dateEnd && d.dateEnd!==d.dateStart ? `${d.dateStart} — ${d.dateEnd}` : d.dateStart;
@@ -4512,18 +4945,63 @@ ${stripHtml(d.materialText)}
 ${stripHtml(d.notes)}
 
 ---
-Обработай это по шаблону PRIMUS. и верни JSON. Требования к содержимому:
-- "explanation"/"facts"/"connections"/"application" — HTML, не один сплошной абзац: используй <h3> для подзаголовков, <b> для ключевых терминов, и <ol><li>...</li></ol>/<ul><li>...</li></ul> для любого перечисления (этапы, признаки, примеры) — каждый пункт на своей строке, по порядку.
-- "application" ("как использовать") — самый подробный и разжёванный раздел: не просто одна фраза, а развёрнутый ответ, который явно отвечает на каждый из главных вопросов и явно проговаривает связь с другими темами/предметами — примеры, где именно и как это применить (эссе, устный ответ, кейс).
-- "cards" — карточки по этой лекции. Не указывай "topic" у карточек — они и так все попадут в один сет по названию лекции. Поля карточек этого предмета строго такие ключи (без замены и пропусков): ${fieldKeys.map(f=>`"${f}"`).join(', ')}. Содержимое карточек делай чуть подробнее (не голый факт в одно слово, а короткое пояснение), и там, где уместно — рядом с русским термином добавляй английскую аббревиатуру/название (ООН — UN/UNSC, МУС — ICC, ЕС — EU и т.п.), это важно для юридического английского.
+Ты помогаешь студенту юридического направления, который готовится к олимпиадам и поступлению.
+Обработай лекцию выше по шаблону PRIMUS. и верни ТОЛЬКО JSON, без пояснений вокруг него.
+
+ОБЩИЕ ТРЕБОВАНИЯ К ФОРМАТУ
+- Поля "explanation"/"facts"/"connections"/"application"/"unclear" — это HTML, а не сплошной абзац:
+  <h3> для разделов, <h4> для подзаголовков, <b> для терминов, <ul><li>/<ol><li> для любых перечислений
+  (каждый пункт на своей строке). Никакого markdown — только HTML-теги.
+
+ЗНАК ВОПРОСА (?) — ОБЯЗАТЕЛЬНО ПРОВЕРЬ
+- Если где-то в тексте лекции или в заметках стоит «(?)» — это места, которые студент НЕ ПОНЯЛ.
+- Для каждого такого места дай в поле "unclear" отдельный разбор: <h4>цитата непонятного места</h4>,
+  затем объяснение с нуля, максимально понятным языком, от простого к сложному, с бытовой аналогией,
+  и в конце — одной строкой связь именно с темой этой лекции («зачем это здесь и как связано с ${d.title||'темой'}»).
+- Если знаков «(?)» в тексте нет — верни "unclear": "".
+
+"facts" — «Интересные факты, копнуть глубже». Это не список банальностей, а рабочая навигация:
+  <h3>Неочевидное</h3> — 3-5 фактов именно по этой теме, которых нет в самом тексте лекции;
+  <h3>Что почитать</h3> — конкретика с названиями: автор + работа + что именно там смотреть
+  (например: «Гуго Гроций, „О праве войны и мира“ (1625) — книга I, о справедливой войне»);
+  документы/статьи называй точно (Устав ООН, ст. 2(4); Венская конвенция 1969, ст. 62 и т.п.);
+  <h3>Куда копать дальше</h3> — 2-4 смежные темы с одной строкой, ЧТО именно в них искать и ЗАЧЕМ
+  это нужно по отношению к текущей теме.
+  Не пиши расплывчато («почитайте о международном праве») — только конкретные названия и адреса.
+
+"connections" — «Связь с другими темами». Не просто перечисление предметов, а логические цепочки:
+  каждый пункт строится как «А → Б → вывод»: от чего это выросло, во что превратилось дальше,
+  и что из этого следует. Обязательно свяжи с другими предметами платформы (право, история,
+  литература, искусство, юр. английский) и покажи, как одно объясняет другое, а не просто соседствует.
+
+"application" — «Как использовать». Самый разжёванный раздел: развёрнуто ответь на каждый главный
+  вопрос лекции, покажи, где именно эта тема даёт преимущество (эссе, устный ответ, кейс, олимпиадная
+  задача), и дай 1-2 готовые формулировки-заготовки, которые можно вставить в ответ.
+
+"cards" — карточки по этой лекции. Требования жёсткие, потому что плохие карточки бесполезны:
+  - 8-15 карточек, каждая проверяет ОДНУ мысль, которую действительно нужно помнить;
+  - берём только существенное: термины, даты-поворотные точки, принципы, различия между
+    похожими понятиями. Никаких случайных фраз, вырванных из текста, и никакой воды;
+  - лицевая сторона — короткий чёткий вопрос или термин; оборотная — точный ответ на 1-3 предложения,
+    который сам по себе понятен, без обращения к лекции;
+  - там, где уместно, рядом с русским термином давай английский эквивалент/аббревиатуру
+    (ООН — UN/UNSC, МУС — ICC, ЕС — EU) — это нужно для юридического английского;
+  - не указывай "topic" у карточек: они и так все попадут в один сет по названию лекции;
+  - поля карточек этого предмета строго такие ключи, без замены и пропусков:
+    ${fieldKeys.map(f=>`"${f}"`).join(', ')}.
 
 Верни JSON вида:
-{"mainQuestions":"...", "keywords":["...","..."], "explanation":"...", "facts":"...", "connections":"...", "application":"...", "cards":[{"fields":{${fieldKeys.map(f=>`"${f}":"..."`).join(', ')}}}]}`;
+{"mainQuestions":"...", "keywords":["...","..."], "explanation":"...", "facts":"...", "connections":"...", "application":"...", "unclear":"...", "cards":[{"fields":{${fieldKeys.map(f=>`"${f}":"..."`).join(', ')}}}]}`;
 }
 function openTheoryAiImportModal(key, body){
   document.getElementById('modalBody').innerHTML = `
     <h3>Вставить обработку от ИИ</h3>
-    <div class="field"><textarea id="aiJson" style="min-height:200px" placeholder="Вставь сюда JSON, который тебе вернул Claude"></textarea></div>
+    ${aiInstructionsHtml('Как это работает', [
+      'Сначала нажми «Скопировать для ИИ» на странице лекции и вставь в чат с любым ИИ-ассистентом.',
+      'Скопируй ответ ИИ целиком — это должен быть JSON.',
+      'Вставь его в поле ниже и нажми «Применить».'
+    ])}
+    <div class="field"><textarea id="aiJson" style="min-height:200px" placeholder="Вставь сюда JSON, который вернул ИИ"></textarea></div>
     <div class="modal-actions"><button class="btn" id="mCancelAi">Отмена</button><button class="btn btn-primary" id="mSaveAi">Применить</button></div>
   `;
   document.getElementById('mCancelAi').onclick=closeOverlay;
@@ -4534,6 +5012,7 @@ function openTheoryAiImportModal(key, body){
     if(parsed.mainQuestions) document.getElementById('theQuestions').value = stripHtml(parsed.mainQuestions);
     if(parsed.materialText) document.getElementById('theMaterial').innerHTML = parsed.materialText;
     if(parsed.explanation) document.getElementById('theExplain').innerHTML = parsed.explanation;
+    if(parsed.unclear) document.getElementById('theUnclear').innerHTML = parsed.unclear;
     if(parsed.facts) document.getElementById('theFacts').innerHTML = parsed.facts;
     if(parsed.connections) document.getElementById('theConn').innerHTML = parsed.connections;
     if(parsed.application) document.getElementById('theApp').innerHTML = parsed.application;
@@ -4579,23 +5058,53 @@ function openTheoryAiImportModal(key, body){
 }
 
 /* ---------- richField с поддержкой маркера (highlighter) и большого размера для материала ---------- */
-function richFieldFull(id, label, html, withHighlight){
-  const highlightBtns = withHighlight ? `
-      <button type="button" class="rt-btn hl" data-cmd="hiliteColor" data-val="#F4E08A" style="background:#F4E08A" title="Жёлтый маркер"></button>
-      <button type="button" class="rt-btn hl" data-cmd="hiliteColor" data-val="#B7D8F0" style="background:#B7D8F0" title="Голубой маркер"></button>
-      <button type="button" class="rt-btn hl" data-cmd="hiliteColor" data-val="#F2B8C6" style="background:#F2B8C6" title="Розовый маркер"></button>
-      <button type="button" class="rt-btn" data-cmd="hiliteColor" data-val="transparent" title="Убрать маркер">✕</button>
-  ` : '';
+// Мягкие маркеры в палитре платформы — полупрозрачные, чтобы текст всегда читался.
+const RT_HIGHLIGHTS = [
+  {val:'rgba(244,224,138,.45)', title:'Жёлтый маркер',      swatch:'rgba(244,224,138,.55)'},
+  {val:'rgba(94,36,48,.20)',    title:'Винный маркер',      swatch:'rgba(94,36,48,.35)'},
+  {val:'rgba(140,128,88,.24)',  title:'Хаки маркер',        swatch:'rgba(140,128,88,.40)'},
+  {val:'rgba(42,58,84,.20)',    title:'Тёмно-синий маркер', swatch:'rgba(42,58,84,.35)'}
+];
+function richFieldFull(id, label, html, isMain){
+  const hlBtns = RT_HIGHLIGHTS.map(h=>
+    `<button type="button" class="rt-btn hl" data-cmd="hiliteColor" data-val="${h.val}" style="background:${h.swatch}" title="${h.title}"></button>`
+  ).join('');
+  const kwBtn = isMain
+    ? `<button type="button" class="rt-btn rt-btn-wide rt-kw" data-cmd="kwcard" title="Сделать ключевым словом и карточкой">Ключевое слово + карточка</button>`
+    : '';
   return `<div class="field">
     <label>${esc(label)}</label>
     <div class="rt-toolbar" data-for="${id}">
       <button type="button" class="rt-btn b" data-cmd="bold" title="Жирный">B</button>
       <button type="button" class="rt-btn i" data-cmd="italic" title="Курсив">I</button>
-      <button type="button" class="rt-btn s" data-cmd="strikeThrough" title="Зачёркнутый">S</button>
       <button type="button" class="rt-btn u" data-cmd="underline" title="Подчёркнутый">U</button>
-      ${highlightBtns}
+      <button type="button" class="rt-btn s" data-cmd="strikeThrough" title="Зачёркнутый">S</button>
+      <span class="rt-sep"></span>
+      <button type="button" class="rt-btn rt-h1" data-cmd="heading" data-val="h3" title="Заголовок">H1</button>
+      <button type="button" class="rt-btn rt-h2" data-cmd="heading" data-val="h4" title="Подзаголовок">H2</button>
+      <button type="button" class="rt-btn" data-cmd="heading" data-val="p" title="Обычный текст">¶</button>
+      <span class="rt-sep"></span>
+      <button type="button" class="rt-btn" data-cmd="insertUnorderedList" title="Список точками">•</button>
+      <button type="button" class="rt-btn" data-cmd="insertOrderedList" title="Нумерованный список">1.</button>
+      <button type="button" class="rt-btn" data-cmd="dashlist" title="Список чёрточками">—</button>
+      <span class="rt-sep"></span>
+      <button type="button" class="rt-btn" data-cmd="divider" title="Разделительная линия">⎯</button>
+      <button type="button" class="rt-btn" data-cmd="table" title="Вставить таблицу">▦</button>
+      <span class="rt-sep"></span>
+      ${hlBtns}
+      <button type="button" class="rt-btn" data-cmd="hiliteColor" data-val="transparent" title="Убрать маркер">✕</button>
+      ${kwBtn}
     </div>
-    <div class="rt-editable ${withHighlight?'te-material-box':'te-notes-box'}" contenteditable="true" id="${id}">${html||''}</div>
+    <div class="tbl-tools" data-tools-for="${id}" hidden>
+      <span class="tbl-tools-label">Таблица:</span>
+      <button type="button" class="btn" data-tbl="addRowBelow">+ строка</button>
+      <button type="button" class="btn" data-tbl="delRow">− строка</button>
+      <button type="button" class="btn" data-tbl="addColRight">+ столбец</button>
+      <button type="button" class="btn" data-tbl="delCol">− столбец</button>
+      <button type="button" class="btn" data-tbl="toggleHeader">Шапка вкл/выкл</button>
+      <button type="button" class="btn" data-tbl="delTable">Удалить таблицу</button>
+    </div>
+    <div class="rt-editable ${isMain?'te-material-box':'te-notes-box'}" contenteditable="true" id="${id}">${html||''}</div>
   </div>`;
 }
 
@@ -4657,11 +5166,12 @@ function renderPractice(body,key){
 function openAddTasksModal(key, body){
   document.getElementById('modalBody').innerHTML = `
     <h3>Добавить задания по теме</h3>
-    <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:12px;line-height:1.6">
-      Вставь сюда практику, оформленную Claude в чате из твоего материала, в формате JSON-массива:<br>
-      <code>[{"topic":"Название темы","mode":"task","prompt":"...","options":["...","...","...","..."],"answer":"...","explanation":"..."}]</code><br>
-      Режимы: task, case, fill, open (нужны prompt/answer/explanation), match (вместо этого — "pairs":[{"left":"...","right":"..."}]).
-    </div>
+    ${aiInstructionsHtml('Как это работает', [
+      'Отправь свой материал по теме в чат с любым ИИ-ассистентом и попроси собрать по нему практику для PRIMUS.',
+      `Режимы заданий: <code>task</code>, <code>case</code>, <code>fill</code>, <code>open</code> (нужны <code>prompt</code>/<code>answer</code>/<code>explanation</code>), <code>match</code> (вместо этого — <code>"pairs":[{"left":"...","right":"..."}]</code>).`,
+      'Попроси вернуть JSON-массив вида <code>[{"topic":"Название темы","mode":"task","prompt":"...","options":["...","...","...","..."],"answer":"...","explanation":"..."}]</code>.',
+      'Вставь готовый JSON в поле ниже и нажми «Добавить».'
+    ])}
     <div class="field"><textarea id="tasksJson" style="min-height:180px" placeholder="Вставь готовый JSON сюда"></textarea></div>
     <div class="modal-actions"><button class="btn" id="mCancelTasks">Отмена</button><button class="btn btn-primary" id="mSaveTasks">Добавить</button></div>
   `;
@@ -4822,9 +5332,12 @@ function renderFinalTest(body, key){
   const tests = STORE.finalTests[key];
   const today = todayISO();
   let html = `<div class="btn-row" style="margin-bottom:10px"><button class="btn btn-primary" id="btnAddFinalTest">Добавить тест по теме</button></div>
-  <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:16px;line-height:1.6">
-    Финальное закрепление темы, с дедлайном. Вставляешь по теме задания, которые сделает ИИ по материалу лекции: проверка самого главного, полный тест, кейсы, ответы на вопросы, интересные задания.
-  </div>`;
+  ${aiInstructionsHtml('Финальное закрепление темы — с дедлайном', [
+    'Выбери тему и, если нужно, поставь дедлайн — когда должна быть готова проверка.',
+    'Нажми «Скопировать запрос для ИИ» и вставь в чат с любым ИИ-ассистентом вместе с материалом лекции.',
+    'Скопируй ответ ИИ (JSON) и вставь его при создании/редактировании теста.',
+    'Внутри — 5 разделов: проверка самого главного, полный тест, кейсы, ответы на вопросы, интересные задания.'
+  ])}`;
   if(tests.length===0){
     html += `<div class="empty-state">Пока нет тестов. Сначала пройди тему в Теории/Карточках/Практике, потом закрепи здесь финальной проверкой.</div>`;
   } else {
@@ -4858,7 +5371,9 @@ function renderFinalTest(body, key){
   });
   body.querySelectorAll('[data-ft-edit]').forEach(btn=>btn.onclick=()=>openFinalTestModal(key, tests.find(x=>x.id===btn.dataset.ftEdit), body));
   body.querySelectorAll('[data-ft-del]').forEach(btn=>btn.onclick=()=>{
-    if(!confirm('Точно удалить этот тест? Это безвозвратно.')) return;
+    if(!confirm('Удалить этот тест? Его можно будет вернуть из корзины в разделе Storage.')) return;
+    const ft = tests.find(x=>x.id===btn.dataset.ftDel);
+    if(ft) trashPush('finaltest', ft.title, {test:JSON.parse(JSON.stringify(ft))}, key, getCategoryDisplayName(key));
     STORE.finalTests[key] = tests.filter(x=>x.id!==btn.dataset.ftDel);
     saveStore(); renderFinalTest(body,key);
   });
@@ -4900,7 +5415,7 @@ function openFinalTestModal(key, editing, listBody){
     const tId = document.getElementById('ftTopicSelect').value;
     const text = buildFinalTestAiExport(key, topicName(key,tId));
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(()=>openInfoModal('Скопировано','Запрос скопирован — вставь его в чат с Claude вместе с материалом лекции.')).catch(()=>showCopyFallback(text));
+      navigator.clipboard.writeText(text).then(()=>openInfoModal('Скопировано','Запрос скопирован — вставь его в чат с любым ИИ вместе с материалом лекции.')).catch(()=>showCopyFallback(text));
     } else showCopyFallback(text);
   };
   document.getElementById('mCancelFt').onclick=closeOverlay;
@@ -4992,13 +5507,28 @@ function finishFinalTestSession(listBody){
 /* ==========================================================================
    12. ПОВТОРЕНИЕ — понятная разбивка по темам
    ========================================================================== */
+// Разграничение: карточки и лекции — разные ритмы повторения, разные действия, поэтому отдельные вкладки,
+// а не общий список вперемешку.
+let SR_TAB = 'cards';
 function renderReview(main){
+  main.innerHTML = `<div class="topbar"><div><h2>Spaced Repetition</h2><div class="desc">Карточки и лекции, срок повторения которых наступил</div></div></div>
+    <div class="mode-tabs" style="margin-bottom:14px">
+      <button class="mode-tab ${SR_TAB==='cards'?'active':''}" id="srTabCards">Карточки</button>
+      <button class="mode-tab ${SR_TAB==='lectures'?'active':''}" id="srTabLectures">Лекции</button>
+    </div>
+    <div id="reviewBody"></div>`;
+  document.getElementById('srTabCards').onclick=()=>{ SR_TAB='cards'; renderReview(main); };
+  document.getElementById('srTabLectures').onclick=()=>{ SR_TAB='lectures'; renderReview(main); };
+  if(SR_TAB==='lectures'){ renderReviewLectures(main); return; }
+  renderReviewCards(main);
+}
+function renderReviewCards(main){
   const due = reviewDueCards();
-  main.innerHTML = `<div class="topbar"><div><h2>Spaced Repetition</h2><div class="desc">Карточки, срок повторения которых наступил</div></div>
-    <button class="btn btn-primary" id="btnAddToReview">Добавить карточку на повторение</button></div><div id="reviewBody"></div>`;
-  document.getElementById('btnAddToReview').onclick=()=>openAddToReviewModal(main);
   const rb = document.getElementById("reviewBody");
-  if(due.length===0){ rb.innerHTML = `<div class="empty-state">Все карточки повторены. Загляни завтра!</div>`; return; }
+  rb.innerHTML = `<div class="btn-row" style="margin-bottom:14px"><button class="btn btn-primary" id="btnAddToReview">Добавить карточку на повторение</button></div><div id="reviewBody2"></div>`;
+  document.getElementById('btnAddToReview').onclick=()=>openAddToReviewModal(main);
+  const rb2 = document.getElementById("reviewBody2");
+  if(due.length===0){ rb2.innerHTML = `<div class="empty-state">Все карточки повторены. Загляни завтра!</div>`; return; }
 
   // группировка по категории+теме
   const groups = {};
@@ -5020,17 +5550,48 @@ function renderReview(main){
     </div>`;
   });
   html += `</div><button class="btn btn-primary" id="btnStartReview" style="margin-top:16px">Начать повторение</button><div id="reviewSession"></div>`;
-  rb.innerHTML = html;
+  rb2.innerHTML = html;
 
   let activeFilter = null;
-  rb.querySelectorAll('.review-group').forEach(g=>g.onclick=()=>{
-    rb.querySelectorAll('.review-group').forEach(x=>x.classList.remove('active'));
+  rb2.querySelectorAll('.review-group').forEach(g=>g.onclick=()=>{
+    rb2.querySelectorAll('.review-group').forEach(x=>x.classList.remove('active'));
     if(activeFilter===g.dataset.g){ activeFilter=null; } else { activeFilter=g.dataset.g; g.classList.add('active'); }
   });
   document.getElementById('btnStartReview').onclick=()=>{
     const queue = activeFilter ? due.filter(c=>(c.catKey+"::"+getCardTopicId(c.catKey,c))===activeFilter) : due.slice();
     runReviewSession(document.getElementById('reviewSession'), queue, false);
   };
+}
+
+function reviewDueMaterials(){
+  const today = todayISO();
+  const out = [];
+  allCategoryKeys().forEach(catKey=>{
+    (STORE.materials[catKey]||[]).forEach(m=>{
+      if(m.nextReview && m.nextReview<=today) out.push({catKey, m});
+    });
+  });
+  return out;
+}
+function renderReviewLectures(main){
+  const due = reviewDueMaterials();
+  const rb = document.getElementById("reviewBody");
+  if(due.length===0){ rb.innerHTML = `<div class="empty-state">Все лекции повторены. Загляни завтра!</div>`; return; }
+  let html = `<div class="review-summary">Сегодня на повторение: <b>${due.length} лекций</b></div>`;
+  due.forEach(({catKey,m})=>{
+    const catName = getCategoryDisplayName(catKey);
+    html += `<div class="review-group" data-lecmat="${m.id}" data-leccat="${catKey}" style="cursor:default">
+      <span class="rg-mark"></span>
+      <span class="rg-text"><b>${esc(catName)}</b> — ${esc(m.title)} <span style="color:var(--text-faint)">(${esc(topicName(catKey,m.topicId))})</span></span>
+      <button class="btn btn-good" data-lecdone="${m.id}" data-leccat2="${catKey}">Повторил ✓</button>
+    </div>`;
+  });
+  rb.innerHTML = html;
+  rb.querySelectorAll('[data-lecdone]').forEach(btn=>btn.onclick=()=>{
+    const m = (STORE.materials[btn.dataset.leccat2]||[]).find(x=>x.id===btn.dataset.lecdone);
+    if(m) reviewMaterial(m, btn.dataset.leccat2);
+    renderReviewLectures(main);
+  });
 }
 
 function runReviewSession(container, queue, isRno){
@@ -5239,7 +5800,7 @@ function openManageCategoriesModal(){
       btn.onclick=()=>{
         const isCustom = !CATEGORY_META.find(m=>m.key===btn.dataset.delCat);
         const msg = isCustom
-          ? 'Точно удалить этот предмет со всеми карточками, темами и тетрадями? Это безвозвратно.'
+          ? 'Удалить этот предмет со всеми карточками, темами и тетрадями? Его можно будет вернуть из корзины в разделе Storage.'
           : 'Скрыть этот предмет из списка? Данные сохранятся, его можно будет вернуть здесь же.';
         if(!confirm(msg)) return;
         deleteCategory(btn.dataset.delCat);
@@ -5282,17 +5843,226 @@ document.addEventListener('paste', function(e){
   document.execCommand('insertHTML', false, html);
 });
 
+// Запоминаем последнее выделение внутри редактируемых полей. На телефоне (iOS особенно) тап по кнопке
+// панели успевает сбросить выделение до того, как сработает click — и жирный/подчёркнутый/маркер
+// «не работают». Поэтому выделение сохраняем заранее и восстанавливаем перед самой командой.
+let LAST_RT_RANGE = null;
+let LAST_RT_FIELD = null;
+document.addEventListener('selectionchange', ()=>{
+  const sel = window.getSelection();
+  if(!sel || sel.rangeCount===0) return;
+  const node = sel.anchorNode;
+  if(!node) return;
+  const el = node.nodeType===1 ? node : node.parentElement;
+  const editable = el && el.closest && el.closest('.rt-editable[contenteditable="true"]');
+  if(editable){
+    LAST_RT_RANGE = sel.getRangeAt(0).cloneRange();
+    LAST_RT_FIELD = editable;
+  }
+  if(typeof syncTableTools === 'function') syncTableTools();
+});
+// Команды панели, которых нет в execCommand: заголовки, список чёрточками, разделитель,
+// таблица и «ключевое слово + карточка». Возвращает true, если команда обработана здесь.
+function runRichCustomCommand(cmd, val, editable){
+  if(cmd==='heading'){
+    // formatBlock в разных браузерах хочет разный формат аргумента — пробуем оба
+    try{ if(!document.execCommand('formatBlock', false, val)) document.execCommand('formatBlock', false, '<'+val+'>'); }
+    catch(e){ try{ document.execCommand('formatBlock', false, '<'+val+'>'); }catch(e2){} }
+    return true;
+  }
+  if(cmd==='dashlist'){
+    document.execCommand('insertUnorderedList');
+    // помечаем именно тот список, внутри которого оказался курсор
+    const sel = window.getSelection();
+    if(sel && sel.rangeCount){
+      let node = sel.getRangeAt(0).startContainer;
+      if(node.nodeType===3) node = node.parentElement;
+      const ul = node && node.closest ? node.closest('ul') : null;
+      if(ul) ul.classList.add('dash-list');
+    }
+    return true;
+  }
+  if(cmd==='divider'){
+    document.execCommand('insertHTML', false, '<hr class="lecture-divider"><p><br></p>');
+    return true;
+  }
+  if(cmd==='table'){
+    const row = (cells, tag)=>`<tr>${cells.map(c=>`<${tag}>${c}</${tag}>`).join('')}</tr>`;
+    const html = `<table class="lec-table"><tbody>`
+      + row(['&nbsp;','&nbsp;','&nbsp;'],'th')
+      + row(['&nbsp;','&nbsp;','&nbsp;'],'td')
+      + row(['&nbsp;','&nbsp;','&nbsp;'],'td')
+      + `</tbody></table><p><br></p>`;
+    document.execCommand('insertHTML', false, html);
+    return true;
+  }
+  if(cmd==='kwcard'){
+    const sel = window.getSelection();
+    if(!sel || sel.rangeCount===0 || sel.isCollapsed){
+      openInfoModal('Сначала выдели слово', 'Выдели в тексте слово или фразу, а потом нажми «Ключевое слово + карточка» — оно станет ключевым словом и по нему заведётся карточка.');
+      return true;
+    }
+    const word = sel.toString().trim();
+    if(!word) return true;
+    // контекст для оборотной стороны карточки — предложение/абзац, в котором стоит слово
+    let blockNode = sel.getRangeAt(0).startContainer;
+    if(blockNode.nodeType===3) blockNode = blockNode.parentElement;
+    const block = blockNode && blockNode.closest ? (blockNode.closest('li,p,h3,h4,div.rt-editable')||editable) : editable;
+    const blockText = (block ? block.textContent : '').replace(/\s+/g,' ').trim();
+    let context = blockText;
+    const sentences = blockText.split(/(?<=[.!?])\s+/);
+    const hit = sentences.find(s=>s.includes(word));
+    if(hit && hit.length>=20) context = hit.trim();
+    document.execCommand('insertHTML', false, `<span class="kw-mark">${esc(word)}</span>`);
+    if(typeof onKeywordMarked === 'function') onKeywordMarked(word, context);
+    return true;
+  }
+  return false;
+}
+// Заполняется редактором лекции, чтобы отмеченное слово сразу попало в овалы ключевых слов и в карточки.
+let onKeywordMarked = null;
+
+/* ---------- Редактирование таблиц прямо в лекции (как в заметках iPhone) ---------- */
+let ACTIVE_TABLE_CELL = null; // ячейка, в которой стоит курсор
+function currentTableCell(){
+  const sel = window.getSelection();
+  if(!sel || sel.rangeCount===0) return null;
+  let node = sel.anchorNode;
+  if(!node) return null;
+  if(node.nodeType===3) node = node.parentElement;
+  if(!node || !node.closest) return null;
+  const cell = node.closest('td,th');
+  if(!cell) return null;
+  const table = cell.closest('table.lec-table');
+  if(!table || !table.closest('.rt-editable[contenteditable="true"]')) return null;
+  return cell;
+}
+// Показывает панель управления таблицей у того поля, в таблице которого сейчас курсор.
+function syncTableTools(){
+  const cell = currentTableCell();
+  ACTIVE_TABLE_CELL = cell;
+  const field = cell ? cell.closest('.rt-editable') : null;
+  document.querySelectorAll('.tbl-tools').forEach(tools=>{
+    tools.hidden = !(field && tools.dataset.toolsFor === field.id);
+  });
+}
+// Ставит курсор в ячейку и делает её активной — чтобы следующая операция работала
+// даже после удаления строки/столбца, в которых стояла предыдущая активная ячейка.
+function focusTableCell(cell){
+  if(!cell || !cell.isConnected) return;
+  ACTIVE_TABLE_CELL = cell;
+  try{
+    const r = document.createRange();
+    r.selectNodeContents(cell);
+    r.collapse(true);
+    const s = window.getSelection();
+    s.removeAllRanges(); s.addRange(r);
+  }catch(e){}
+}
+function tableOp(op){
+  // кешированная ячейка могла быть удалена предыдущей операцией — тогда берём живую
+  let cell = ACTIVE_TABLE_CELL;
+  if(!cell || !cell.isConnected) cell = currentTableCell();
+  if(!cell || !cell.isConnected) return;
+  const table = cell.closest('table.lec-table');
+  if(!table) return;
+  const row = cell.parentElement;
+  const rows = Array.from(table.rows);
+  const colIdx = Array.from(row.cells).indexOf(cell);
+  const editable = table.closest('.rt-editable');
+  const mkCell = (tag)=>{ const c = document.createElement(tag); c.innerHTML = '&nbsp;'; return c; };
+
+  if(op==='addRowBelow'){
+    const nr = table.insertRow(row.rowIndex+1);
+    for(let i=0;i<row.cells.length;i++) nr.appendChild(mkCell('td'));
+    focusTableCell(nr.cells[Math.min(colIdx, nr.cells.length-1)]);
+  }
+  else if(op==='delRow'){
+    if(rows.length<=1){ openInfoModal('Нельзя', 'В таблице должна остаться хотя бы одна строка.'); return; }
+    const nextRow = table.rows[row.rowIndex+1] || table.rows[row.rowIndex-1];
+    row.remove();
+    if(nextRow) focusTableCell(nextRow.cells[Math.min(colIdx, nextRow.cells.length-1)]);
+  }
+  else if(op==='addColRight'){
+    rows.forEach(r=>{
+      const ref = r.cells[colIdx];
+      const tag = (ref && ref.tagName==='TH') ? 'th' : 'td';
+      const c = mkCell(tag);
+      if(ref && ref.nextSibling) r.insertBefore(c, ref.nextSibling);
+      else r.appendChild(c);
+    });
+    focusTableCell(row.cells[colIdx+1]);
+  }
+  else if(op==='delCol'){
+    if(row.cells.length<=1){ openInfoModal('Нельзя', 'В таблице должен остаться хотя бы один столбец.'); return; }
+    rows.forEach(r=>{ if(r.cells[colIdx]) r.cells[colIdx].remove(); });
+    focusTableCell(row.cells[Math.min(colIdx, row.cells.length-1)]);
+  }
+  else if(op==='toggleHeader'){
+    const first = table.rows[0];
+    const isHeader = first.cells[0] && first.cells[0].tagName==='TH';
+    Array.from(first.cells).forEach(c=>{
+      const nc = document.createElement(isHeader ? 'td' : 'th');
+      nc.innerHTML = c.innerHTML;
+      c.replaceWith(nc);
+    });
+    if(row === first) focusTableCell(first.cells[Math.min(colIdx, first.cells.length-1)]);
+  }
+  else if(op==='delTable'){
+    if(!confirm('Удалить таблицу целиком?')) return;
+    table.remove();
+    ACTIVE_TABLE_CELL = null;
+    syncTableTools();
+  }
+  if(editable) editable.dispatchEvent(new Event('input', {bubbles:true}));
+}
+function wireTableTools(){
+  document.querySelectorAll('.tbl-tools [data-tbl]').forEach(btn=>{
+    btn.addEventListener('mousedown',(e)=>e.preventDefault());
+    btn.addEventListener('touchstart',(e)=>e.preventDefault(), {passive:false});
+    btn.addEventListener('click',()=>tableOp(btn.dataset.tbl));
+  });
+}
+
 function wireRichToolbars(){
   document.querySelectorAll('.rt-toolbar .rt-btn').forEach(btn=>{
+    // preventDefault и на mousedown, и на touchstart — чтобы тап по кнопке не уводил фокус
+    // из поля и не схлопывал выделение (на тач-устройствах одного mousedown не хватает).
     btn.addEventListener('mousedown',(e)=>e.preventDefault());
-    btn.addEventListener('click',()=>{
+    btn.addEventListener('touchstart',(e)=>e.preventDefault(), {passive:false});
+    const run = ()=>{
       const targetField = btn.closest('.rt-toolbar').dataset.for;
       const editable = document.getElementById(targetField) || document.querySelector(`.rt-editable[data-f="${targetField}"]`);
       if(!editable) return;
       editable.focus();
-      try{ document.execCommand(btn.dataset.cmd, false, null); }catch(err){}
-    });
+      // восстанавливаем выделение, которое было в этом поле до тапа по кнопке
+      if(LAST_RT_RANGE && LAST_RT_FIELD===editable){
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(LAST_RT_RANGE);
+      }
+      const cmd = btn.dataset.cmd, val = btn.dataset.val || null;
+      if(runRichCustomCommand(cmd, val, editable)){
+        const selC = window.getSelection();
+        if(selC && selC.rangeCount){ LAST_RT_RANGE = selC.getRangeAt(0).cloneRange(); LAST_RT_FIELD = editable; }
+        editable.dispatchEvent(new Event('input', {bubbles:true}));
+        return;
+      }
+      try{
+        const ok = document.execCommand(cmd, false, val);
+        // Safari не поддерживает hiliteColor — там за маркер отвечает backColor
+        if(!ok && cmd==='hiliteColor') document.execCommand('backColor', false, val);
+      }catch(err){
+        if(cmd==='hiliteColor'){ try{ document.execCommand('backColor', false, val); }catch(e2){} }
+      }
+      editable.dispatchEvent(new Event('input', {bubbles:true}));
+      // запоминаем новое выделение, чтобы можно было нажать вторую кнопку подряд
+      const sel2 = window.getSelection();
+      if(sel2 && sel2.rangeCount){ LAST_RT_RANGE = sel2.getRangeAt(0).cloneRange(); LAST_RT_FIELD = editable; }
+    };
+    btn.addEventListener('click', run);
   });
+  wireTableTools();
 }
 
 function resolveTopicByName(catKey, name){
@@ -5340,7 +6110,8 @@ function importTheoryJSON(key, file, body){
         mainQuestions: m.mainQuestions || m.mainQuestion || '',
         keywords: Array.isArray(m.keywords) ? m.keywords : [],
         materialText: m.materialText || '', notes: m.notes || '',
-        explanation: m.explanation||'', facts: m.facts||'', connections: m.connections||'', application: m.application||'',
+        explanation: m.explanation||'', unclear: m.unclear||'', facts: m.facts||'', connections: m.connections||'', application: m.application||'',
+        attachments: Array.isArray(m.attachments) ? m.attachments : [],
         date: dateStart
       };
       scheduleLectureInitial(mat, key, dateStart);
@@ -5369,10 +6140,12 @@ function openQuickAddModal(key){
   topicSelect += `</select>`;
   document.getElementById('modalBody').innerHTML = `
     <h3>Быстрое добавление карточек</h3>
-    <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:10px;line-height:1.6">
-      По одной карточке на строку, поля через <b>::</b>. Для этой категории нужно ${fieldCount} полей: ${esc((data.meta.fields||[]).join(' :: ') || 'front :: back')}.<br>
-      Совет: вставь конспект лекции в чат с Claude и попроси оформить его в этом формате — вставишь готовый результат сюда. Попроси делать пояснения чуть подробнее и добавлять английские аббревиатуры рядом с русскими терминами, где уместно (ООН — UN/UNSC и т.п.).
-    </div>
+    ${aiInstructionsHtml('Как это работает', [
+      `По одной карточке на строку, поля через <code>::</code>. Для этой категории нужно ${fieldCount} полей: <code>${esc((data.meta.fields||[]).join(' :: ') || 'front :: back')}</code>.`,
+      'Можно набрать вручную, а можно отправить конспект лекции в чат с любым ИИ-ассистентом и попросить оформить его в этом формате.',
+      'Попроси делать пояснения чуть подробнее и добавлять английские аббревиатуры рядом с русскими терминами, где уместно (ООН — UN/UNSC и т.п.).',
+      'Вставь готовый результат в поле ниже — по строке на карточку.'
+    ])}
     <div class="field"><label>Тема для всех карточек</label>${topicSelect}</div>
     <div class="field"><label>Карточки</label><textarea id="qaText" style="min-height:160px" placeholder="термин :: перевод :: пояснение :: пример
 термин2 :: перевод2 :: пояснение2 :: пример2"></textarea></div>
@@ -5623,18 +6396,88 @@ function openCardSetModal(key){
   openOverlay();
 }
 
+/* ==========================================================================
+   КОРЗИНА — подстраховка: всё недавно удалённое можно вернуть из раздела Storage.
+   ========================================================================== */
+const TRASH_LIMIT = 40; // держим корзину небольшой, чтобы не упереться в лимит localStorage
+const TRASH_TYPE_LABELS = {
+  card:'Карточка', material:'Лекция', notebook:'Тетрадь', note:'Заметка',
+  finaltest:'Тест', timerecord:'Запись времени', category:'Предмет'
+};
+function trashPush(type, label, payload, catKey, sub){
+  if(!STORE.trash) STORE.trash = [];
+  STORE.trash.unshift({
+    id: uid('trash'), type, label: label||'Без названия', sub: sub||'',
+    catKey: catKey||null, deletedAt: new Date().toISOString(), payload
+  });
+  if(STORE.trash.length > TRASH_LIMIT) STORE.trash.length = TRASH_LIMIT;
+}
+function restoreFromTrash(trashId){
+  const i = (STORE.trash||[]).findIndex(t=>t.id===trashId);
+  if(i<0) return false;
+  const t = STORE.trash[i];
+  const p = t.payload || {};
+  const key = t.catKey;
+  try{
+    if(t.type==='card'){
+      if(p.mode==='raw'){
+        STORE.deletedCards = (STORE.deletedCards||[]).filter(id=>id!==p.cardId);
+      } else if(p.mode==='extra'){
+        if(!STORE.extraCards[key]) STORE.extraCards[key]=[];
+        STORE.extraCards[key].push(p.card);
+      } else if(p.mode==='custom'){
+        if(!STORE.customCards[key]) STORE.customCards[key]=[];
+        STORE.customCards[key].push(p.card);
+      }
+      if(p.progress) STORE.cardProgress[p.cardId] = p.progress;
+      if(p.override) STORE.cardOverrides[p.cardId] = p.override;
+      if(p.topicOverride) STORE.cardTopicOverride[p.cardId] = p.topicOverride;
+    }
+    else if(t.type==='material'){ if(!STORE.materials[key]) STORE.materials[key]=[]; STORE.materials[key].push(p.material); }
+    else if(t.type==='notebook'){ if(!STORE.notebooks[key]) STORE.notebooks[key]=[]; STORE.notebooks[key].push(p.notebook); }
+    else if(t.type==='note'){ STORE.notes.push(p.note); }
+    else if(t.type==='finaltest'){ if(!STORE.finalTests[key]) STORE.finalTests[key]=[]; STORE.finalTests[key].push(p.test); }
+    else if(t.type==='timerecord'){ STORE.timeRecords.push(p.record); }
+    else if(t.type==='category'){
+      STORE.customCategories.push(p.category);
+      if(p.cards) STORE.customCards[p.category.key] = p.cards;
+      if(p.materials) STORE.materials[p.category.key] = p.materials;
+      if(p.notebooks) STORE.notebooks[p.category.key] = p.notebooks;
+      if(p.topics) STORE.customTopics[p.category.key] = p.topics;
+    }
+  }catch(e){ return false; }
+  STORE.trash.splice(i,1);
+  saveStore();
+  buildAllData();
+  return true;
+}
+
 function deleteCard(key, cardId){
   const isCustom = !CATEGORY_META.find(m=>m.key===key);
+  const card = findCard(key, cardId);
+  const face = card ? renderCardFace((APP_DATA[key]&&APP_DATA[key].meta.type)||'custom', card) : null;
+  const payload = {
+    cardId,
+    progress: STORE.cardProgress[cardId] || null,
+    override: STORE.cardOverrides[cardId] || null,
+    topicOverride: STORE.cardTopicOverride[cardId] || null
+  };
   if(isCustom){
+    const stored = (STORE.customCards[key]||[]).find(c=>c.id===cardId);
+    payload.mode = 'custom'; payload.card = stored ? JSON.parse(JSON.stringify(stored)) : null;
     if(STORE.customCards[key]) STORE.customCards[key] = STORE.customCards[key].filter(c=>c.id!==cardId);
   } else {
     const extraArr = STORE.extraCards[key]||[];
-    if(extraArr.find(c=>c.id===cardId)){
+    const stored = extraArr.find(c=>c.id===cardId);
+    if(stored){
+      payload.mode = 'extra'; payload.card = JSON.parse(JSON.stringify(stored));
       STORE.extraCards[key] = extraArr.filter(c=>c.id!==cardId);
     } else {
+      payload.mode = 'raw';
       if(!STORE.deletedCards.includes(cardId)) STORE.deletedCards.push(cardId);
     }
   }
+  trashPush('card', (face && stripHtml(face.top)) || 'Карточка', payload, key, getCategoryDisplayName(key));
   delete STORE.cardProgress[cardId];
   delete STORE.cardOverrides[cardId];
   delete STORE.cardTopicOverride[cardId];
@@ -5683,6 +6526,59 @@ function applyFontScale(){
   document.getElementById('app').style.zoom = STORE.fontScale || 1;
 }
 applyFontScale();
+
+/* ---------- Экран входа ---------- */
+function renderAuthGreeting(){
+  const el = document.getElementById('authGreeting');
+  if(!el) return;
+  el.textContent = STORE.auth && STORE.auth.name ? `Привет, ${STORE.auth.name}` : '';
+}
+function initAuthGate(){
+  const gate = document.getElementById('authGate');
+  if(!gate) return;
+  if(STORE.auth && STORE.auth.name){
+    gate.classList.add('hidden');
+    renderAuthGreeting();
+    return;
+  }
+  gate.classList.remove('hidden');
+  const nameInput = document.getElementById('authName');
+  const passInput = document.getElementById('authPass');
+  const errEl = document.getElementById('authError');
+  const submit = ()=>{
+    const name = nameInput.value.trim();
+    const pass = passInput.value.trim().toLowerCase();
+    if(!name){ errEl.textContent = 'Введи имя и фамилию'; nameInput.focus(); return; }
+    const ok = ACCESS_CODES.some(c=>c.toLowerCase()===pass);
+    if(!ok){
+      errEl.textContent = 'Неверный пароль';
+      passInput.value = '';
+      passInput.focus();
+      return;
+    }
+    STORE.auth = { name, loginAt: new Date().toISOString() };
+    saveStore();
+    gate.classList.add('hidden');
+    renderAuthGreeting();
+    openWelcomeModal(name);
+  };
+  document.getElementById('authSubmit').onclick = submit;
+  [nameInput, passInput].forEach(inp=>inp.addEventListener('keydown', (e)=>{ if(e.key==='Enter') submit(); }));
+  nameInput.focus();
+}
+function openWelcomeModal(name){
+  document.getElementById('modalBody').innerHTML = `
+    <div class="welcome-box">
+      <div class="brand" style="padding:0;margin-bottom:10px"><h1>PRIMUS<span class="brand-dot">.</span></h1></div>
+      <div class="welcome-title">Добро пожаловать, ${esc(name)}</div>
+      <p class="welcome-text">Здесь всё для подготовки в одном месте: лекции, карточки, практика и тесты по темам — и всё это само напоминает о себе по системе spaced repetition, когда пора повторить.</p>
+      <p class="welcome-text">Не знаешь, с чего начать — загляни в раздел <b>«Инструкция»</b> в Overview: там по шагам объяснена каждая кнопка.</p>
+      <button class="btn btn-primary" id="welcomeStart" style="width:100%">Начать</button>
+    </div>
+  `;
+  document.getElementById('welcomeStart').onclick = closeOverlay;
+  openOverlay();
+}
 document.getElementById('btnAddCategory').addEventListener('click', openCategoryModal);
 document.getElementById('btnManageCategories').addEventListener('click', openManageCategoriesModal);
 
@@ -6424,15 +7320,64 @@ function seedTenDayPlan(){
 }
 
 /* ==========================================================================
+   20D. ДЕМО-ЛЕКЦИЯ: одна лекция-пример по истории, чтобы сразу было видно,
+   как выглядит заполненный конспект и что вообще писать в каждом поле.
+   Ставится один раз для нового человека; у тех, у кого уже разблокирован
+   полный контент-пак, не появляется вообще.
+   ========================================================================== */
+function seedDemoLecture(){
+  if(STORE.contentPackV1 || STORE.demoLectureV1) return;
+  // Чистая база: предметы, в которых для нового человека вообще ничего нет, по умолчанию скрыты,
+  // чтобы список не был забит пустыми разделами. Любой из них возвращается в
+  // «Управление категориями» → «Скрытые встроенные предметы» → «Вернуть».
+  if(!STORE.hiddenCategories) STORE.hiddenCategories = [];
+  CATEGORY_META.forEach(meta=>{
+    if(DEMO_CARD_COUNTS[meta.key]) return; // история и юр. английский остаются
+    if(!STORE.hiddenCategories.includes(meta.key)) STORE.hiddenCategories.push(meta.key);
+  });
+  if(!STORE.materials.hist) STORE.materials.hist = [];
+  const topicId = resolveTopicByName('hist', 'Пример: как заполнять лекцию');
+  const m = {
+    id: uid('mat'),
+    topicId,
+    title: 'Вестфальский мир 1648 года',
+    dateStart: todayISO(),
+    dateEnd: '',
+    mainQuestions: 'Что закрепил Вестфальский мир?<br>Почему его считают началом современной системы международного права?',
+    keywords: ['Вестфальский мир','суверенитет','принцип невмешательства','Тридцатилетняя война'],
+    materialText: `<h3>Что произошло</h3><p>В <b>1648 году</b> серия договоров в Мюнстере и Оснабрюке завершила <b>Тридцатилетнюю войну</b> (1618–1648) — самый разрушительный религиозный конфликт в Европе.</p>
+<h3>Что закрепили</h3><ul><li><b>Территориальный суверенитет</b> — власть правителя внутри его границ признаётся высшей.</li><li><b>Принцип невмешательства</b> во внутренние дела других государств.</li><li><b>Юридическое равенство государств</b> — независимо от размера и веры.</li></ul>
+<h3>Что запомнить</h3><p>Вестфаль — точка отсчёта <b>Вестфальской системы</b>: мира суверенных государств, договаривающихся между собой как формально равные субъекты.</p>`,
+    notes: 'Это лекция-пример. Открой «Изменить», чтобы посмотреть, как заполнены поля, и удали её, когда она станет не нужна.',
+    explanation: '<p>До 1648 года верховная власть была спорной: над королём стояли император и Папа. Вестфальский мир зафиксировал, что <b>внутри своих границ государство — высшая власть</b>, а между собой государства равны. Из этой идеи выросло всё современное международное право.</p>',
+    facts: `<h3>Факты</h3><ul><li>Переговоры шли <b>пять лет</b> и стали первым в истории общеевропейским мирным конгрессом.</li><li>Стороны заседали в двух городах сразу — католики и протестанты не хотели встречаться лично.</li></ul>
+<h3>Что ещё изучить</h3><ul><li>Гуго Гроций, «О праве войны и мира» (1625) — теоретическая база Вестфаля.</li><li>Венский конгресс 1815 года — следующая перестройка европейского порядка.</li></ul>
+<h3>Совет</h3><p>«Вестфальский суверенитет» — выражение, которое почти всегда уместно в эссе о том, откуда взялась современная государственность.</p>`,
+    connections: '<ul><li><b>Право:</b> суверенитет и невмешательство — статья 2 Устава ООН.</li><li><b>Литература:</b> «Симплициссимус» Гриммельсгаузена — Тридцатилетняя война изнутри.</li><li><b>География:</b> политическая карта Европы после 1648 года.</li></ul>',
+    application: `<h3>Где использовать</h3><p><b>В эссе о суверенитете:</b> начинай отсчёт с 1648 года — это показывает, что ты понимаешь, что суверенитет не «был всегда», а появился исторически, как ответ на разрушительную войну.</p>
+<p><b>В споре о вмешательстве во внутренние дела:</b> вестфальский принцип невмешательства — это аргумент одной стороны; ему противостоит современная концепция гуманитарной интервенции и R2P. Показать оба полюса — сильный ход.</p>
+<p><b>Связь с главными вопросами:</b> «что закрепил» → суверенитет, невмешательство, равенство государств; «почему начало международного права» → потому что впервые появились субъекты, равные юридически, а значит стало возможно право <i>между</i> ними, а не право сильного над слабым.</p>`,
+    date: todayISO()
+  };
+  scheduleLectureInitial(m, 'hist', todayISO());
+  STORE.materials.hist.push(m);
+  STORE.demoLectureV1 = true;
+  saveStore();
+}
+
+/* ==========================================================================
    21. ИНИЦИАЛИЗАЦИЯ
    ========================================================================== */
 applyTheme();
 applyCoverImage();
+// seedLecturePack()/seedTenDayPlan() больше не запускаются автоматически — платформа для новых людей
+// стартует чистой (см. DEMO_CARD_COUNTS в buildAllData). На устройствах, где контент-пак уже был
+// разблокирован раньше (contentPackV1===true), это ничего не меняет — их полный контент как был, так и есть.
 buildAllData();
-seedLecturePack();
-seedTenDayPlan();
-buildAllData();
+seedDemoLecture();
+buildAllData(); // пересобираем: сид мог скрыть пустые предметы и завести тему для лекции-примера
 renderAll();
+initAuthGate();
 
 </script>
 <script>
