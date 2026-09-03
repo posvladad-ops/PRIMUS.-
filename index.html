@@ -78,6 +78,9 @@ html[data-theme="light"]{
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
+/* Платформа скроллится только вверх/вниз. Никаких боковых сдвигов и «болтанки»:
+   ничто не должно выезжать за ширину экрана. */
+html{overflow-x:hidden;}
 body{
   background:var(--bg);
   color:var(--text);
@@ -85,6 +88,10 @@ body{
   font-size:15px;
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  overscroll-behavior-x:none;
+  width:100%;
+  max-width:100%;
 }
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0 0 .4em;letter-spacing:-.2px;}
 a{color:inherit;}
@@ -95,8 +102,8 @@ textarea,input,select{border-radius:var(--radius-s);font-size:16px;font-family:i
 ::-webkit-scrollbar-track{background:transparent;}
 
 /* ===================== LAYOUT ===================== */
-#app{display:grid;grid-template-columns:256px 1fr;min-height:100vh;}
-.content-col{display:flex;flex-direction:column;min-width:0;}
+#app{display:grid;grid-template-columns:256px 1fr;min-height:100vh;max-width:100%;overflow-x:hidden;}
+.content-col{display:flex;flex-direction:column;min-width:0;max-width:100%;overflow-x:hidden;}
 .cover-banner{
   width:100%;height:120px;background:var(--bg-soft);border-bottom:1px solid var(--border);
   cursor:pointer;display:flex;align-items:center;justify-content:center;
@@ -120,15 +127,25 @@ textarea,input,select{border-radius:var(--radius-s);font-size:16px;font-family:i
   border-right:1px solid var(--border);
   padding:20px 14px;
   display:flex;flex-direction:column;
-  position:sticky;top:0;height:100vh;overflow-y:auto;
+  position:sticky;top:0;height:100vh;overflow-y:auto;overflow-x:hidden;
+  min-width:0;overscroll-behavior:contain;
 }
+/* Полоса изменения ширины сайдбара — шире для попадания пальцем, с видимой «ручкой» */
 .sidebar-resizer{
-  position:absolute;top:0;right:-3px;width:6px;height:100%;cursor:col-resize;z-index:20;background:transparent;
+  position:absolute;top:0;right:-6px;width:14px;height:100%;cursor:col-resize;z-index:20;background:transparent;
+  touch-action:none;display:flex;align-items:center;justify-content:center;
 }
-.sidebar-resizer:hover,.sidebar-resizer.dragging{background:var(--accent-soft);}
-.brand{padding:10px 8px 6px;position:relative;}
-.brand-divider{position:absolute;height:1px;background:var(--accent);opacity:.5;}
-html[data-theme="dark"] .brand-divider{background:var(--khaki);}
+.sidebar-resizer::before{
+  content:'';width:3px;height:44px;border-radius:2px;background:var(--border);opacity:.7;transition:background .12s,opacity .12s;
+}
+.sidebar-resizer:hover::before,.sidebar-resizer.dragging::before{background:var(--accent);opacity:1;height:64px;}
+.sidebar-resizer.dragging{background:var(--accent-soft);}
+/* во время перетаскивания не выделяем текст и не мигаем курсором */
+body.resizing-sidebar{user-select:none;cursor:col-resize;}
+/* Логотип и подпись. Линия под логотипом — это НЕ отдельный элемент с JS-позиционированием
+   (так она уезжала, когда блок мерили в момент, где он ещё нулевой ширины), а верхняя граница
+   самой подписи: она физически не может оказаться не на своём месте. */
+.brand{padding:10px 8px 6px;position:relative;display:flex;flex-direction:column;align-items:flex-start;}
 .brand h1{
   font-family:'Unbounded',var(--font-display);font-weight:900;
   font-size:29px;letter-spacing:4.8px;
@@ -140,7 +157,10 @@ html[data-theme="dark"] .brand-divider{background:var(--khaki);}
 }
 .brand-dot{display:inline-block;transform:scaleX(0.86957) scaleY(1.06383);transform-origin:center;}
 html[data-theme="light"] .brand h1{ color:var(--choc-bitter); }
-.brand .sub{font-family:var(--font-mono);font-size:10.5px;font-weight:400;text-transform:uppercase;color:var(--text-dim);opacity:.55;margin-top:-11px;letter-spacing:1.4px;transform:scaleX(1.06) scaleY(0.9);transform-origin:left top;}
+.brand .sub{font-family:var(--font-mono);font-size:10.5px;font-weight:400;text-transform:uppercase;color:var(--text-dim);opacity:.55;margin-top:-12px;letter-spacing:1.4px;transform:scaleX(1.06) scaleY(0.9);transform-origin:left top;
+  border-top:1px solid var(--accent);padding-top:3px;margin-left:-4px;padding-left:4px;padding-right:4px;
+  align-self:stretch;margin-right:6px;}
+html[data-theme="dark"] .brand .sub{border-top-color:var(--khaki);}
 .auth-greeting{margin:0 8px;font-size:11.5px;color:var(--text-faint);text-align:center;}
 .aura-badge{margin:10px 8px 16px;padding:8px 12px;border-radius:var(--radius-s);background:var(--accent-soft);color:var(--accent-strong);font-family:var(--font-mono);font-size:11.5px;font-weight:600;text-align:center;}
 
@@ -174,7 +194,7 @@ html[data-theme="light"] .brand h1{ color:var(--choc-bitter); }
 html[data-theme="light"] .switch::after{transform:translateX(16px);}
 .switch.on::after{transform:translateX(16px);background:var(--accent-strong);}
 
-.main{padding:26px 34px 60px;max-width:1180px;}
+.main{padding:26px 34px 60px;max-width:1180px;min-width:0;overflow-x:hidden;}
 .topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:16px;flex-wrap:wrap;}
 .topbar h2{font-size:25px;}
 .topbar .desc{color:var(--text-dim);font-size:13.5px;margin-top:2px;max-width:560px;}
@@ -265,11 +285,17 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .cards-topic-body.collapsed{display:none;}
 .resume-banner{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--khaki-soft);border:1px solid var(--khaki);border-radius:var(--radius-s);padding:12px 16px;margin-bottom:14px;font-size:12.5px;color:var(--khaki);}
 
-.ai-instructions{background:var(--bg-soft);border:1px dashed var(--border);border-radius:var(--radius-s);padding:14px 16px;margin:10px 0 16px;}
-.ai-instructions-title{font-family:var(--font-display);font-size:12.5px;font-weight:700;color:var(--accent-strong);margin-bottom:6px;}
-.ai-instructions ol{margin:0;padding-left:18px;font-size:12px;color:var(--text-dim);line-height:1.7;}
-.ai-instructions li{margin-bottom:2px;}
-.ai-instructions code{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:11px;}
+.ai-instructions{background:var(--bg-soft);border:1px dashed var(--border);border-radius:var(--radius-s);padding:10px 12px;margin:10px 0 16px;max-width:100%;overflow-wrap:anywhere;}
+.ai-instructions-head{display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:none;padding:0;cursor:pointer;text-align:left;color:inherit;}
+.ai-info-icon{flex-shrink:0;width:17px;height:17px;border-radius:50%;border:1px solid var(--accent);color:var(--accent-strong);
+  font-family:var(--font-display);font-size:11px;font-weight:700;font-style:italic;display:flex;align-items:center;justify-content:center;line-height:1;}
+.ai-instructions-title{font-family:var(--font-display);font-size:12.5px;font-weight:700;color:var(--accent-strong);flex:1;min-width:0;}
+.ai-instructions-chev{color:var(--text-faint);font-size:10px;flex-shrink:0;}
+.ai-instructions-body{margin:8px 0 0;padding-left:18px;font-size:12px;color:var(--text-dim);line-height:1.7;max-width:100%;overflow-wrap:anywhere;word-break:break-word;}
+.ai-instructions.collapsed .ai-instructions-body{display:none;}
+.ai-instructions li{margin-bottom:2px;max-width:100%;}
+.ai-instructions code{display:inline-block;max-width:100%;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:11px;
+  overflow-wrap:anywhere;word-break:break-all;white-space:normal;}
 
 .guide-info-head{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-faint);margin:26px 0 10px;padding-top:14px;border-top:1px solid var(--border);}
 .guide-copyright{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);text-align:center;margin:22px 0 8px;opacity:.8;}
@@ -335,6 +361,20 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .rg-mark.rno-mark{background:var(--bad);}
 .rg-text{flex:1;}
 .rg-count{font-family:var(--font-mono);font-size:11.5px;color:var(--text-faint);}
+/* Лекции в spaced repetition */
+.lec-row{cursor:pointer;flex-wrap:wrap;}
+.lec-row.lec-upcoming{opacity:.85;}
+.lec-row .btn{padding:5px 10px;font-size:11.5px;}
+.rg-due{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--good);background:rgba(124,148,115,.16);padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.rg-when{font-family:var(--font-mono);font-size:10.5px;color:var(--khaki);background:var(--khaki-soft);padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.lec-section-head{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--text-faint);margin:22px 0 10px;padding-top:14px;border-top:1px solid var(--border);}
+.lec-hint{font-size:11.5px;color:var(--text-faint);margin-top:8px;}
+.lec-schedule{border:1px dashed var(--border);border-radius:var(--radius-s);background:var(--bg-soft);padding:12px 16px;margin:-4px 0 10px;}
+.lec-schedule[hidden]{display:none;}
+.lec-schedule-title{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent-strong);margin-bottom:6px;}
+.lec-schedule-list{margin:0;padding-left:18px;font-size:12.5px;color:var(--text-dim);line-height:1.7;}
+.lec-schedule-note{font-size:11px;color:var(--text-faint);margin-top:8px;line-height:1.5;}
+.theory-item.flash{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft);}
 .rno-banner{padding:12px 16px;border-radius:var(--radius-s);background:rgba(181,103,90,.12);border:1px solid var(--bad);color:var(--bad);font-size:13px;font-weight:600;margin-bottom:18px;}
 
 /* Calendar — компактная, лаконичная */
@@ -449,11 +489,11 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 }
 .field textarea{min-height:64px;resize:vertical;}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;}
-.topic-row,.manage-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;transition:transform .15s;}
+.topic-row,.manage-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;transition:transform .15s;flex-wrap:wrap;max-width:100%;}
 .topic-row.dragging{opacity:.85;box-shadow:var(--shadow);border-radius:var(--radius-s);background:var(--surface);z-index:5;transition:none;}
 .topics-tab-list .topic-row{touch-action:none;cursor:grab;}
 .topics-tab-list .topic-row.dragging{cursor:grabbing;}
-.topic-name-input,.manage-name-input{flex:1;padding:8px 10px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text);font-size:16px;border-radius:var(--radius-s);}
+.topic-name-input,.manage-name-input{flex:1 1 120px;min-width:0;padding:8px 10px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text);font-size:16px;border-radius:var(--radius-s);}
 .lookup-row{display:flex;align-items:center;gap:8px;margin:-6px 0 12px;}
 .lookup-hint{font-size:10.5px;color:var(--text-faint);}
 .set-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg-soft);}
@@ -703,7 +743,12 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
 .topics-tab-list{display:flex;flex-direction:column;gap:8px;max-width:520px;}
 
 /* ---------- Rich text toolbar для карточек ---------- */
-.rt-toolbar{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap;align-items:center;}
+/* Панель форматирования «прилипает» к верху при прокрутке — когда текста много,
+   не нужно возвращаться наверх, чтобы нажать H1/маркер/таблицу. */
+.rt-toolbar{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap;align-items:center;
+  position:sticky;top:0;z-index:12;background:var(--bg);padding:6px 0;
+  border-bottom:1px solid transparent;}
+.rt-toolbar.stuck{border-bottom-color:var(--border);box-shadow:0 4px 10px -6px rgba(0,0,0,.45);}
 .rt-btn{width:26px;height:26px;border:1px solid var(--border);background:var(--surface);border-radius:5px;font-size:12px;color:var(--text-dim);cursor:pointer;flex-shrink:0;padding:0;}
 .rt-btn:hover{border-color:var(--accent);color:var(--accent-strong);}
 .rt-btn.b{font-weight:800;}
@@ -730,7 +775,8 @@ table.lec-table th,table.lec-table td{border:1px solid var(--border);padding:8px
 table.lec-table th{background:var(--bg-soft);font-weight:600;}
 .rt-editable table.lec-table td:focus,.rt-editable table.lec-table th:focus{outline:2px solid var(--accent);outline-offset:-2px;}
 /* Панель управления таблицей — появляется, когда курсор внутри таблицы */
-.tbl-tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:6px;padding:7px 9px;border:1px dashed var(--accent);border-radius:var(--radius-s);background:var(--accent-soft);}
+.tbl-tools{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:6px;padding:7px 9px;border:1px dashed var(--accent);border-radius:var(--radius-s);background:var(--accent-soft);
+  position:sticky;top:44px;z-index:11;}
 .tbl-tools[hidden]{display:none;}
 .tbl-tools-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent-strong);margin-right:2px;}
 .tbl-tools .btn{padding:4px 9px;font-size:11.5px;}
@@ -742,6 +788,22 @@ table.lec-table th{background:var(--bg-soft);font-weight:600;}
 .te-file-size{color:var(--text-faint);font-family:var(--font-mono);font-size:10px;}
 .te-file-chip button{border:none;background:transparent;color:var(--text-faint);cursor:pointer;font-size:11px;padding:0;}
 .te-file-hint{font-size:11px;color:var(--text-faint);margin-top:6px;}
+/* Плитки прикреплённых файлов: у картинок видно само фото, у остальных — тип и название */
+.att-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px;}
+.att-tile-wrap{position:relative;}
+.att-tile{width:104px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg-soft);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;color:inherit;text-align:center;}
+.att-tile:hover{border-color:var(--accent);}
+.att-thumb{width:86px;height:64px;object-fit:cover;border-radius:5px;border:1px solid var(--border);display:block;}
+.att-icon{width:86px;height:64px;border-radius:5px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:12px;color:var(--accent-strong);background:var(--surface);}
+.att-name{font-size:10.5px;line-height:1.3;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-dim);}
+.att-size{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);}
+.att-del{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:1px solid var(--border);
+  background:var(--surface);color:var(--text-faint);font-size:11px;cursor:pointer;line-height:1;}
+.att-del:hover{color:var(--bad);border-color:var(--bad);}
+.att-full{max-width:100%;max-height:70vh;display:block;margin:0 auto;border-radius:var(--radius-s);border:1px solid var(--border);}
+.att-pdf{width:100%;height:70vh;border:1px solid var(--border);border-radius:var(--radius-s);background:#fff;}
 /* Напоминание сохранить материал */
 .te-save-note{border:1px dashed var(--khaki);background:var(--khaki-soft);color:var(--khaki);border-radius:var(--radius-s);padding:12px 16px;font-size:12px;line-height:1.6;margin:18px 0 10px;}
 .te-dirty{font-size:11.5px;color:var(--bad);align-self:center;}
@@ -801,7 +863,6 @@ table.lec-table th{background:var(--bg-soft);font-weight:600;}
     <div class="sidebar-resizer" id="sidebarResizer"></div>
     <div class="brand">
       <h1>PRIMUS<span class="brand-dot">.</span></h1>
-      <div class="brand-divider"></div>
       <div class="sub">the best platform for successful studying</div>
     </div>
     <div class="auth-greeting" id="authGreeting"></div>
@@ -1865,12 +1926,29 @@ function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, m=>({'&':'&amp;
 
 // Единый лаконичный блок-инструкция «как это использовать» — вместо разрозненных одностроч-подсказок
 // про JSON/импорт. title — заголовок, steps — массив строк (нумеруется автоматически).
+// Маленькая инструкция-подсказка: свёрнута до значка «i», разворачивается по клику.
+// Делегированный обработчик висит на document (см. ниже), поэтому вызывать ничего не нужно.
+let AI_HINT_SEQ = 0;
 function aiInstructionsHtml(title, steps){
-  return `<div class="ai-instructions">
-    <div class="ai-instructions-title">${esc(title)}</div>
-    <ol>${steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+  const id = 'aihint_' + (++AI_HINT_SEQ);
+  return `<div class="ai-instructions collapsed" data-aihint="${id}">
+    <button type="button" class="ai-instructions-head" data-aihint-toggle="${id}">
+      <span class="ai-info-icon">i</span>
+      <span class="ai-instructions-title">${esc(title)}</span>
+      <span class="ai-instructions-chev">▾</span>
+    </button>
+    <ol class="ai-instructions-body">${steps.map(s=>`<li>${s}</li>`).join('')}</ol>
   </div>`;
 }
+document.addEventListener('click',(e)=>{
+  const btn = e.target.closest && e.target.closest('[data-aihint-toggle]');
+  if(!btn) return;
+  const box = btn.closest('.ai-instructions');
+  if(!box) return;
+  box.classList.toggle('collapsed');
+  const chev = box.querySelector('.ai-instructions-chev');
+  if(chev) chev.textContent = box.classList.contains('collapsed') ? '▾' : '▴';
+});
 function stripHtml(html){
   if(html==null) return '';
   const tmp = document.createElement('div');
@@ -4419,6 +4497,49 @@ function renderStudyModal(){
 }
 
 /* ---------- Теория (Feynman): главный вопрос + факты + связи ---------- */
+// Плитка прикреплённого файла: у картинок — превью, у остальных — иконка с названием.
+// Клик открывает файл в большом размере (см. openAttachmentViewer).
+function attachmentTileHtml(a, ref){
+  const isImg = (a.type||'').startsWith('image');
+  const kb = Math.round((a.size||0)/1024);
+  return `<button type="button" class="att-tile" data-att="${esc(ref)}" title="${esc(a.name)}">
+    ${isImg
+      ? `<img class="att-thumb" src="${a.data}" alt="${esc(a.name)}">`
+      : `<span class="att-icon">${esc((a.name.split('.').pop()||'файл').slice(0,4).toUpperCase())}</span>`}
+    <span class="att-name">${esc(a.name)}</span>
+    <span class="att-size">${kb} КБ</span>
+  </button>`;
+}
+// Просмотр файла в большом размере: картинки и pdf показываем прямо здесь, остальное — скачиванием.
+function openAttachmentViewer(a){
+  if(!a) return;
+  const isImg = (a.type||'').startsWith('image');
+  const isPdf = (a.type||'')==='application/pdf' || /\.pdf$/i.test(a.name||'');
+  document.getElementById('modalBody').classList.add('modal-lg');
+  document.getElementById('modalBody').innerHTML = `
+    <h3 style="word-break:break-word">${esc(a.name)}</h3>
+    ${isImg ? `<img src="${a.data}" alt="${esc(a.name)}" class="att-full">`
+      : isPdf ? `<iframe src="${a.data}" class="att-pdf" title="${esc(a.name)}"></iframe>`
+      : `<div class="empty-state">Этот тип файла нельзя показать прямо здесь — скачай его кнопкой ниже.</div>`}
+    <div class="modal-actions">
+      <a class="btn" href="${a.data}" download="${esc(a.name)}">Скачать</a>
+      <button class="btn btn-primary" id="mCloseAtt">Закрыть</button>
+    </div>`;
+  document.getElementById('mCloseAtt').onclick=()=>{ document.getElementById('modalBody').classList.remove('modal-lg'); closeOverlay(); };
+  openOverlay();
+}
+// Клик по плитке файла в просмотре лекции
+document.addEventListener('click',(e)=>{
+  const tile = e.target.closest && e.target.closest('.att-tile[data-att]');
+  if(!tile) return;
+  const [matId, idxStr] = tile.dataset.att.split(':');
+  let found = null;
+  Object.keys(STORE.materials||{}).forEach(k=>{
+    (STORE.materials[k]||[]).forEach(m=>{ if(m.id===matId && m.attachments) found = m.attachments[+idxStr]; });
+  });
+  if(found) openAttachmentViewer(found);
+});
+
 let THEORY_EDIT_STATE = null; // {catKey, materialId} — полноэкранный редактор (не модалка!)
 let THEORY_DIRTY = false; // в открытой лекции есть несохранённые правки
 // Единая проверка перед любым уходом из открытой лекции: напоминаем сохранить материал.
@@ -4511,12 +4632,11 @@ function renderTheory(body,key){
         ${m.facts?`<div class="theory-block"><div class="tb-label">Интересные факты — копнуть глубже</div><div class="tb-body">${m.facts}</div></div>`:''}
         ${m.connections?`<div class="theory-block"><div class="tb-label">Связь с другими темами</div><div class="tb-body">${m.connections}</div></div>`:''}
         ${m.application?`<div class="theory-block"><div class="tb-label">Как использовать</div><div class="tb-body">${m.application}</div></div>`:''}
-        ${(m.attachments&&m.attachments.length)?`<div class="theory-block"><div class="tb-label">Файлы</div><div class="te-files">${m.attachments.map(a=>`<span class="te-file-chip"><a href="${a.data}" download="${esc(a.name)}">${esc(a.name)}</a><span class="te-file-size">${Math.round((a.size||0)/1024)} КБ</span></span>`).join('')}</div></div>`:''}
+        ${(m.attachments&&m.attachments.length)?`<div class="theory-block"><div class="tb-label">Файлы</div><div class="att-grid">${m.attachments.map((a,ai)=>attachmentTileHtml(a, `${m.id}:${ai}`)).join('')}</div></div>`:''}
         <div class="theory-actions">
           <button class="btn btn-primary" data-mkcard="${m.id}">Сделать карточку</button>
-          ${m.nextReview
-            ? `<button class="btn btn-good" data-review-mat="${m.id}">Повторил ✓</button>`
-            : `<button class="btn btn-good" data-addsr-mat="${m.id}">Добавить в spaced repetition</button>`}
+          <button class="btn ${m.nextReview?'':'btn-good'}" data-addsr-mat="${m.id}">Отправить на повторение</button>
+          ${m.nextReview ? `<button class="btn btn-good" data-review-mat="${m.id}">Повторил ✓</button>` : ''}
           <button class="btn" data-edittheory="${m.id}">Изменить</button>
           <button class="btn" data-deltheory="${m.id}">Удалить</button>
         </div>
@@ -4549,8 +4669,20 @@ function renderTheory(body,key){
   });
   body.querySelectorAll('[data-addsr-mat]').forEach(btn=>btn.onclick=()=>{
     const m = materials.find(x=>x.id===btn.dataset.addsrMat);
-    if(m){ scheduleLectureInitial(m, key, todayISO()); saveStore(); }
+    if(!m) return;
+    // Первый раз — просто подтверждаем. Если лекция уже в повторении, повторное нажатие
+    // начинает цикл заново, поэтому спрашиваем отдельно и прямо про сброс прогресса.
+    if(m.nextReview){
+      const lvl = (m.srLevel||0)+1;
+      if(!confirm(`Эта лекция уже на повторении (следующее — ${fmtDate(m.nextReview)}, пройдено интервалов: ${lvl}).\n\nОтправить её сначала? Прогресс повторений сбросится, и цикл начнётся заново с первого дня.\n\nТочно отправить заново?`)) return;
+    } else {
+      if(!confirm('Отправить лекцию на повторение? Платформа будет напоминать вернуться к ней через 1, 3, 7, 14 и 30 дней.')) return;
+    }
+    scheduleLectureInitial(m, key, todayISO());
+    saveStore();
     renderTheory(body,key);
+    renderNav();
+    openInfoModal('Отправлено на повторение', `Первое повторение — <b>${esc(fmtDate(m.nextReview))}</b>.`);
   });
   body.querySelectorAll('[data-edittheory]').forEach(btn=>btn.onclick=()=>{ THEORY_EDIT_STATE={catKey:key, materialId:btn.dataset.edittheory}; renderTheory(body,key); });
   body.querySelectorAll('[data-deltheory]').forEach(btn=>btn.onclick=()=>{
@@ -4746,10 +4878,17 @@ function renderTheoryEditor(body, key){
   function drawAttachments(){
     const wrap = document.getElementById('teFiles');
     if(!wrap) return;
+    wrap.className = attachments.length ? 'att-grid' : 'te-files';
     wrap.innerHTML = attachments.length
-      ? attachments.map((a,i)=>`<span class="te-file-chip"><a href="${a.data}" download="${esc(a.name)}">${esc(a.name)}</a><span class="te-file-size">${Math.round((a.size||0)/1024)} КБ</span><button type="button" data-delfile="${i}" title="Убрать">✕</button></span>`).join('')
+      ? attachments.map((a,i)=>`<div class="att-tile-wrap">${attachmentTileHtml(a, 'draft:'+i)}<button type="button" class="att-del" data-delfile="${i}" title="Убрать файл">✕</button></div>`).join('')
       : '<span style="font-size:11.5px;color:var(--text-faint)">Файлов пока нет</span>';
-    wrap.querySelectorAll('[data-delfile]').forEach(b=>b.onclick=()=>{
+    // в редакторе плитка открывает файл из локального массива, а не из STORE
+    wrap.querySelectorAll('.att-tile[data-att]').forEach(t=>t.onclick=(e)=>{
+      e.preventDefault(); e.stopPropagation();
+      openAttachmentViewer(attachments[+t.dataset.att.split(':')[1]]);
+    });
+    wrap.querySelectorAll('[data-delfile]').forEach(b=>b.onclick=(e)=>{
+      e.stopPropagation();
       if(!confirm('Убрать этот файл из лекции?')) return;
       attachments.splice(+b.dataset.delfile,1); drawAttachments(); markDirty();
     });
@@ -5573,24 +5712,96 @@ function reviewDueMaterials(){
   });
   return out;
 }
-function renderReviewLectures(main){
-  const due = reviewDueMaterials();
-  const rb = document.getElementById("reviewBody");
-  if(due.length===0){ rb.innerHTML = `<div class="empty-state">Все лекции повторены. Загляни завтра!</div>`; return; }
-  let html = `<div class="review-summary">Сегодня на повторение: <b>${due.length} лекций</b></div>`;
-  due.forEach(({catKey,m})=>{
-    const catName = getCategoryDisplayName(catKey);
-    html += `<div class="review-group" data-lecmat="${m.id}" data-leccat="${catKey}" style="cursor:default">
-      <span class="rg-mark"></span>
-      <span class="rg-text"><b>${esc(catName)}</b> — ${esc(m.title)} <span style="color:var(--text-faint)">(${esc(topicName(catKey,m.topicId))})</span></span>
-      <button class="btn btn-good" data-lecdone="${m.id}" data-leccat2="${catKey}">Повторил ✓</button>
-    </div>`;
+// Все лекции, которые вообще стоят на повторении — не только те, что созрели на сегодня.
+function scheduledMaterials(){
+  const out = [];
+  allCategoryKeys().forEach(catKey=>{
+    (STORE.materials[catKey]||[]).forEach(m=>{ if(m.nextReview) out.push({catKey, m}); });
   });
+  return out.sort((a,b)=>String(a.m.nextReview).localeCompare(String(b.m.nextReview)));
+}
+// Расписание оставшихся повторений: от текущего уровня и дальше по интервалам.
+function upcomingReviewDates(m){
+  const dates = [];
+  let base = m.nextReview;
+  if(!base) return dates;
+  dates.push(base);
+  for(let lvl=(m.srLevel||0)+1; lvl<SR_INTERVALS.length; lvl++){
+    base = addDays(base, SR_INTERVALS[lvl]);
+    dates.push(base);
+  }
+  return dates;
+}
+function renderReviewLectures(main){
+  const today = todayISO();
+  const due = reviewDueMaterials();
+  const all = scheduledMaterials();
+  const upcoming = all.filter(x=>x.m.nextReview > today);
+  const rb = document.getElementById("reviewBody");
+  if(all.length===0){
+    rb.innerHTML = `<div class="empty-state">Пока ни одна лекция не отправлена на повторение.<br>Открой лекцию в разделе Теория и нажми «Отправить на повторение».</div>`;
+    return;
+  }
+  const rowHtml = ({catKey,m}, isDue)=>{
+    const catName = getCategoryDisplayName(catKey);
+    const passed = m.srLevel||0;
+    const status = isDue
+      ? `<span class="rg-due">сегодня</span>`
+      : `<span class="rg-when">повтор ${esc(fmtDate(m.nextReview))}</span>`;
+    return `<div class="review-group lec-row ${isDue?'':'lec-upcoming'}" data-lecrow="${m.id}" data-leccat="${catKey}">
+      <span class="rg-mark"></span>
+      <span class="rg-text"><b>${esc(catName)}</b> — ${esc(m.title)}
+        <span style="color:var(--text-faint)">(${esc(topicName(catKey,m.topicId))})</span></span>
+      ${status}
+      <span class="rg-count">пройдено ${passed} из ${SR_INTERVALS.length}</span>
+      ${isDue?`<button class="btn btn-good" data-lecdone="${m.id}" data-leccat2="${catKey}">Повторил ✓</button>`:''}
+      <button class="btn" data-lecopen="${m.id}" data-leccat3="${catKey}">Открыть</button>
+    </div>
+    <div class="lec-schedule" data-lecsched="${m.id}" hidden>
+      <div class="lec-schedule-title">Дальнейшие повторения</div>
+      <ol class="lec-schedule-list">${upcomingReviewDates(m).map((d,i)=>`<li>${esc(fmtDate(d))}${i===0?' — ближайшее':''}</li>`).join('')}</ol>
+      <div class="lec-schedule-note">После каждого «Повторил ✓» дата следующего повторения отодвигается дальше по интервалам ${SR_INTERVALS.join(', ')} дней.</div>
+    </div>`;
+  };
+
+  let html = '';
+  if(due.length){
+    html += `<div class="review-summary">Сегодня на повторение: <b>${due.length} лекций</b></div>`;
+    html += due.map(x=>rowHtml(x, true)).join('');
+  } else {
+    html += `<div class="review-summary">На сегодня лекций нет — всё повторено</div>`;
+  }
+  if(upcoming.length){
+    html += `<div class="lec-section-head">Недавно отправлено на повторение — ждут своей даты</div>`;
+    html += upcoming.map(x=>rowHtml(x, false)).join('');
+    html += `<div class="lec-hint">Нажми на строку, чтобы посмотреть, в какие дни лекция будет напоминать о себе.</div>`;
+  }
   rb.innerHTML = html;
-  rb.querySelectorAll('[data-lecdone]').forEach(btn=>btn.onclick=()=>{
+
+  rb.querySelectorAll('[data-lecdone]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
     const m = (STORE.materials[btn.dataset.leccat2]||[]).find(x=>x.id===btn.dataset.lecdone);
     if(m) reviewMaterial(m, btn.dataset.leccat2);
     renderReviewLectures(main);
+    renderNav();
+  });
+  // «Открыть» — сразу переходим к самой лекции в разделе Теория
+  rb.querySelectorAll('[data-lecopen]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
+    const catKey = btn.dataset.leccat3, matId = btn.dataset.lecopen;
+    VIEW = catKey;
+    CAT_SUBVIEW[catKey] = 'theory';
+    THEORY_COLLAPSED[matId] = false; // разворачиваем именно её
+    renderAll();
+    setTimeout(()=>{
+      const el = document.querySelector(`.theory-item[data-mat="${matId}"]`);
+      if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'), 1600); }
+    }, 60);
+  });
+  // клик по строке — показать/скрыть даты следующих повторений
+  rb.querySelectorAll('[data-lecrow]').forEach(row=>row.onclick=()=>{
+    const sched = rb.querySelector(`[data-lecsched="${row.dataset.lecrow}"]`);
+    if(sched) sched.hidden = !sched.hidden;
   });
 }
 
@@ -6018,6 +6229,8 @@ function tableOp(op){
 }
 function wireTableTools(){
   document.querySelectorAll('.tbl-tools [data-tbl]').forEach(btn=>{
+    if(btn.dataset.rtWired) return; // не вешаем обработчик второй раз (см. wireRichToolbars)
+    btn.dataset.rtWired = '1';
     btn.addEventListener('mousedown',(e)=>e.preventDefault());
     btn.addEventListener('touchstart',(e)=>e.preventDefault(), {passive:false});
     btn.addEventListener('click',()=>tableOp(btn.dataset.tbl));
@@ -6026,6 +6239,12 @@ function wireTableTools(){
 
 function wireRichToolbars(){
   document.querySelectorAll('.rt-toolbar .rt-btn').forEach(btn=>{
+    // wireRichToolbars() зовётся и из редактора лекции, и из модалки карточки, а выбирает
+    // кнопки по всему документу. Без этой отметки одна и та же кнопка получала обработчик
+    // дважды, команда выполнялась два раза подряд (жирный включился и тут же выключился) —
+    // именно это выглядело как «кнопки иногда не работают».
+    if(btn.dataset.rtWired) return;
+    btn.dataset.rtWired = '1';
     // preventDefault и на mousedown, и на touchstart — чтобы тап по кнопке не уводил фокус
     // из поля и не схлопывал выделение (на тач-устройствах одного mousedown не хватает).
     btn.addEventListener('mousedown',(e)=>e.preventDefault());
@@ -6643,93 +6862,40 @@ applySidebarWidth(STORE.sidebarWidth || 256);
 
 (function initSidebarResize(){
   const resizer = document.getElementById('sidebarResizer');
-  let dragging = false;
-  function start(e){ dragging = true; resizer.classList.add('dragging'); e.preventDefault(); }
+  const SIDEBAR_MIN = 190, SIDEBAR_MAX = 420, SIDEBAR_DEFAULT = 256;
+  let dragging = false, pointerId = null;
   function move(clientX){
     if(!dragging) return;
-    const w = Math.min(420, Math.max(190, clientX));
-    applySidebarWidth(w);
+    applySidebarWidth(Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, Math.round(clientX))));
   }
   function end(){
     if(!dragging) return;
-    dragging = false; resizer.classList.remove('dragging');
-    const w = parseInt(document.getElementById('app').style.gridTemplateColumns);
-    STORE.sidebarWidth = w;
+    dragging = false;
+    resizer.classList.remove('dragging');
+    document.body.classList.remove('resizing-sidebar');
+    try{ if(pointerId!==null) resizer.releasePointerCapture(pointerId); }catch(e){}
+    pointerId = null;
+    STORE.sidebarWidth = parseInt(document.getElementById('app').style.gridTemplateColumns) || SIDEBAR_DEFAULT;
     saveStore();
   }
-  resizer.addEventListener('mousedown', start);
-  document.addEventListener('mousemove', (e)=>move(e.clientX));
-  document.addEventListener('mouseup', end);
-  resizer.addEventListener('touchstart', (e)=>start(e), {passive:false});
-  document.addEventListener('touchmove', (e)=>{ if(dragging && e.touches[0]) move(e.touches[0].clientX); }, {passive:false});
-  document.addEventListener('touchend', end);
-})();
-
-/* ---------- Линия под подзаголовком: пересчитывается от реальной ширины текста,
-   а не от захардкоженных px — иначе съезжает при ресайзе сайдбара ---------- */
-(function initBrandDivider(){
-  const brand = document.querySelector('.brand');
-  const h1 = document.querySelector('.brand h1');
-  const sub = document.querySelector('.brand .sub');
-  const divider = document.querySelector('.brand-divider');
-  if(!brand || !h1 || !sub || !divider) return;
-  const MM = 96/25.4; // 1мм в css-px
-  const GAP_BELOW = 1.48; // фиксированный зазор линия→подзаголовок — двигаются как единый блок
-
-  // Ширину текста меряем через отсоединённый от потока клон (position:absolute
-  // внутри .brand), а не изменяя width у настоящего .sub — иначе .brand на
-  // мгновение меняет размер, ResizeObserver, который следит за .brand, ловит
-  // это сам и на некоторых мобильных браузерах уходит в гонку/неправильный кадр,
-  // из-за чего линия иногда «подпрыгивает» выше логотипа.
-  function measureIntrinsicWidth(){
-    const clone = sub.cloneNode(true);
-    clone.style.position = 'absolute';
-    clone.style.visibility = 'hidden';
-    clone.style.pointerEvents = 'none';
-    clone.style.width = 'max-content';
-    clone.style.margin = '0';
-    clone.style.left = '0';
-    clone.style.top = '0';
-    brand.appendChild(clone);
-    const w = clone.getBoundingClientRect().width;
-    brand.removeChild(clone);
-    return w;
-  }
-
-  function layout(){
-    const brandRect = brand.getBoundingClientRect();
-    if(!brandRect.width) return; // сайдбар свёрнут — блок скрыт, считать нечего
-
-    const subRect = sub.getBoundingClientRect();
-    const textWidth = measureIntrinsicWidth();
-
-    const left = (subRect.left - brandRect.left) - MM;
-    const maxWidth = brandRect.width - left - 4;
-    const width = Math.max(0, Math.min(textWidth + MM*2, maxWidth));
-    const top = (subRect.top - brandRect.top) - GAP_BELOW;
-
-    divider.style.left = left + 'px';
-    divider.style.width = width + 'px';
-    divider.style.top = top + 'px';
-  }
-
-  // На iOS при повороте экрана env(safe-area-inset-top) какое-то время отдаёт
-  // старое/промежуточное значение, а ResizeObserver может не поймать момент,
-  // когда оно наконец устоится — поэтому после поворота досчитываем layout()
-  // ещё несколько раз с задержкой, а не полагаемся только на один кадр.
-  function relayoutSoon(){
-    layout();
-    requestAnimationFrame(layout);
-    setTimeout(layout, 150);
-    setTimeout(layout, 400);
-    setTimeout(layout, 800);
-  }
-
-  new ResizeObserver(layout).observe(brand);
-  window.addEventListener('orientationchange', relayoutSoon);
-  if(window.visualViewport) window.visualViewport.addEventListener('resize', relayoutSoon);
-  document.fonts && document.fonts.ready.then(layout);
-  layout();
+  // Pointer Events — одинаково работает мышью, пальцем и стилусом, с захватом указателя,
+  // поэтому ползунок не «теряется», если увести палец за пределы полоски.
+  resizer.addEventListener('pointerdown',(e)=>{
+    dragging = true; pointerId = e.pointerId;
+    resizer.classList.add('dragging');
+    document.body.classList.add('resizing-sidebar');
+    try{ resizer.setPointerCapture(e.pointerId); }catch(err){}
+    e.preventDefault();
+  });
+  resizer.addEventListener('pointermove',(e)=>{ if(dragging && e.pointerId===pointerId) move(e.clientX); });
+  resizer.addEventListener('pointerup', end);
+  resizer.addEventListener('pointercancel', end);
+  // двойной тап/клик по ползунку — вернуть ширину по умолчанию
+  resizer.addEventListener('dblclick',()=>{
+    applySidebarWidth(SIDEBAR_DEFAULT);
+    STORE.sidebarWidth = SIDEBAR_DEFAULT;
+    saveStore();
+  });
 })();
 
 /* ==========================================================================
