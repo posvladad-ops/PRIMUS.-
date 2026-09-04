@@ -757,21 +757,21 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
 
 /* ---------- Rich text toolbar для карточек ---------- */
 .rt-toolbar{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap;align-items:center;}
-/* Плавающая панель форматирования: всегда внизу экрана, пока пишешь лекцию —
-   листать наверх к панели над полем не нужно. */
+/* Плавающая панель форматирования: закреплена СВЕРХУ экрана, пока пишешь лекцию —
+   листать к панели над полем не нужно, и она не мешает снизу. */
 #floatFormatBar{
-  position:fixed;left:0;right:0;bottom:0;z-index:90;
-  background:var(--surface);border-top:1px solid var(--border);
-  box-shadow:0 -6px 18px -10px rgba(0,0,0,.55);
-  padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+  position:fixed;left:0;right:0;top:0;z-index:90;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  box-shadow:0 6px 18px -10px rgba(0,0,0,.55);
+  padding:calc(8px + env(safe-area-inset-top)) 12px 8px;
   max-height:42vh;overflow-y:auto;
 }
 #floatFormatBar[hidden]{display:none;}
 #floatFormatBar .rt-toolbar{margin-bottom:0;}
 #floatFormatBar .tbl-tools{position:static;margin-bottom:8px;}
 @media (min-width:821px){ #floatFormatBar{left:var(--sidebar-w,256px);} }
-/* чтобы панель не перекрывала низ формы */
-body.has-float-bar .theory-editor{padding-bottom:132px;}
+/* чтобы панель не перекрывала верх формы */
+body.has-float-bar .theory-editor{padding-top:120px;}
 .rt-btn{width:26px;height:26px;border:1px solid var(--border);background:var(--surface);border-radius:5px;font-size:12px;color:var(--text-dim);cursor:pointer;flex-shrink:0;padding:0;}
 .rt-btn:hover{border-color:var(--accent);color:var(--accent-strong);}
 .rt-btn.b{font-weight:800;}
