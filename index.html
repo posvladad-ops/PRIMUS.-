@@ -13,6 +13,9 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- Сами файлы шрифтов лежат на gstatic — без этого preconnect соединение к нему открывалось
+     только после загрузки CSS, и логотип успевал мелькнуть запасным шрифтом. -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Unbounded:wght@900&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 /* ===================== ТОКЕНЫ ТЕМЫ ===================== */
@@ -95,7 +98,15 @@ body{
 }
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;margin:0 0 .4em;letter-spacing:-.2px;}
 a{color:inherit;}
+/* touch-action:manipulation убирает задержку ~300 мс перед click на телефоне (браузер больше не
+   ждёт возможный double-tap-zoom), из-за которой кнопки «лагали». tap-highlight — серая вспышка
+   поверх кнопки; свой :active-отклик выглядит аккуратнее. */
+button,.nav-item,.chip,.ov-tab,.icon-btn,.mini-btn,.kind-opt,.flashcard,.opt,.match-item,.att-tile{
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
 button{font-family:var(--font-body);cursor:pointer;border-radius:var(--radius-s);}
+/* Короткий отклик на нажатие вместо «залипшего» hover */
+button:active,.nav-item:active,.chip:active,.ov-tab:active{filter:brightness(1.12);}
 textarea,input,select{border-radius:var(--radius-s);font-size:16px;font-family:inherit;}
 ::-webkit-scrollbar{width:10px;height:10px;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;}
@@ -112,18 +123,18 @@ textarea,input,select{border-radius:var(--radius-s);font-size:16px;font-family:i
   background-size:cover;background-position:center;position:relative;flex-shrink:0;
   transition:background-color .15s;
 }
-.cover-banner:hover{background-color:var(--surface-hover);}
+@media (hover:hover){.cover-banner:hover{background-color:var(--surface-hover);}}
 .cover-banner .cover-label{font-size:11px;color:var(--text-faint);font-family:var(--font-mono);letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;transition:opacity .15s;}
 .cover-banner.has-image .cover-label{opacity:0;background:rgba(10,10,10,.55);color:#fff;}
-.cover-banner.has-image:hover .cover-label{opacity:1;}
+@media (hover:hover){.cover-banner.has-image:hover .cover-label{opacity:1;}}
 .cover-remove{
   position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;
   background:rgba(10,10,10,.35);color:rgba(255,255,255,.85);border:none;font-size:12px;font-weight:300;display:none;
   align-items:center;justify-content:center;cursor:pointer;line-height:1;opacity:0;transition:opacity .15s,background .15s;
 }
-.cover-banner.has-image:hover .cover-remove{opacity:1;}
+@media (hover:hover){.cover-banner.has-image:hover .cover-remove{opacity:1;}}
 .cover-banner.has-image .cover-remove{display:flex;}
-.cover-remove:hover{background:rgba(10,10,10,.6);}
+@media (hover:hover){.cover-remove:hover{background:rgba(10,10,10,.6);}}
 .sidebar{
   background:var(--bg-soft);
   border-right:1px solid var(--border);
@@ -142,7 +153,8 @@ textarea,input,select{border-radius:var(--radius-s);font-size:16px;font-family:i
 .sidebar-resizer::before{
   content:'';width:3px;height:44px;border-radius:2px;background:var(--border);opacity:.7;transition:background .12s,opacity .12s;
 }
-.sidebar-resizer:hover::before,.sidebar-resizer.dragging::before{background:var(--accent);opacity:1;height:64px;}
+.sidebar-resizer.dragging::before{background:var(--accent);opacity:1;height:64px;}
+@media (hover:hover){.sidebar-resizer:hover::before{background:var(--accent);opacity:1;height:64px;}}
 .sidebar-resizer.dragging{background:var(--accent-soft);}
 /* во время перетаскивания не выделяем текст и не мигаем курсором */
 body.resizing-sidebar{user-select:none;cursor:col-resize;}
@@ -158,7 +170,15 @@ body.resizing-sidebar{user-select:none;cursor:col-resize;}
   color:var(--text);
   min-width:192px; /* держит ширину логотипа стабильной, пока грузится шрифт Unbounded (иначе на медленной
                        сети виден "прыжок" ширины при смене запасного шрифта на настоящий) */
+  /* Логотип «менял жирность и шрифт» вот почему: пока Unbounded не загрузился, браузер рисовал
+     запасной Onest и сам «дожирнял» его до веса 900 (синтетический жир) — буквы получались
+     другой толщины и формы. font-synthesis:none запрещает такую подделку, а класс
+     brand-font-ready (ставится скриптом, когда судьба шрифта решена) показывает логотип
+     уже в окончательном виде — переключения на глазах больше нет. */
+  font-synthesis:none;-webkit-font-synthesis:none;
+  visibility:hidden;
 }
+html.brand-font-ready .brand h1{visibility:visible;}
 .brand-dot{display:inline-block;transform:scaleX(0.86957) scaleY(1.06383);transform-origin:center;}
 html[data-theme="light"] .brand h1{ color:var(--choc-bitter); }
 .brand .sub{font-family:var(--font-mono);font-size:10.5px;font-weight:400;text-transform:uppercase;color:var(--text-dim);opacity:.55;margin-top:-12px;letter-spacing:1.4px;transform:scaleX(1.06) scaleY(0.9);transform-origin:left top;
@@ -177,7 +197,7 @@ html[data-theme="dark"] .brand .sub{border-top-color:var(--khaki);}
   cursor:pointer;transition:background .12s,color .12s;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.nav-item:hover{background:var(--surface-hover);color:var(--text);}
+@media (hover:hover){.nav-item:hover{background:var(--surface-hover);color:var(--text);}}
 .nav-item.active{background:var(--accent-soft);color:var(--accent-strong);font-weight:600;}
 .mono-badge{
   width:20px;height:20px;border-radius:6px;background:var(--khaki-soft);color:var(--khaki);
@@ -186,7 +206,7 @@ html[data-theme="dark"] .brand .sub{border-top-color:var(--khaki);}
 .nav-item.active .mono-badge{background:var(--accent);color:#fff;}
 .nav-item .count{margin-left:auto;font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);}
 .nav-add{margin:8px 6px 2px;padding:7px 10px;border-radius:var(--radius-s);border:1px dashed var(--border);background:transparent;color:var(--text-faint);font-size:12.5px;text-align:left;}
-.nav-add:hover{border-color:var(--accent);color:var(--accent-strong);}
+@media (hover:hover){.nav-add:hover{border-color:var(--accent);color:var(--accent-strong);}}
 
 .theme-toggle{
   margin-top:auto;display:flex;align-items:center;justify-content:space-between;
@@ -208,7 +228,7 @@ h2.prog-title{font-family:var(--font-display);font-weight:800;font-size:30px;tex
 .prog-toc-divider{width:100%;max-width:460px;height:1px;background:var(--khaki);opacity:.35;margin:6px 0 10px;}
 .prog-toc{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;}
 .prog-toc a{color:var(--text-faint);text-decoration:none;cursor:pointer;transition:color .12s;}
-.prog-toc a:hover{color:var(--khaki);}
+@media (hover:hover){.prog-toc a:hover{color:var(--khaki);}}
 h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--text-dim);margin:0;}
 .sec-line{height:1px;background:var(--border);opacity:.7;margin:9px 0 18px;}
 .btn{
@@ -217,9 +237,9 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
   background:var(--surface);color:var(--text);font-size:13px;font-weight:500;
   transition:border-color .12s,background .12s;
 }
-.btn:hover{border-color:var(--accent);background:var(--surface-hover);}
+@media (hover:hover){.btn:hover{border-color:var(--accent);background:var(--surface-hover);}}
 .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}
-.btn-primary:hover{background:var(--accent-strong);border-color:var(--accent-strong);}
+@media (hover:hover){.btn-primary:hover{background:var(--accent-strong);border-color:var(--accent-strong);}}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;}
 
 /* Aura hero */
@@ -250,7 +270,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 
 .home-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:22px;}
 .home-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:18px;cursor:pointer;transition:border-color .12s;}
-.home-card:hover{border-color:var(--accent);}
+@media (hover:hover){.home-card:hover{border-color:var(--accent);}}
 .home-card-num{font-family:var(--font-display);font-size:28px;font-weight:800;color:var(--accent-strong);}
 .home-card-label{font-size:12.5px;color:var(--text-dim);margin-top:4px;}
 .home-card.rno-card{border-color:var(--bad);}
@@ -272,7 +292,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
   background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);
   padding:16px;transition:border-color .12s;position:relative;
 }
-.flashcard:hover{border-color:var(--accent);}
+@media (hover:hover){.flashcard:hover{border-color:var(--accent);}}
 .fc-topic{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px;}
 .flashcard .fc-top{font-family:var(--font-display);font-size:16.5px;font-weight:700;margin-bottom:4px;}
 .flashcard .fc-sub{font-size:12.5px;color:var(--accent-strong);font-weight:500;margin-bottom:8px;}
@@ -282,8 +302,8 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .level-badge.mastered{background:rgba(124,148,115,.18);color:var(--good);}
 .fc-actions{display:flex;gap:6px;margin-top:10px;}
 .icon-btn{border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:4px 8px;color:var(--text-faint);font-size:11px;}
-.icon-btn:hover{color:var(--bad);border-color:var(--bad);}
-.icon-btn.edit:hover{color:var(--accent);border-color:var(--accent);}
+@media (hover:hover){.icon-btn:hover{color:var(--bad);border-color:var(--bad);}}
+@media (hover:hover){.icon-btn.edit:hover{color:var(--accent);border-color:var(--accent);}}
 
 .cards-topic-body{margin-bottom:20px;}
 .cards-topic-body.collapsed{display:none;}
@@ -336,7 +356,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .task-prompt{font-family:var(--font-display);font-size:18px;font-weight:600;line-height:1.4;margin-bottom:16px;}
 .opt-list{display:flex;flex-direction:column;gap:8px;margin:14px 0;}
 .opt{padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-s);font-size:13.5px;background:var(--bg-soft);transition:border-color .1s,background .1s;}
-.opt:hover{border-color:var(--accent);}
+@media (hover:hover){.opt:hover{border-color:var(--accent);}}
 .opt.correct{border-color:var(--good);background:rgba(124,148,115,.14);}
 .opt.wrong{border-color:var(--bad);background:rgba(181,103,90,.14);}
 .open-answer{width:100%;min-height:90px;padding:12px;border-radius:var(--radius-s);border:1px solid var(--border);background:var(--bg-soft);color:var(--text);font-family:var(--font-body);font-size:13.5px;margin-bottom:12px;resize:vertical;}
@@ -354,7 +374,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0;}
 .match-col{display:flex;flex-direction:column;gap:8px;}
 .match-item{padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-s);font-size:13px;background:var(--bg-soft);cursor:pointer;}
-.match-item:hover{border-color:var(--accent);}
+@media (hover:hover){.match-item:hover{border-color:var(--accent);}}
 .match-item.selected{border-color:var(--accent);background:var(--accent-soft);}
 .match-item.correct{border-color:var(--good);background:rgba(124,148,115,.14);cursor:default;opacity:.7;}
 .match-item.wrong{border-color:var(--bad);background:rgba(181,103,90,.14);}
@@ -362,7 +382,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 /* Review / RNO */
 .review-summary{font-family:var(--font-display);font-size:19px;font-weight:700;margin-bottom:14px;}
 .art-row{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:var(--radius-s);border:1px solid var(--border);margin-bottom:6px;cursor:pointer;font-size:12.5px;}
-.art-row:hover{border-color:var(--accent);background:var(--surface-hover);}
+@media (hover:hover){.art-row:hover{border-color:var(--accent);background:var(--surface-hover);}}
 .art-top{font-weight:600;}
 .art-sub{color:var(--text-dim);}
 .art-cat{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--text-faint);text-transform:uppercase;}
@@ -405,7 +425,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 
 /* ---------- Полный календарь: боковая панель на неделю ---------- */
 .fcs-toggle{border:1px dashed var(--border);background:transparent;color:var(--text-faint);font-size:11.5px;padding:7px 12px;border-radius:var(--radius-s);}
-.fcs-toggle:hover{border-color:var(--accent);color:var(--accent-strong);}
+@media (hover:hover){.fcs-toggle:hover{border-color:var(--accent);color:var(--accent-strong);}}
 .fcs-panel{margin-top:10px;}
 .fcs-nav{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
 .fcs-range{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);}
@@ -469,7 +489,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .fullcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
 .fullcal-dow{text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-faint);text-transform:uppercase;padding-bottom:4px;}
 .fullcal-cell{aspect-ratio:1;border:1px dashed var(--border);border-radius:var(--radius-s);padding:6px;display:flex;flex-direction:column;gap:3px;cursor:pointer;background:var(--bg-soft);overflow:visible;min-width:0;}
-.fullcal-cell:hover{border-color:var(--accent);}
+@media (hover:hover){.fullcal-cell:hover{border-color:var(--accent);}}
 .fullcal-cell.empty{border:none;background:transparent;cursor:default;}
 .fullcal-cell.today{border-style:solid;border-color:var(--accent);}
 .fullcal-cell .fc-daynum{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);}
@@ -483,10 +503,10 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .fc-dd-num{font-family:var(--font-display);font-size:22px;font-weight:800;}
 .fc-dd-events{display:flex;flex-direction:column;gap:6px;}
 .fc-week-add{width:100%;padding:5px;border:1px dashed var(--border);border-radius:6px;background:transparent;color:var(--text-faint);font-size:10.5px;margin-top:auto;}
-.fc-week-add:hover{border-color:var(--accent);color:var(--accent-strong);}
+@media (hover:hover){.fc-week-add:hover{border-color:var(--accent);color:var(--accent-strong);}}
 .fc-event-row{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 6px;border-radius:5px;background:var(--surface);margin-bottom:4px;cursor:pointer;border:1px solid var(--border);min-width:0;}
 .fc-event-row > span{min-width:0;}
-.fc-event-row:hover{border-color:var(--accent);}
+@media (hover:hover){.fc-event-row:hover{border-color:var(--accent);}}
 .fc-event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .fc-event-time{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);}
 .fc-color-pick{display:flex;gap:9px;margin:0 0 16px;}
@@ -511,9 +531,23 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .set-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg-soft);}
 .set-row-num{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);width:18px;padding-top:8px;flex-shrink:0;}
 .set-row-fields{flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;}
-.set-input{padding:7px 9px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:16px;border-radius:6px;}
+.set-input{padding:7px 9px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:16px;border-radius:6px;min-width:0;}
+/* Блок «через ИИ» внутри окна сета — второй, необязательный путь набрать карточки */
+.set-ai{border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg-soft);padding:10px 12px;margin:4px 0 16px;}
+.set-ai-head{font-family:var(--font-mono);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+.set-rows-head{font-family:var(--font-mono);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:var(--text-faint);margin:0 0 8px;}
+/* Короткое сообщение поверх открытой модалки — чтобы не переписывать её содержимое */
+#miniToast{
+  position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(14px);
+  max-width:min(420px,calc(100vw - 28px));z-index:400;
+  background:var(--surface);border:1px solid var(--accent);border-radius:var(--radius-m);
+  box-shadow:var(--shadow);padding:10px 14px;display:flex;flex-direction:column;gap:2px;
+  font-size:12px;color:var(--text-dim);opacity:0;pointer-events:none;transition:opacity .16s,transform .16s;
+}
+#miniToast b{font-size:12.5px;color:var(--text);}
+#miniToast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .mini-btn{border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:4px 7px;color:var(--text-faint);font-size:11px;}
-.mini-btn:hover{color:var(--accent);border-color:var(--accent);}
+@media (hover:hover){.mini-btn:hover{color:var(--accent);border-color:var(--accent);}}
 .mini-btn.pin-on{color:var(--accent-strong);border-color:var(--accent-strong);background:var(--accent-soft);}
 
 /* Study / flip mode (Quizlet-style) */
@@ -537,7 +571,10 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .study-card .sc-sub{font-size:14px;color:var(--text-dim);margin-top:12px;line-height:1.6;}
 .study-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
 .study-nav .btn{padding:6px 12px;font-size:12px;}
-.study-progress{font-size:12px;color:var(--text-faint);text-align:center;margin:0;}
+.study-progress{font-size:12px;color:var(--text-faint);text-align:center;margin:0;display:flex;flex-direction:column;gap:1px;line-height:1.3;}
+.study-progress b{font-size:12.5px;color:var(--text-dim);font-weight:600;}
+.study-bar{height:3px;border-radius:3px;background:var(--bg-soft);overflow:hidden;margin:0 0 10px;}
+.study-bar-fill{height:100%;background:var(--khaki-ring);transition:width .18s;}
 .study-actions{display:flex;gap:8px;justify-content:center;}
 .study-actions .btn{flex:1;max-width:170px;}
 .btn-know{background:var(--good);border-color:var(--good);color:#fff;}
@@ -550,8 +587,33 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .theory-item.collapsed .theory-collapsible{display:none;}
 .theory-item.collapsed .theory-title-row{margin-bottom:0;}
 .theory-collapse{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;background:var(--bg-soft);border:1px solid var(--border);color:var(--text-faint);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
-.theory-collapse:hover{color:var(--accent-strong);border-color:var(--accent);}
-.theory-topic{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;padding-right:26px;}
+@media (hover:hover){.theory-collapse:hover{color:var(--accent-strong);border-color:var(--accent);}}
+.theory-topic{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;padding-right:26px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+/* ---------- Лекции и семинары ----------
+   Овал вида материала: лекция всегда коричневая, семинар — хаки. Если материалы
+   прикреплены друг к другу, их овалы стоят вплотную — один общий «склеенный» овал. */
+.mat-kind{display:inline-block;border-radius:12px;padding:2px 9px;font-family:var(--font-mono);font-size:9px;letter-spacing:.8px;text-transform:uppercase;flex-shrink:0;}
+.mat-kind.lecture{background:var(--accent-soft);color:var(--accent-strong);}
+.mat-kind.seminar{background:var(--khaki-soft);color:var(--khaki);}
+.theory-group{margin-bottom:14px;}
+.theory-group .theory-item{margin-bottom:8px;}
+.theory-group .theory-item:last-child{margin-bottom:0;}
+.theory-group.linked{border-left:2px solid var(--khaki-ring);padding-left:12px;border-radius:2px;}
+.theory-group.linked .theory-item{margin-bottom:6px;}
+.kind-pills{display:inline-flex;border-radius:12px;overflow:hidden;margin-bottom:7px;}
+.kind-pill{font-family:var(--font-mono);font-size:9px;letter-spacing:.8px;text-transform:uppercase;padding:3px 11px;white-space:nowrap;}
+.kind-pill.lecture{background:var(--accent-soft);color:var(--accent-strong);}
+.kind-pill.seminar{background:var(--khaki-soft);color:var(--khaki);}
+.kind-pill+.kind-pill{box-shadow:inset 1px 0 0 var(--border);}
+/* Выбор «лекция / семинар» в шапке редактора — те же два цвета, что и в списке */
+.te-kind-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px;}
+.te-kind-pick{display:inline-flex;border-radius:14px;overflow:hidden;border:1px solid var(--border);}
+.kind-opt{border:none;background:transparent;font-family:var(--font-mono);font-size:10px;letter-spacing:.9px;text-transform:uppercase;padding:6px 14px;color:var(--text-faint);border-radius:0;}
+.kind-opt+.kind-opt{box-shadow:inset 1px 0 0 var(--border);}
+.kind-opt.lecture.on{background:var(--accent-soft);color:var(--accent-strong);font-weight:600;}
+.kind-opt.seminar.on{background:var(--khaki-soft);color:var(--khaki);font-weight:600;}
+.te-link-label{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text-faint);flex-wrap:wrap;}
+.te-link-label select{padding:5px 8px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text);border-radius:6px;font-size:12px;max-width:min(300px,60vw);}
 .theory-title{font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:10px;}
 .theory-block{margin-bottom:10px;}
 .theory-block .tb-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent);margin-bottom:3px;}
@@ -580,7 +642,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .theory-keywords{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
 .kw-chip{display:inline-flex;align-items:center;gap:5px;background:var(--accent-soft);color:var(--accent-strong);border-radius:12px;padding:3px 9px;font-size:11px;font-weight:500;}
 .kw-chip.editable button{background:none;border:none;color:inherit;opacity:.6;cursor:pointer;padding:0;font-size:10px;}
-.kw-chip.editable button:hover{opacity:1;}
+@media (hover:hover){.kw-chip.editable button:hover{opacity:1;}}
 .theory-material-preview{}
 
 /* ---------- Полноэкранный редактор теории ---------- */
@@ -635,9 +697,9 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .plan-task .pt-text{flex:1;font-size:13px;cursor:text;}
 .plan-task .pt-deadline{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);white-space:nowrap;}
 .plan-task .pt-del{border:none;background:transparent;color:var(--text-faint);cursor:pointer;font-size:12px;padding:2px 4px;}
-.plan-task .pt-del:hover{color:var(--bad);}
+@media (hover:hover){.plan-task .pt-del:hover{color:var(--bad);}}
 .plan-add-btn{width:100%;padding:9px;border-radius:var(--radius-s);border:1px dashed var(--border);background:transparent;color:var(--text-faint);font-size:12.5px;margin-top:4px;}
-.plan-add-btn:hover{border-color:var(--accent);color:var(--accent-strong);}
+@media (hover:hover){.plan-add-btn:hover{border-color:var(--accent);color:var(--accent-strong);}}
 .plan-goal-edit{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-faint);margin-top:4px;}
 .plan-goal-edit input{width:48px;padding:3px 5px;font-size:16px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text);border-radius:4px;text-align:center;}
 
@@ -653,21 +715,21 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .ec-count{font-family:var(--font-mono);font-size:9px;opacity:.6;}
 .eis-cell .ec-add{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:1px solid var(--border);
   color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
-.eis-cell .ec-add:hover{background:var(--accent-soft);border-color:var(--accent);}
+@media (hover:hover){.eis-cell .ec-add:hover{background:var(--accent-soft);border-color:var(--accent);}}
 .ec-collapse{position:absolute;top:9px;right:9px;width:16px;height:16px;border:none;background:transparent;color:var(--text-faint);
   font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;opacity:.55;transition:opacity .12s,color .12s;}
 .eis-cell.collapsed .ec-collapse{top:9px;right:9px;}
 .eis-cell:not(.collapsed) .ec-collapse{right:32px;}
-.ec-collapse:hover{opacity:1;color:var(--accent-strong);}
+@media (hover:hover){.ec-collapse:hover{opacity:1;color:var(--accent-strong);}}
 .eis-cell.uiq{background:var(--eis-uiq);}
 .eis-cell.inq{background:var(--eis-inq);}
 .eis-cell.uniq{background:var(--eis-uniq);}
 .eis-cell.ninq{background:var(--eis-ninq);}
 .ec-chips{display:flex;flex-direction:column;gap:4px;overflow-y:auto;flex:1;}
 .eq-chip{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 7px;font-size:11px;cursor:pointer;line-height:1.3;}
-.eq-chip:hover{border-color:var(--accent);}
+@media (hover:hover){.eq-chip:hover{border-color:var(--accent);}}
 .eq-chip-toggle{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--text-faint);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;}
-.eq-chip-toggle:hover{color:var(--good);border-color:var(--good);}
+@media (hover:hover){.eq-chip-toggle:hover{color:var(--good);border-color:var(--good);}}
 .eq-chip-date{margin-left:auto;font-family:var(--font-mono);font-size:9px;opacity:.7;white-space:nowrap;}
 .eq-empty{font-size:10.5px;opacity:.5;padding:4px 0;}
 
@@ -675,7 +737,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .week-strip{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
 .week-days{display:flex;gap:5px;flex:1;}
 .week-day-pick{flex:1;text-align:center;padding:6px 2px;border-radius:var(--radius-s);background:transparent;border:1px solid transparent;cursor:pointer;}
-.week-day-pick:hover{border-color:var(--border);}
+@media (hover:hover){.week-day-pick:hover{border-color:var(--border);}}
 .week-day-pick.active{background:var(--accent-soft);border-color:var(--accent);}
 .week-day-pick.done .wd-num{color:var(--good);}
 .week-day-pick .wd-label{font-family:var(--font-mono);font-size:9px;color:var(--text-faint);text-transform:uppercase;}
@@ -760,20 +822,30 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
 /* Плавающая панель форматирования: закреплена СВЕРХУ экрана, пока пишешь лекцию —
    листать к панели над полем не нужно, и она не мешает снизу. */
 #floatFormatBar{
-  position:fixed;left:0;right:0;top:0;z-index:90;
-  background:var(--surface);border-bottom:1px solid var(--border);
-  box-shadow:0 6px 18px -10px rgba(0,0,0,.55);
-  padding:calc(8px + env(safe-area-inset-top)) 12px 8px;
-  max-height:42vh;overflow-y:auto;
+  position:fixed;left:0;right:0;top:0;z-index:90;/* ниже модалок (overlay = 100), выше содержимого */
+  /* На iPhone при открытой клавиатуре видимая область (visual viewport) съезжает вниз
+     относительно layout viewport, и панель с top:0 уходит выше экрана — её «вообще не видно».
+     Поэтому её положение подгоняется скриптом через --float-bar-y (см. syncFloatBarPosition). */
+  transform:translate3d(0,var(--float-bar-y,0px),0);
+  background:var(--surface);border-bottom:1px solid var(--accent);
+  box-shadow:0 10px 24px -12px rgba(0,0,0,.65);
+  padding:calc(6px + env(safe-area-inset-top)) 12px 8px;
+  max-height:40vh;overflow-y:auto;overscroll-behavior:contain;
 }
 #floatFormatBar[hidden]{display:none;}
 #floatFormatBar .rt-toolbar{margin-bottom:0;}
 #floatFormatBar .tbl-tools{position:static;margin-bottom:8px;}
+/* Подпись, к какому полю относятся кнопки — панель теперь видна всё время, пока открыта лекция */
+.fb-target{font-family:var(--font-mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px;display:block;}
 @media (min-width:821px){ #floatFormatBar{left:var(--sidebar-w,256px);} }
-/* чтобы панель не перекрывала верх формы */
-body.has-float-bar .theory-editor{padding-top:120px;}
+/* чтобы панель не перекрывала верх формы — высоту панели меряем и кладём в переменную */
+body.has-float-bar .theory-editor{padding-top:var(--float-bar-h,120px);}
+/* прокрутка к полю (в том числе автоматическая, вслед за курсором) останавливается под панелью,
+   а не прячет поле за ней */
+body.has-float-bar{scroll-padding-top:var(--float-bar-scrollpad,132px);}
+html:has(body.has-float-bar){scroll-padding-top:var(--float-bar-scrollpad,132px);}
 .rt-btn{width:26px;height:26px;border:1px solid var(--border);background:var(--surface);border-radius:5px;font-size:12px;color:var(--text-dim);cursor:pointer;flex-shrink:0;padding:0;}
-.rt-btn:hover{border-color:var(--accent);color:var(--accent-strong);}
+@media (hover:hover){.rt-btn:hover{border-color:var(--accent);color:var(--accent-strong);}}
 .rt-btn.b{font-weight:800;}
 .rt-btn.i{font-style:italic;}
 .rt-btn.s{text-decoration:line-through;}
@@ -806,7 +878,7 @@ table.lec-table th{background:var(--bg-soft);font-weight:600;}
 .te-files{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
 .te-file-chip{display:inline-flex;align-items:center;gap:7px;background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:4px 10px;font-size:11.5px;}
 .te-file-chip a{color:var(--accent-strong);text-decoration:none;}
-.te-file-chip a:hover{text-decoration:underline;}
+@media (hover:hover){.te-file-chip a:hover{text-decoration:underline;}}
 .te-file-size{color:var(--text-faint);font-family:var(--font-mono);font-size:10px;}
 .te-file-chip button{border:none;background:transparent;color:var(--text-faint);cursor:pointer;font-size:11px;padding:0;}
 .te-file-hint{font-size:11px;color:var(--text-faint);margin-top:6px;}
@@ -815,7 +887,7 @@ table.lec-table th{background:var(--bg-soft);font-weight:600;}
 .att-tile-wrap{position:relative;}
 .att-tile{width:104px;padding:8px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg-soft);
   cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;color:inherit;text-align:center;}
-.att-tile:hover{border-color:var(--accent);}
+@media (hover:hover){.att-tile:hover{border-color:var(--accent);}}
 .att-thumb{width:86px;height:64px;object-fit:cover;border-radius:5px;border:1px solid var(--border);display:block;}
 .att-icon{width:86px;height:64px;border-radius:5px;border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;
   font-family:var(--font-mono);font-size:12px;color:var(--accent-strong);background:var(--surface);}
@@ -823,7 +895,7 @@ table.lec-table th{background:var(--bg-soft);font-weight:600;}
 .att-size{font-family:var(--font-mono);font-size:9.5px;color:var(--text-faint);}
 .att-del{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:1px solid var(--border);
   background:var(--surface);color:var(--text-faint);font-size:11px;cursor:pointer;line-height:1;}
-.att-del:hover{color:var(--bad);border-color:var(--bad);}
+@media (hover:hover){.att-del:hover{color:var(--bad);border-color:var(--bad);}}
 .att-full{max-width:100%;max-height:70vh;display:block;margin:0 auto;border-radius:var(--radius-s);border:1px solid var(--border);}
 .att-pdf{width:100%;height:70vh;border:1px solid var(--border);border-radius:var(--radius-s);background:#fff;}
 /* Напоминание сохранить материал */
@@ -878,6 +950,22 @@ table.lec-table th{background:var(--bg-soft);font-weight:600;}
 .nb-page.paper-black.bg-dot{background-image:radial-gradient(#3D3D3D 1.3px, transparent 1.3px);background-size:22px 22px;}
 .nb-card{cursor:pointer;}
 </style>
+<script>
+/* Логотип показываем один раз и сразу в окончательном виде: ждём, пока решится судьба
+   шрифта Unbounded (загрузился или точно не загрузится), и только тогда снимаем скрытие.
+   Любой сбой или таймаут всё равно показывает логотип — невидимым он не остаётся никогда. */
+(function(){
+  var done = false;
+  function ready(){ if(done) return; done = true; document.documentElement.classList.add('brand-font-ready'); }
+  setTimeout(ready, 2000);            // страховка на медленную сеть
+  window.addEventListener('load', ready);
+  try{
+    if(document.fonts && document.fonts.load){
+      document.fonts.load('900 29px Unbounded', 'PRIMUS.').then(ready, ready);
+    } else ready();
+  }catch(e){ ready(); }
+})();
+</script>
 </head>
 <body>
 <div id="app">
@@ -2596,7 +2684,11 @@ let GUIDE_COLLAPSED = {}; // sectionId -> false, если явно развёр�
 const GUIDE_SECTIONS = [
   {id:'topics', title:'Темы', body:`Список тем внутри предмета. Темы можно <b>перетаскивать</b> пальцем/мышью, чтобы менять порядок, закреплять важные (значок •) и переименовывать. Новые темы появляются сами, когда ты создаёшь лекцию или карточку с новым названием — заводить их вручную не обязательно.`},
   {id:'theory', title:'Теория', body:`Конспекты лекций. <b>«Добавить материал»</b> — создать лекцию: тема, дата, текст.
+    <h4>Лекция или семинар</h4>
+    <p>В самом верху формы выбираешь, что записываешь: <b>Лекция</b> или <b>Семинар</b>. Рядом — <b>«Прикрепить к…»</b>: семинар можно привязать к своей лекции (и наоборот), а можно оставить <b>«не прикреплять»</b> — тогда материал просто стоит сам по себе.</p>
+    <p>Прикреплённые материалы в списке идут <b>рядом, одной группой</b>, и сверху у них склеенный овал из двух половинок: <b>коричневая — лекция, хаки — семинар</b>. Так сразу видно, что это одна пара, а не два разных конспекта. У каждого материала есть и свой маленький овал того же цвета.</p>
     <h4>Панель форматирования</h4>
+    <p>Панель с кнопками закреплена <b>сверху экрана</b> и видна всё время, пока лекция открыта, — к ней не нужно листать, и она не пропадает при прокрутке. Подпись на панели показывает, к какому полю сейчас относятся кнопки.</p>
     <ul>
       <li><b>B / I / U / S</b> — жирный, курсив, подчёркнутый, зачёркнутый. Жирный — это просто жирный, в карточки он больше ничего не отправляет.</li>
       <li><b>H1 / H2 / ¶</b> — заголовок, подзаголовок, обычный текст.</li>
@@ -2615,7 +2707,19 @@ const GUIDE_SECTIONS = [
     <p><b>«Скопировать для ИИ» / «Вставить обработку от ИИ»</b> — ИИ разбирает лекцию и делает по ней карточки (все карточки одной лекции идут в один сет).</p>
     <p><b>Сразу после сохранения новой лекции</b> платформа спросит, отправить ли её на повторение — нажми <b>«Отправить на повторение»</b>, и лекция попадёт в spaced repetition: напоминания придут через 1, 3, 7, 14 и 30 дней. Если нажать «Позже», лекция останется без повторения, но у неё в списке будет своя кнопка <b>«Добавить в spaced repetition»</b> — можно отправить в любой момент. Кнопка <b>«Повторил ✓»</b> продвигает лекцию на следующий интервал.</p>
     <p><b>Важно:</b> лекция сохраняется только по кнопке «Сохранить материал». Если уйти на другую вкладку с несохранёнными правками — платформа напомнит.</p>`},
-  {id:'cards', title:'Карточки', body:`Овалы сверху — это темы: клик по овалу сворачивает или разворачивает карточки этой темы (сами овалы и есть кнопка свёрнуть/развернуть).<br><b>«Изучить»</b> запускает сессию в стиле Quizlet: тап — перевернуть карточку, свайп вправо/влево или кнопки «Знаю» / «Не знаю» — оценить, стрелки «Назад»/«Вперёд» — просто полистать. Если закрыть сессию не закончив — прогресс сохранится, и наверху появится баннер «Продолжить» / «Начать заново».`},
+  {id:'cards', title:'Карточки', body:`Кнопка <b>«Темы»</b> прячет и показывает список тем; выбираешь одну или несколько — внизу остаются только их карточки.
+    <h4>Сет карточек — три пути в одном окне</h4>
+    <p><b>«Сделать сет карточек»</b> открывает окно, где можно:</p>
+    <ul>
+      <li>набрать карточки <b>руками</b>, строка за строкой;</li>
+      <li>нажать <b>«Скопировать запрос для ИИ»</b>, отнести запрос в любой ИИ-чат вместе со своим материалом, а потом вернуться и нажать <b>«Вставить готовые карточки от ИИ»</b> — карточки встанут списком;</li>
+      <li>совместить: часть от ИИ, часть дописать самой.</li>
+    </ul>
+    <p>Окно <b>не закрывается</b> после вставки — тему и любую карточку ещё можно поправить. Завершает работу только кнопка <b>«Готово»</b>.</p>
+    <p>Уже готовый сет открывается кнопкой <b>«Изменить сет»</b> в его шапке: там меняется название темы, правятся и удаляются карточки. Рядом — <b>«Переместить сет»</b> (в другой предмет) и <b>«Удалить сет»</b>.</p>
+    <h4>Изучение</h4>
+    <p><b>«Изучить»</b> запускает сессию в стиле Quizlet: тап — перевернуть карточку, свайп вправо/влево или кнопки «Знаю» / «Не знаю» — оценить, стрелки «Назад»/«Вперёд» — просто полистать. Сверху видно, <b>какая карточка по счёту</b> («Карточка 7 из 20»), сколько осталось и полоска прогресса.</p>
+    <p>Сессию можно бросить в любой момент — прогресс сохраняется, даже если просто закрыть приложение. При следующем заходе наверху появится баннер <b>«Продолжить с того же места»</b>, и карточки пойдут ровно с той, на которой остановилась.</p>`},
   {id:'notebook', title:'Тетрадь', body:`Рисование от руки — стилусом или мышью (палец только скроллит и зумит). Перо, карандаш (с текстурой), маркер, ластик — у каждого своя толщина. Страницы пролистываются вниз бесконечно, можно менять цвет/разлиновку бумаги.`},
   {id:'practice', title:'Практика', body:`5 режимов заданий: Задачи, Кейсы, Соответствие, Вставка слова, Открытый вопрос — переключаются вкладками сверху. <b>«Добавить задания по теме»</b> — вставить готовые задания, которые оформит ИИ по материалу лекции.<br>Именно здесь (а не в обычном изучении карточек) ошибки попадают в раздел <b>WON</b>.`},
   {id:'test', title:'Тест', body:`Финальная проверка темы целиком, можно с дедлайном. 5 разделов: проверка самого главного, полный тест, кейсы, ответы на вопросы, интересные задания. Задания вставляются от ИИ так же, как в лекциях и практике — своей кнопкой «Скопировать запрос для ИИ».`},
@@ -3831,6 +3935,7 @@ function renderCardsGrid(body,key){
       <div class="cards-set-head">
         <span class="cards-set-name">${esc(t.name)}</span>
         <span class="cards-set-count">${cards.length}</span>
+        <button class="btn" data-set-edit="${t.id}">Изменить сет</button>
         <button class="btn" data-set-move="${t.id}">Переместить сет</button>
         <button class="btn" data-set-del="${t.id}">Удалить сет</button>
       </div>
@@ -3839,31 +3944,26 @@ function renderCardsGrid(body,key){
   });
 
   const resumeBanner = savedValidCount>0 ? `<div class="resume-banner">
-    <span>Есть незавершённая сессия изучения — осталось ${savedValidCount} карточек.</span>
-    <div class="btn-row" style="margin:0"><button class="btn btn-primary" id="btnResumeSession">Продолжить</button><button class="btn" id="btnDiscardSession">Начать заново</button></div>
+    <span>Незавершённая сессия: остановились на карточке <b>${(savedSession.done||0)+1}</b> из <b>${savedSession.total||savedValidCount}</b> — осталось ${savedValidCount}.</span>
+    <div class="btn-row" style="margin:0"><button class="btn btn-primary" id="btnResumeSession">Продолжить с того же места</button><button class="btn" id="btnDiscardSession">Начать заново</button></div>
   </div>` : '';
   let html = resumeBanner + chipsHtml
     + `<div class="btn-row" style="margin:14px 0">
         <button class="btn btn-primary" id="btnStudy">Изучить (${shownCards.length})</button>
         <button class="btn" id="btnAddCard2">Добавить карточку</button>
         <button class="btn" id="btnCardSet">Сделать сет карточек</button>
-        <button class="btn" id="btnQuickAddCards">Быстрое добавление текстом</button>
-        <button class="btn" id="btnCopyCardsAi">Скопировать запрос для ИИ</button>
        </div>`
-    + aiInstructionsHtml('Как быстро сделать карточки через ИИ', [
-        'Нажми «Скопировать запрос для ИИ» — в буфер попадёт готовый запрос с нужными полями карточек этой категории.',
-        'Вставь его в чат с любым ИИ-ассистентом и добавь свой материал (текст лекции, конспект, список терминов).',
-        'Скопируй ответ — это будут строки вида <code>термин :: перевод :: пояснение :: пример</code>.',
-        'Нажми «Быстрое добавление текстом», вставь строки, выбери тему и нажми «Создать карточки».'
+    + aiInstructionsHtml('Как быстро сделать карточки — руками или через ИИ', [
+        'Нажми «Сделать сет карточек» — всё происходит в одном окне: и ручной набор, и путь через ИИ.',
+        'Внутри есть кнопка «Скопировать запрос для ИИ» — готовый запрос с нужными полями именно этой категории.',
+        'Вставь запрос в чат с любым ИИ-ассистентом, добавь свой материал и скопируй ответ.',
+        'Вернись в то же окно, нажми «Вставить готовые карточки от ИИ» — карточки встанут списком, и их ещё можно править.',
+        'Когда всё нравится — кнопка «Готово». Уже готовый сет можно открыть позже кнопкой «Изменить сет» и поменять там и тему, и сами карточки.'
       ])
     + sectionsHtml;
   body.innerHTML = html;
   const resumeBtn = document.getElementById('btnResumeSession');
-  if(resumeBtn) resumeBtn.onclick=()=>{
-    STUDY_SESSION = { catKey:key, queue:savedSession.queue.filter(id=>findCard(key,id)), idx:Math.min(savedSession.idx,savedValidCount-1), flipped:false, seen:savedSession.seen||0, knew:savedSession.knew||0 };
-    renderStudyModal();
-    openOverlay();
-  };
+  if(resumeBtn) resumeBtn.onclick=()=>resumeStudySession(key);
   const discardBtn = document.getElementById('btnDiscardSession');
   if(discardBtn) discardBtn.onclick=()=>{
     delete STORE.studySessions[key];
@@ -3894,6 +3994,9 @@ function renderCardsGrid(body,key){
   body.querySelectorAll('[data-set-move]').forEach(btn=>btn.onclick=()=>{
     openMoveCardsModal(key, btn.dataset.setMove, null, ()=>renderCardsGrid(body,key));
   });
+  body.querySelectorAll('[data-set-edit]').forEach(btn=>btn.onclick=()=>{
+    openCardSetModal(key, btn.dataset.setEdit, ()=>renderCardsGrid(body,key));
+  });
   body.querySelectorAll('[data-edit]').forEach(el=>el.onclick=(e)=>{ e.stopPropagation(); openCardModal(key, el.dataset.edit); });
   body.querySelectorAll('[data-move]').forEach(el=>el.onclick=(e)=>{
     e.stopPropagation();
@@ -3906,16 +4009,7 @@ function renderCardsGrid(body,key){
   }));
   document.getElementById('btnStudy').onclick=()=>startStudySession(key, shownCards.map(c=>c.id));
   document.getElementById('btnAddCard2').onclick=()=>openCardModal(key);
-  document.getElementById('btnCardSet').onclick=()=>openCardSetModal(key);
-  document.getElementById('btnQuickAddCards').onclick=()=>openQuickAddModal(key);
-  document.getElementById('btnCopyCardsAi').onclick=()=>{
-    const text = buildCardsAiExport(key);
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text)
-        .then(()=>openInfoModal('Скопировано','Запрос скопирован — вставь его в чат с ИИ и добавь свой материал.'))
-        .catch(()=>showCopyFallback(text));
-    } else showCopyFallback(text);
-  };
+  document.getElementById('btnCardSet').onclick=()=>openCardSetModal(key, null, ()=>renderCardsGrid(body,key));
 }
 // Запрос к ИИ на карточки именно этой категории — с её полями и форматом «::».
 function buildCardsAiExport(key){
@@ -4466,25 +4560,46 @@ function saveStudySessionProgress(){
   if(!s) return;
   if(!STORE.studySessions) STORE.studySessions = {};
   if(s.queue.length===0){ delete STORE.studySessions[s.catKey]; }
-  else { STORE.studySessions[s.catKey] = {queue:s.queue.slice(), idx:s.idx, seen:s.seen, knew:s.knew, savedAt:todayISO()}; }
+  else { STORE.studySessions[s.catKey] = {queue:s.queue.slice(), idx:s.idx, seen:s.seen, knew:s.knew, total:s.total, done:s.done, savedAt:todayISO()}; }
   saveStore();
+}
+// Восстанавливает сохранённую сессию ровно на том месте, где её оставили: та же очередь,
+// тот же номер карточки, тот же счёт. Возвращает false, если восстанавливать нечего.
+function resumeStudySession(catKey){
+  const saved = STORE.studySessions && STORE.studySessions[catKey];
+  if(!saved || !saved.queue) return false;
+  const stillValid = saved.queue.filter(id=>findCard(catKey,id));
+  if(stillValid.length===0) return false;
+  // индекс держим на той же карточке, даже если из очереди выпали удалённые
+  const wasId = saved.queue[saved.idx];
+  let idx = stillValid.indexOf(wasId);
+  if(idx<0) idx = Math.min(saved.idx, stillValid.length-1);
+  const done = Math.min(saved.done||0, Math.max(0,(saved.total||stillValid.length)-stillValid.length));
+  STUDY_SESSION = {
+    catKey, queue:stillValid, idx, flipped:false,
+    seen:saved.seen||0, knew:saved.knew||0,
+    total: saved.total || stillValid.length, done
+  };
+  renderStudyModal();
+  openOverlay();
+  return true;
 }
 function startStudySession(catKey, cardIds, startId){
   if(cardIds.length===0) return;
   const saved = STORE.studySessions && STORE.studySessions[catKey];
   if(saved && saved.queue && saved.queue.length>0 && !startId){
     const stillValid = saved.queue.filter(id=>findCard(catKey,id));
-    if(stillValid.length>0 && confirm(`Есть незавершённая сессия по этой категории (осталось ${stillValid.length} карточек). Продолжить?`)){
-      STUDY_SESSION = { catKey, queue:stillValid, idx:Math.min(saved.idx,stillValid.length-1), flipped:false, seen:saved.seen||0, knew:saved.knew||0 };
-      renderStudyModal();
-      openOverlay();
-      return;
+    if(stillValid.length>0){
+      const pos = (saved.done||0)+1, tot = saved.total||stillValid.length;
+      if(confirm(`Есть незавершённая сессия по этой категории — остановились на карточке ${pos} из ${tot} (осталось ${stillValid.length}).\n\nПродолжить с того же места?`)){
+        if(resumeStudySession(catKey)) return;
+      }
     }
     delete STORE.studySessions[catKey]; saveStore();
   }
   let ids = cardIds.slice();
   if(startId){ ids = [startId, ...ids.filter(id=>id!==startId)]; }
-  STUDY_SESSION = { catKey, queue: shuffle(ids), idx:0, flipped:false, seen:0, knew:0 };
+  STUDY_SESSION = { catKey, queue: shuffle(ids), idx:0, flipped:false, seen:0, knew:0, total:ids.length, done:0 };
   if(startId){ STUDY_SESSION.queue = [startId, ...shuffle(ids.filter(id=>id!==startId))]; }
   renderStudyModal();
   openOverlay();
@@ -4510,9 +4625,13 @@ function renderStudyModal(){
     <h3>Изучение — ${esc(getCategoryDisplayName(s.catKey))}</h3>
     <div class="study-nav">
       <button class="btn" id="btnPrevCard" ${s.queue.length<2?'disabled':''}>‹ Назад</button>
-      <div class="study-progress">${s.idx+1} из ${s.queue.length}</div>
+      <div class="study-progress">
+        <b>Карточка ${(s.done||0)+s.idx+1} из ${s.total||s.queue.length}</b>
+        <span>осталось ${s.queue.length} · «Знаю» ${s.knew}</span>
+      </div>
       <button class="btn" id="btnNextCard" ${s.queue.length<2?'disabled':''}>Вперёд ›</button>
     </div>
+    <div class="study-bar"><div class="study-bar-fill" style="width:${Math.round(((s.done||0)/(s.total||s.queue.length))*100)}%"></div></div>
     <div class="study-card-wrap">
       <div class="study-card" id="studyCard">
         <span class="sc-swipe-hint dont">Не знаю</span>
@@ -4552,7 +4671,7 @@ function renderStudyModal(){
     review(card, true);
     s.queue.splice(s.idx,1);
     if(s.idx >= s.queue.length) s.idx = 0;
-    s.flipped=false; s.seen++; s.knew++;
+    s.flipped=false; s.seen++; s.knew++; s.done=(s.done||0)+1;
     saveStudySessionProgress();
     renderStudyModal();
   }
@@ -4700,6 +4819,10 @@ function scheduleLectureReviewReminder(catKey, date, title){
     srAutoLec:true, srCat:catKey
   });
 }
+// Вид материала: лекция или семинар. У всего, что было записано до появления семинаров,
+// вида нет — считаем такие материалы лекциями.
+function materialKind(m){ return (m && m.kind === 'seminar') ? 'seminar' : 'lecture'; }
+const MAT_KIND_LABEL = {lecture:'Лекция', seminar:'Семинар'};
 const SR_INTERVALS = [1,3,7,14,30];
 // Первая постановка лекции в spaced repetition сразу после её создания/сохранения.
 function scheduleLectureInitial(m, catKey, fromDate){
@@ -4720,6 +4843,8 @@ function renderTheory(body,key){
     renderTheoryEditor(body,key);
     return;
   }
+  // редактор закрыт (сохранили или отменили) — верхняя панель форматирования не нужна
+  if(typeof hideFloatFormatBar === 'function') hideFloatFormatBar();
   const materials = (STORE.materials[key]||[]);
   let html = `<div class="btn-row" style="margin-bottom:10px">
     <button class="btn btn-primary" id="btnAddTheory">Добавить материал</button>
@@ -4735,18 +4860,40 @@ function renderTheory(body,key){
   if(materials.length===0){
     html += `<div class="empty-state">Пока нет конспектов. Открой лекцию, запиши тему и дату, а материал и остальное — по шагам.</div>`;
   } else {
+    // Прикреплённые друг к другу материалы (лекция + её семинар) идут в списке рядом,
+    // одной группой: сверху склеенные овалы разных цветов, ниже — сами материалы.
+    const byId = {}; materials.forEach(m=>byId[m.id]=m);
+    const rootOf = (m)=>{ let cur=m, guard=0; while(cur.linkedTo && byId[cur.linkedTo] && guard++<6) cur = byId[cur.linkedTo]; return cur; };
+    const groups = []; const groupByRoot = {};
     materials.slice().reverse().forEach(m=>{
+      const root = rootOf(m);
+      if(!groupByRoot[root.id]){ groupByRoot[root.id] = []; groups.push(groupByRoot[root.id]); }
+      groupByRoot[root.id].push(m);
+    });
+    // внутри группы: сначала корень (лекция), затем прикреплённые к ней
+    groups.forEach(g=>g.sort((a,b)=>(a.linkedTo?1:0)-(b.linkedTo?1:0)));
+
+    groups.forEach(group=>{
+    const linked = group.length>1;
+    html += `<div class="theory-group ${linked?'linked':''}">`;
+    if(linked){
+      html += `<div class="kind-pills" title="Эти материалы прикреплены друг к другу">${
+        group.map(g=>`<span class="kind-pill ${materialKind(g)}">${MAT_KIND_LABEL[materialKind(g)]}</span>`).join('')
+      }</div>`;
+    }
+    group.forEach(m=>{
+      const kind = materialKind(m);
       const dateLabel = m.dateEnd && m.dateEnd!==m.dateStart ? `${fmtDate(m.dateStart)} — ${fmtDate(m.dateEnd)}` : fmtDate(m.dateStart||m.date);
       const collapsed = THEORY_COLLAPSED[m.id] !== false; // по умолчанию свёрнуто — видно только тему
       const srLabel = m.nextReview ? `<span class="theory-sr">повтор ${esc(fmtDate(m.nextReview))}</span>` : '';
-      html += `<div class="theory-item ${collapsed?'collapsed':''}" data-mat="${m.id}">
+      html += `<div class="theory-item kind-${kind} ${collapsed?'collapsed':''}" data-mat="${m.id}">
         <button class="theory-collapse" data-collapse-mat="${m.id}" title="${collapsed?'Развернуть':'Свернуть'}">${collapsed?'▾':'▴'}</button>
-        <div class="theory-topic">${esc(topicName(key,m.topicId))}</div>
+        <div class="theory-topic"><span class="mat-kind ${kind}">${MAT_KIND_LABEL[kind]}</span>${esc(topicName(key,m.topicId))}</div>
         <div class="theory-title-row"><div class="theory-title">${esc(m.title)}</div><div class="theory-date">${srLabel}${dateLabel}</div></div>
         <div class="theory-collapsible">
         ${m.keywords&&m.keywords.length?`<div class="theory-keywords">${m.keywords.map(k=>`<span class="kw-chip">${esc(k)}</span>`).join('')}</div>`:''}
         <div class="theory-block"><div class="tb-label">Главные вопросы</div><div class="tb-body">${m.mainQuestions||'<span style="opacity:.5">пока не заполнено</span>'}</div></div>
-        <div class="theory-block"><div class="tb-label">Материал лекции</div><div class="tb-body theory-material-preview">${m.materialText||'<span style="opacity:.5">пусто</span>'}</div></div>
+        <div class="theory-block"><div class="tb-label">${kind==='seminar'?'Материал семинара':'Материал лекции'}</div><div class="tb-body theory-material-preview">${m.materialText||'<span style="opacity:.5">пусто</span>'}</div></div>
         ${m.notes?`<div class="theory-block"><div class="tb-label">Заметки</div><div class="tb-body">${m.notes}</div></div>`:''}
         ${m.explanation?`<div class="theory-block"><div class="tb-label">Выжимка простыми словами</div><div class="tb-body">${m.explanation}</div></div>`:''}
         ${m.unclear?`<div class="theory-block"><div class="tb-label">Разбор непонятного (?)</div><div class="tb-body">${m.unclear}</div></div>`:''}
@@ -4763,6 +4910,8 @@ function renderTheory(body,key){
         </div>
         </div>
       </div>`;
+    });
+    html += `</div>`;
     });
   }
   body.innerHTML = html;
@@ -4865,10 +5014,32 @@ function renderTheoryEditor(body, key){
   topics.forEach(t=>{ topicSelect += `<option value="${t.id}" ${draft.topicId===t.id?'selected':''}>${esc(t.name)}</option>`; });
   topicSelect += `</select>`;
 
+  // Лекция или семинар — и к чему это прикрепить. Прикреплённые материалы стоят в списке
+  // рядом, склеенными овалами: коричневый = лекция, хаки = семинар.
+  let curKind = draft.kind === 'seminar' ? 'seminar' : 'lecture';
+  const linkOptionsHtml = (kind)=>{
+    const wantKind = kind==='seminar' ? 'lecture' : 'seminar';
+    const candidates = (STORE.materials[key]||[])
+      .filter(m=>m.id !== (THEORY_EDIT_STATE.materialId||''))
+      .filter(m=>materialKind(m)===wantKind);
+    return `<option value="">— не прикреплять —</option>` + candidates.map(m=>
+      `<option value="${m.id}" ${draft.linkedTo===m.id?'selected':''}>${esc(m.title||'Без названия')} · ${esc(fmtDate(m.dateStart||m.date))}</option>`
+    ).join('');
+  };
+
   body.innerHTML = `
     <div class="theory-editor">
       <div class="te-header">
-        <input id="theTitle" class="te-title-input" placeholder="Тема лекции" value="${esc(draft.title)}">
+        <div class="te-kind-row">
+          <div class="te-kind-pick" id="teKindPick">
+            <button type="button" class="kind-opt lecture ${curKind==='lecture'?'on':''}" data-kind="lecture">Лекция</button>
+            <button type="button" class="kind-opt seminar ${curKind==='seminar'?'on':''}" data-kind="seminar">Семинар</button>
+          </div>
+          <label class="te-link-label"><span id="teLinkLabel">${curKind==='seminar'?'Прикрепить к лекции:':'Прикрепить к семинару:'}</span>
+            <select id="theLinkSelect">${linkOptionsHtml(curKind)}</select>
+          </label>
+        </div>
+        <input id="theTitle" class="te-title-input" placeholder="${curKind==='seminar'?'Тема семинара':'Тема лекции'}" value="${esc(draft.title)}">
         <div class="te-meta-row">
           <label>Тема курса: ${topicSelect}</label>
           <label>Дата: <input type="date" id="theDateStart" value="${draft.dateStart||todayISO()}"></label>
@@ -4887,8 +5058,8 @@ function renderTheoryEditor(body, key){
 
       <div class="te-section">
         <div class="te-section-title">3 · Материал лекции</div>
-        ${richFieldFull('theMaterial','Текст лекции — выделяй кнопкой «Ключевое слово + карточка» то, что должно уйти в ключевые слова и в карточки. Знак (?) рядом с непонятным местом — ИИ разберёт его отдельно и подробно.', draft.materialText, true)}
-        ${richFieldFull('theNotes','Заметки, идеи и вопросы по ходу лекции', draft.notes, false)}
+        ${richFieldFull('theMaterial','Текст лекции — выделяй кнопкой «Ключевое слово + карточка» то, что должно уйти в ключевые слова и в карточки. Знак (?) рядом с непонятным местом — ИИ разберёт его отдельно и подробно.', draft.materialText, true, 'текст лекции')}
+        ${richFieldFull('theNotes','Заметки, идеи и вопросы по ходу лекции', draft.notes, false, 'заметки')}
         <div class="field">
           <label>Файлы к лекции — презентация, скан, фото доски, что угодно</label>
           <div class="te-files" id="teFiles"></div>
@@ -4900,11 +5071,11 @@ function renderTheoryEditor(body, key){
 
       <div class="te-section te-section-later">
         <div class="te-section-title">4 · Осмысление — заполняется вручную или через ИИ после лекции</div>
-        ${richFieldFull('theExplain','Выжимка простыми словами', draft.explanation, false)}
-        ${richFieldFull('theUnclear','Разбор непонятного — всё, что помечено в тексте знаком (?)', draft.unclear, false)}
-        ${richFieldFull('theFacts','Интересные факты — копнуть глубже', draft.facts, false)}
-        ${richFieldFull('theConn','Связь с другими темами', draft.connections, false)}
-        ${richFieldFull('theApp','Как и где использовать', draft.application, false)}
+        ${richFieldFull('theExplain','Выжимка простыми словами', draft.explanation, false, 'выжимка')}
+        ${richFieldFull('theUnclear','Разбор непонятного — всё, что помечено в тексте знаком (?)', draft.unclear, false, 'разбор непонятного')}
+        ${richFieldFull('theFacts','Интересные факты — копнуть глубже', draft.facts, false, 'интересные факты')}
+        ${richFieldFull('theConn','Связь с другими темами', draft.connections, false, 'связь с темами')}
+        ${richFieldFull('theApp','Как и где использовать', draft.application, false, 'как использовать')}
       </div>
 
       <div class="te-ai-row">
@@ -4933,6 +5104,25 @@ function renderTheoryEditor(body, key){
     </div>
   `;
   wireRichToolbars();
+  // Панель форматирования появляется вместе с редактором и висит сверху всё время, пока
+  // лекция открыта, — листать к ней больше не нужно, и она не пропадает при прокрутке.
+  LAST_RT_FIELD = null;
+  refreshFloatBarForEditor();
+
+  // ---- Лекция / семинар ----
+  document.querySelectorAll('#teKindPick .kind-opt').forEach(b=>b.onclick=()=>{
+    curKind = b.dataset.kind;
+    document.querySelectorAll('#teKindPick .kind-opt').forEach(x=>x.classList.toggle('on', x.dataset.kind===curKind));
+    document.getElementById('teLinkLabel').textContent = curKind==='seminar' ? 'Прикрепить к лекции:' : 'Прикрепить к семинару:';
+    document.getElementById('theTitle').placeholder = curKind==='seminar' ? 'Тема семинара' : 'Тема лекции';
+    // список для прикрепления всегда показывает материалы противоположного вида
+    const prev = document.getElementById('theLinkSelect').value;
+    document.getElementById('theLinkSelect').innerHTML = linkOptionsHtml(curKind);
+    const opt = document.getElementById('theLinkSelect').querySelector(`option[value="${prev}"]`);
+    document.getElementById('theLinkSelect').value = opt ? prev : '';
+    markDirty();
+  });
+  document.getElementById('theLinkSelect').addEventListener('change', markDirty);
 
   // ---- Черновик и защита от потери материала ----
   // Всё, что набрано, каждые несколько секунд уходит в черновик (STORE.theoryDraft), а уход со
@@ -4951,6 +5141,8 @@ function renderTheoryEditor(body, key){
   function currentVals(){
     return {
       title: document.getElementById('theTitle').value.trim() || 'Без названия',
+      kind: curKind,
+      linkedTo: document.getElementById('theLinkSelect').value || null,
       topicId: document.getElementById('theoryTopicSelect').value,
       dateStart: document.getElementById('theDateStart').value || todayISO(),
       dateEnd: document.getElementById('theDateEnd').value || '',
@@ -5361,12 +5553,15 @@ function tableToolsButtonsHtml(){
       <button type="button" class="btn" data-tbl="toggleHeader">Шапка вкл/выкл</button>
       <button type="button" class="btn" data-tbl="delTable">Удалить таблицу</button>`;
 }
-function richFieldFull(id, label, html, isMain){
+function richFieldFull(id, label, html, isMain, shortName){
+  // short — короткое имя поля: его показывает верхняя плавающая панель, чтобы было видно,
+  // к какому именно полю сейчас относятся кнопки
+  const short = shortName || label.split(/[—.(]/)[0].trim().toLowerCase();
   return `<div class="field">
     <label>${esc(label)}</label>
     <div class="rt-toolbar" data-for="${id}">${richToolbarButtonsHtml(isMain)}</div>
     <div class="tbl-tools" data-tools-for="${id}" hidden>${tableToolsButtonsHtml()}</div>
-    <div class="rt-editable ${isMain?'te-material-box':'te-notes-box'}" contenteditable="true" id="${id}" data-ismain="${isMain?'1':'0'}">${html||''}</div>
+    <div class="rt-editable ${isMain?'te-material-box':'te-notes-box'}" contenteditable="true" id="${id}" data-ismain="${isMain?'1':'0'}" data-fname="${esc(short)}">${html||''}</div>
   </div>`;
 }
 
@@ -6007,7 +6202,19 @@ function renderRno(main){
    ========================================================================== */
 function openOverlay(){ document.getElementById('overlay').classList.add('show'); }
 function closeOverlay(){ document.getElementById('overlay').classList.remove('show'); document.getElementById('modalBody').classList.remove('modal-lg','modal-cal'); }
-document.getElementById('overlay').addEventListener('click',(e)=>{ if(e.target.id==='overlay'){ STUDY_SESSION=null; closeOverlay(); } });
+// Клик по тёмному фону закрывает модалку. Если в этот момент шла сессия изучения карточек —
+// сначала записываем её прогресс, иначе место, на котором остановились, терялось.
+document.getElementById('overlay').addEventListener('click',(e)=>{
+  if(e.target.id!=='overlay') return;
+  if(STUDY_SESSION) saveStudySessionProgress();
+  STUDY_SESSION=null;
+  closeOverlay();
+});
+// Сворачивание вкладки, блокировка экрана, закрытие приложения — прогресс сессии тоже сохраняем.
+['pagehide','visibilitychange'].forEach(ev=>window.addEventListener(ev,()=>{
+  if(ev==='visibilitychange' && document.visibilityState!=='hidden') return;
+  if(STUDY_SESSION) saveStudySessionProgress();
+}));
 
 function openAddToReviewModal(main){
   document.getElementById('modalBody').innerHTML = `
@@ -6373,7 +6580,7 @@ function ensureFloatFormatBar(){
     bar = document.createElement('div');
     bar.id = 'floatFormatBar';
     bar.hidden = true;
-    bar.innerHTML = `<div class="tbl-tools" hidden></div><div class="rt-toolbar float-rt"></div>`;
+    bar.innerHTML = `<span class="fb-target" id="fbTarget"></span><div class="tbl-tools" hidden></div><div class="rt-toolbar float-rt"></div>`;
     document.body.appendChild(bar);
   }
   return bar;
@@ -6388,28 +6595,71 @@ function showFloatFormatBar(editable){
     tools.innerHTML = richToolbarButtonsHtml(isMain);
     bar.querySelector('.tbl-tools').innerHTML = tableToolsButtonsHtml();
   }
+  const tgt = document.getElementById('fbTarget');
+  const label = 'Форматирование · ' + (editable.dataset.fname || 'поле лекции');
+  if(tgt && tgt.textContent !== label) tgt.textContent = label;
+  const wasHidden = bar.hidden;
   bar.hidden = false;
   document.body.classList.add('has-float-bar');
   syncTableTools();
+  // мерить панель на каждое движение курсора не нужно — только когда она появилась
+  if(wasHidden) syncFloatBarPosition(true);
 }
 function hideFloatFormatBar(){
   const bar = document.getElementById('floatFormatBar');
   if(bar) bar.hidden = true;
   document.body.classList.remove('has-float-bar');
+  document.documentElement.style.removeProperty('--float-bar-y');
 }
-// Панель показываем только для полей лекции (у них есть data-ismain)
+/* Панель должна быть видна ВСЁ время, пока открыта лекция — и при прокрутке, и на телефоне.
+   Две вещи мешали этому раньше:
+     1) панель пряталась, как только фокус уходил из поля (а он уходит при любом скролле на iOS);
+     2) position:fixed на iPhone привязан к layout viewport, а при открытой клавиатуре видимая
+        область (visual viewport) сдвинута вниз — панель оказывалась выше экрана.
+   Первое лечится тем, что панель живёт, пока живёт редактор лекции; второе — этой функцией:
+   она сдвигает панель ровно на смещение visual viewport. */
+let FLOAT_BAR_RAF = 0;
+function measureFloatBar(){
+  const bar = document.getElementById('floatFormatBar');
+  if(!bar || bar.hidden) return;
+  const vv = window.visualViewport;
+  const y = vv ? Math.max(0, vv.offsetTop) : 0;
+  const root = document.documentElement.style;
+  root.setProperty('--float-bar-y', y+'px');
+  const h = bar.offsetHeight;
+  if(h){
+    root.setProperty('--float-bar-h', (h+18)+'px');
+    // чтобы прокрутка к полю (в том числе автоматическая, за курсором) не прятала его под панель
+    root.setProperty('--float-bar-scrollpad', (h+12)+'px');
+  }
+}
+function syncFloatBarPosition(immediate){
+  // при скролле измеряем не чаще раза за кадр, иначе каждый пиксель прокрутки стоит layout;
+  // при появлении панели считаем сразу — rAF в скрытой вкладке может не сработать вовсе
+  if(immediate){ measureFloatBar(); return; }
+  if(FLOAT_BAR_RAF) return;
+  FLOAT_BAR_RAF = requestAnimationFrame(()=>{ FLOAT_BAR_RAF = 0; measureFloatBar(); });
+}
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', syncFloatBarPosition);
+  window.visualViewport.addEventListener('scroll', syncFloatBarPosition);
+}
+window.addEventListener('scroll', syncFloatBarPosition, {passive:true});
+window.addEventListener('resize', syncFloatBarPosition);
+// Пока открыт редактор лекции — панель на экране. Целевое поле переключается по курсору
+// (см. selectionchange), но само её присутствие от фокуса больше не зависит.
+function refreshFloatBarForEditor(){
+  if(!THEORY_EDIT_STATE){ hideFloatFormatBar(); return; }
+  const fields = document.querySelectorAll('.rt-editable[contenteditable="true"][data-ismain]');
+  if(!fields.length){ hideFloatFormatBar(); return; }
+  const active = (LAST_RT_FIELD && LAST_RT_FIELD.isConnected && LAST_RT_FIELD.dataset.ismain !== undefined)
+    ? LAST_RT_FIELD
+    : document.getElementById('theMaterial') || fields[0];
+  showFloatFormatBar(active);
+}
 document.addEventListener('focusin',(e)=>{
   const ed = e.target.closest && e.target.closest('.rt-editable[contenteditable="true"][data-ismain]');
   if(ed) showFloatFormatBar(ed);
-});
-document.addEventListener('focusout',(e)=>{
-  // прячем, только если фокус ушёл совсем из полей лекции (а не на кнопку панели)
-  setTimeout(()=>{
-    const act = document.activeElement;
-    const stillEditing = act && act.closest && act.closest('.rt-editable[contenteditable="true"][data-ismain]');
-    const onBar = act && act.closest && act.closest('#floatFormatBar');
-    if(!stillEditing && !onBar) hideFloatFormatBar();
-  }, 120);
 });
 
 // Находит поле, к которому относится нажатая кнопка панели: у панели есть data-for,
@@ -6733,69 +6983,258 @@ function openCardModal(key, cardId, fromMaterial){
   openOverlay();
 }
 
-function openCardSetModal(key){
+/* ---------- Сет карточек: создание и редактирование в одном окне ----------
+   Внутри одного окна три пути к одному результату:
+     • набрать карточки руками, строка за строкой;
+     • скопировать готовый запрос для ИИ и вставить его ответ кнопкой «Вставить готовые карточки от ИИ»;
+     • открыть уже существующий сет и поправить тему и сами карточки.
+   Окно не закрывается после вставки от ИИ — тему и карточки всё ещё можно править,
+   и только кнопка «Готово» завершает работу. */
+function openCardSetModal(key, editTopicId, onDone){
   const isCustom = !CATEGORY_META.find(m=>m.key===key);
   const fieldDefs = getFieldDefsForCategory(key);
   const topics = getCategoryTopics(key);
-  let rows = [{}];
+  const editing = !!editTopicId;
+  // строка сета: {vals:{}, cardId:null|id, orig:{}} — orig хранит исходный текст поля,
+  // чтобы не затирать форматирование в полях, которые не трогали
+  let rows = [];
+  let removedIds = [];
+  if(editing){
+    (APP_DATA[key].cards || []).filter(c=>getCardTopicId(key,c)===editTopicId).forEach(c=>{
+      const vals = {}, orig = {};
+      fieldDefs.forEach(([f])=>{ const plain = stripHtml(String(c[f]||'')).trim(); vals[f]=plain; orig[f]=plain; });
+      rows.push({vals, cardId:c.id, orig});
+    });
+  }
+  if(rows.length===0) rows = [{vals:{}, cardId:null, orig:{}}];
 
   function renderRows(){
     const container = document.getElementById('setRows');
+    if(!container) return;
     container.innerHTML = rows.map((row,i)=>`
       <div class="set-row">
         <div class="set-row-num">${i+1}</div>
         <div class="set-row-fields">
-          ${fieldDefs.map(([f,label])=>`<input class="set-input" data-row="${i}" data-f="${f}" placeholder="${esc(label)}" value="${esc(row[f]||'')}">`).join('')}
+          ${fieldDefs.map(([f,label])=>`<input class="set-input" data-row="${i}" data-f="${f}" placeholder="${esc(label)}" value="${esc(row.vals[f]||'')}">`).join('')}
         </div>
-        <button class="icon-btn" data-rmrow="${i}" ${rows.length<=1?'disabled':''} title="Удалить строку">✕</button>
+        <button class="icon-btn" data-rmrow="${i}" ${rows.length<=1?'disabled':''} title="Убрать карточку из сета">✕</button>
       </div>`).join('');
     container.querySelectorAll('.set-input').forEach(inp=>{
-      inp.addEventListener('input',()=>{ rows[+inp.dataset.row][inp.dataset.f] = inp.value; });
+      inp.addEventListener('input',()=>{ rows[+inp.dataset.row].vals[inp.dataset.f] = inp.value; });
     });
     container.querySelectorAll('[data-rmrow]').forEach(btn=>{
-      btn.onclick=()=>{ if(rows.length<=1) return; rows.splice(+btn.dataset.rmrow,1); renderRows(); };
+      btn.onclick=()=>{
+        if(rows.length<=1) return;
+        const row = rows[+btn.dataset.rmrow];
+        if(row.cardId && !confirm('Убрать эту карточку из сета? Она удалится по кнопке «Готово», вернуть её можно будет из корзины.')) return;
+        if(row.cardId) removedIds.push(row.cardId);
+        rows.splice(+btn.dataset.rmrow,1);
+        renderRows();
+      };
     });
     const countEl = document.getElementById('setCount');
-    if(countEl) countEl.textContent = rows.length;
+    if(countEl) countEl.textContent = rows.filter(r=>fieldDefs.some(([f])=>r.vals[f] && r.vals[f].trim())).length;
   }
 
+  const topicRow = editing
+    ? (editTopicId==='general'
+        // «Без темы» — служебный сет, переименовывать его нечему: это просто всё, что не разложено
+        ? `<div class="field"><label>Сет</label><input id="setTopicName" value="Без темы" disabled>
+             <div style="font-size:11px;color:var(--text-faint);margin-top:4px">Это карточки без темы — переименовать нельзя, но их можно править и разложить по темам кнопкой «Переместить сет».</div>
+           </div>`
+        : `<div class="field"><label>Название сета (темы)</label><input id="setTopicName" value="${esc(topicName(key, editTopicId))}"></div>`)
+    : `<div class="field"><label>Тема сета</label>
+         <select id="setTopicSelect">
+           <option value="__new__" selected>— новая тема —</option>
+           ${topics.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}
+         </select>
+       </div>
+       <div class="field" id="setNewTopicWrap"><label>Название новой темы</label><input id="setTopicName" placeholder="Например: Вестфальская система"></div>`;
+
   document.getElementById('modalBody').innerHTML = `
-    <h3>Сделать сет карточек</h3>
-    <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:14px">Все карточки сета пойдут в одну тему — удобно, когда нужно сразу занести много терминов по одной лекции.</div>
-    <div class="field"><label>Тема (одна на весь сет)</label><select id="setTopicSelect">${topics.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}</select></div>
+    <h3>${editing?'Изменить сет карточек':'Сделать сет карточек'}</h3>
+    <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:14px">
+      Все карточки сета лежат в одной теме. Можно набрать их руками, а можно
+      попросить ИИ — кнопки ниже. Окно не закроется, пока не нажмёшь «Готово»,
+      так что править тему и карточки можно сколько угодно.
+    </div>
+    ${topicRow}
+
+    <div class="set-ai">
+      <div class="set-ai-head">Быстрый путь — через ИИ</div>
+      <div class="btn-row" style="margin:0 0 8px">
+        <button class="btn" id="btnSetCopyAi" type="button">Скопировать запрос для ИИ</button>
+        <button class="btn" id="btnSetPasteAi" type="button">Вставить готовые карточки от ИИ</button>
+      </div>
+      ${aiInstructionsHtml('Как это работает', [
+        'Нажми «Скопировать запрос для ИИ» — в буфер попадёт готовый запрос с полями карточек именно этой категории.',
+        'Вставь его в чат с любым ИИ-ассистентом (Claude, ChatGPT, Gemini) и добавь свой материал — текст лекции, конспект, список терминов.',
+        'Скопируй ответ целиком — это строки вида <code>термин :: перевод :: пояснение :: пример</code>.',
+        'Нажми «Вставить готовые карточки от ИИ», вставь строки и нажми «Добавить в сет» — карточки появятся в списке ниже.',
+        'Проверь и поправь всё, что нужно, и только потом нажми «Готово».'
+      ])}
+      <div id="setPasteWrap" hidden>
+        <div class="field" style="margin-top:8px">
+          <label>Ответ ИИ — по строке на карточку, поля через <code>::</code></label>
+          <textarea id="setPasteText" style="min-height:150px" placeholder="термин :: перевод :: пояснение :: пример
+термин2 :: перевод2 :: пояснение2 :: пример2"></textarea>
+        </div>
+        <div class="btn-row" style="margin:0 0 6px">
+          <button class="btn btn-primary" id="btnSetPasteApply" type="button">Добавить в сет</button>
+          <button class="btn" id="btnSetPasteCancel" type="button">Свернуть</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="set-rows-head">Карточки сета</div>
     <div id="setRows"></div>
-    <button class="btn" id="btnAddSetRow" style="margin:10px 0">+ Добавить карточку в сет</button>
-    <div class="modal-actions"><button class="btn" id="mCancelSet">Отмена</button><button class="btn btn-primary" id="mSaveSet">Создать сет (<span id="setCount">1</span>)</button></div>
+    <button class="btn" id="btnAddSetRow" type="button" style="margin:10px 0">+ Добавить карточку в сет</button>
+    <div class="modal-actions">
+      <button class="btn" id="mCancelSet" type="button">Отмена</button>
+      <button class="btn btn-primary" id="mSaveSet" type="button">Готово (<span id="setCount">0</span>)</button>
+    </div>
   `;
   document.getElementById('modalBody').classList.add('modal-lg');
   renderRows();
-  document.getElementById('btnAddSetRow').onclick=()=>{ rows.push({}); renderRows(); };
+
+  if(!editing){
+    const sel = document.getElementById('setTopicSelect');
+    const wrap = document.getElementById('setNewTopicWrap');
+    sel.onchange = ()=>{ wrap.hidden = sel.value !== '__new__'; };
+  }
+
+  document.getElementById('btnAddSetRow').onclick=()=>{ rows.push({vals:{}, cardId:null, orig:{}}); renderRows(); };
+
+  document.getElementById('btnSetCopyAi').onclick=()=>{
+    const text = buildCardsAiExport(key);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text)
+        .then(()=>openInfoModalOver('Скопировано','Запрос в буфере — вставь его в чат с ИИ и добавь свой материал. Это окно с сетом никуда не делось, вернись сюда с ответом.'))
+        .catch(()=>showCopyFallback(text));
+    } else showCopyFallback(text);
+  };
+  const pasteWrap = document.getElementById('setPasteWrap');
+  document.getElementById('btnSetPasteAi').onclick=()=>{
+    pasteWrap.hidden = false;
+    const ta = document.getElementById('setPasteText');
+    ta.focus();
+  };
+  document.getElementById('btnSetPasteCancel').onclick=()=>{ pasteWrap.hidden = true; };
+  document.getElementById('btnSetPasteApply').onclick=()=>{
+    const raw = (document.getElementById('setPasteText').value||'').trim();
+    if(!raw){ openInfoModalOver('Пусто','Сначала вставь ответ ИИ в поле — по строке на карточку.'); return; }
+    let added = 0;
+    raw.split('\n').map(l=>l.trim()).filter(Boolean).forEach(line=>{
+      // строки вида «1. термин :: перевод» тоже принимаем — нумерацию срезаем
+      const clean = line.replace(/^\s*\d+[.)]\s*/, '');
+      if(clean.indexOf('::') < 0) return;
+      const parts = clean.split('::').map(p=>p.trim());
+      const vals = {};
+      fieldDefs.forEach(([f],i)=>{ vals[f] = parts[i] || ''; });
+      rows.push({vals, cardId:null, orig:{}});
+      added++;
+    });
+    // пустая заготовка сверху больше не нужна, если карточки пришли от ИИ
+    rows = rows.filter((r,i)=> r.cardId || fieldDefs.some(([f])=>r.vals[f] && r.vals[f].trim()) || rows.length===1);
+    if(rows.length===0) rows = [{vals:{}, cardId:null, orig:{}}];
+    document.getElementById('setPasteText').value = '';
+    pasteWrap.hidden = true;
+    renderRows();
+    if(added===0) openInfoModalOver('Не разобрала ответ','Ни в одной строке нет разделителя <code>::</code>. Попроси ИИ вернуть карточки строго по строке на карточку с полями через два двоеточия.');
+    else openInfoModalOver('Добавлено', `Карточек в сет: <b>${added}</b>. Окно осталось открытым — проверь тему и текст, потом нажми «Готово».`);
+  };
+
   document.getElementById('mCancelSet').onclick=()=>{
-    const hasContent = rows.some(r=>Object.values(r).some(v=>v && v.trim()));
-    if(hasContent && !confirm('Закрыть без сохранения? Введённые карточки потеряются.')) return;
+    const hasContent = rows.some(r=>fieldDefs.some(([f])=>{
+      const v = r.vals[f];
+      return v && v.trim() && v.trim() !== (r.orig[f]||'');
+    }));
+    if((hasContent || removedIds.length) && !confirm('Закрыть без сохранения? Внесённые изменения потеряются.')) return;
     closeOverlay();
   };
+
   document.getElementById('mSaveSet').onclick=()=>{
-    const topicId = document.getElementById('setTopicSelect').value;
-    let count = 0;
+    // ---- тема сета ----
+    let topicId;
+    if(editing){
+      topicId = editTopicId;
+      const nameEl = document.getElementById('setTopicName');
+      const newName = (nameEl && !nameEl.disabled) ? (nameEl.value||'').trim() : '';
+      if(newName && newName !== topicName(key, editTopicId)) renameTopic(key, editTopicId, newName);
+    } else {
+      const sel = document.getElementById('setTopicSelect');
+      if(sel.value === '__new__'){
+        const name = (document.getElementById('setTopicName').value||'').trim();
+        if(!name){ openInfoModalOver('Нужно название','Впиши название новой темы — по нему сет будет видно в списке.'); return; }
+        topicId = addTopic(key, name);
+      } else topicId = sel.value;
+    }
+    // ---- удалённые карточки ----
+    removedIds.forEach(id=>deleteCardQuiet(key, id));
+    removedIds = [];
+    // ---- сами карточки ----
+    let created = 0, updated = 0;
     rows.forEach(row=>{
-      const hasAny = fieldDefs.some(([f])=>row[f] && row[f].trim());
+      const hasAny = fieldDefs.some(([f])=>row.vals[f] && row.vals[f].trim());
       if(!hasAny) return;
-      const vals = {};
-      fieldDefs.forEach(([f])=>{ vals[f]=(row[f]||'').trim(); });
-      const id = uid(key);
-      const newCard = Object.assign({id, catKey:key, level:0, next_review:todayISO(), topicId}, vals);
-      if(isCustom){ if(!STORE.customCards[key]) STORE.customCards[key]=[]; STORE.customCards[key].push(newCard); }
-      else { if(!STORE.extraCards[key]) STORE.extraCards[key]=[]; STORE.extraCards[key].push(newCard); }
-      count++;
+      if(row.cardId){
+        // пишем только реально изменённые поля — иначе форматирование в них потеряется
+        const vals = {};
+        fieldDefs.forEach(([f])=>{
+          const v = (row.vals[f]||'').trim();
+          if(v !== (row.orig[f]||'')) vals[f] = v;
+        });
+        if(Object.keys(vals).length) applyCardEdit(key, row.cardId, vals);
+        STORE.cardTopicOverride[row.cardId] = topicId;
+        updated++;
+      } else {
+        const vals = {};
+        fieldDefs.forEach(([f])=>{ vals[f]=(row.vals[f]||'').trim(); });
+        const newCard = Object.assign({id:uid(key), catKey:key, level:0, next_review:todayISO(), topicId}, vals);
+        if(isCustom){ if(!STORE.customCards[key]) STORE.customCards[key]=[]; STORE.customCards[key].push(newCard); }
+        else { if(!STORE.extraCards[key]) STORE.extraCards[key]=[]; STORE.extraCards[key].push(newCard); }
+        created++;
+      }
     });
     saveStore();
     buildAllData();
     closeOverlay();
-    renderAll();
-    if(count>0) openInfoModal('Готово', `Сет создан — карточек: <b>${count}</b>. Дальше можно добавлять карточки в эту же тему по одной обычной кнопкой.`);
+    if(typeof onDone === 'function') onDone(); else renderAll();
+    if(editing) openInfoModal('Сохранено', `Сет обновлён: карточек в нём — <b>${created+updated}</b>${created?`, из них новых — <b>${created}</b>`:''}.`);
+    else if(created>0) openInfoModal('Готово', `Сет создан — карточек: <b>${created}</b>. Они уже в spaced repetition, первое повторение — завтра.`);
   };
   openOverlay();
+}
+// Правка полей существующей карточки из редактора сета — по тем же правилам,
+// что и в обычном окне карточки (готовые карточки правим через override, свои — на месте).
+function applyCardEdit(key, cardId, vals){
+  const isCustom = !CATEGORY_META.find(m=>m.key===key);
+  const card = findCard(key, cardId);
+  if(card) Object.assign(card, vals);
+  if(isCustom){
+    const arr = STORE.customCards[key]||[];
+    const i = arr.findIndex(c=>c.id===cardId);
+    if(i>-1) Object.assign(arr[i], vals);
+    return;
+  }
+  const extra = STORE.extraCards[key]||[];
+  const ei = extra.findIndex(c=>c.id===cardId);
+  if(ei>-1) Object.assign(extra[ei], vals);
+  else STORE.cardOverrides[cardId] = Object.assign(STORE.cardOverrides[cardId]||{}, vals);
+}
+// Небольшое сообщение поверх уже открытой модалки — не рушит окно сета,
+// в отличие от openInfoModal, который переписывает содержимое модалки целиком.
+function openInfoModalOver(title, html){
+  let el = document.getElementById('miniToast');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'miniToast';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = `<b>${esc(title)}</b><span>${html}</span>`;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.remove('show'), 4200);
 }
 
 /* ==========================================================================
