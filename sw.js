@@ -1,6 +1,6 @@
 // PRIMUS. — service worker: кэширует приложение целиком,
 // чтобы оно открывалось и работало без интернета после первого захода.
-const CACHE_NAME = "primus-stud-v1";
+const CACHE_NAME = "primus-stud-v2";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -33,7 +33,9 @@ self.addEventListener("fetch", (event) => {
     caches.match(event.request).then((cached) => {
       const fetchPromise = fetch(event.request)
         .then((response) => {
-          if (response && response.status === 200) {
+          // Шрифты с fonts.gstatic.com приходят как opaque-ответы (status 0) — раньше они
+          // не попадали в кэш, и офлайн логотип рисовался запасным шрифтом. Теперь кладём и их.
+          if (response && (response.status === 200 || response.type === "opaque")) {
             const clone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           }
