@@ -159,8 +159,9 @@ textarea,input,select{border-radius:var(--radius-s);font-size:16px;font-family:i
 /* во время перетаскивания не выделяем текст и не мигаем курсором */
 body.resizing-sidebar{user-select:none;cursor:col-resize;}
 /* Логотип и подпись. Линия под логотипом — это НЕ отдельный элемент с JS-позиционированием
-   (так она уезжала, когда блок мерили в момент, где он ещё нулевой ширины), а верхняя граница
-   самой подписи: она физически не может оказаться не на своём месте. */
+   (так она уезжала, когда блок мерили в момент, где он ещё нулевой ширины), а псевдоэлемент
+   самого логотипа: она ровно по ширине слова PRIMUS. и физически не может уехать
+   или растянуться на весь сайдбар. */
 .brand{padding:10px 8px 6px;position:relative;display:flex;flex-direction:column;align-items:flex-start;}
 .brand h1{
   font-family:'Unbounded',var(--font-display);font-weight:900;
@@ -179,12 +180,16 @@ body.resizing-sidebar{user-select:none;cursor:col-resize;}
   visibility:hidden;
 }
 html.brand-font-ready .brand h1{visibility:visible;}
+/* Линия под логотипом — обычный элемент в потоке между логотипом и подписью.
+   align-self:stretch = ширина контентной коробки .brand, а её отступы слева и справа
+   одинаковые (8px внутри симметричных 14px сайдбара), поэтому линия идёт до краёв
+   с равным отступом с обеих сторон и не может уехать: ничего не измеряется скриптом. */
+.brand-rule{align-self:stretch;height:1px;background:var(--accent);margin:-8px 0 5px;flex-shrink:0;}
+html[data-theme="dark"] .brand-rule{background:var(--khaki);}
 .brand-dot{display:inline-block;transform:scaleX(0.86957) scaleY(1.06383);transform-origin:center;}
 html[data-theme="light"] .brand h1{ color:var(--choc-bitter); }
-.brand .sub{font-family:var(--font-mono);font-size:10.5px;font-weight:400;text-transform:uppercase;color:var(--text-dim);opacity:.55;margin-top:-12px;letter-spacing:1.4px;transform:scaleX(1.06) scaleY(0.9);transform-origin:left top;
-  border-top:1px solid var(--accent);padding-top:3px;margin-left:-4px;padding-left:4px;padding-right:4px;
-  align-self:stretch;margin-right:6px;}
-html[data-theme="dark"] .brand .sub{border-top-color:var(--khaki);}
+.brand .sub{font-family:var(--font-mono);font-size:10.5px;font-weight:400;text-transform:uppercase;color:var(--text-dim);opacity:.55;margin-top:0;letter-spacing:1.4px;transform:scaleX(1.06) scaleY(0.9);transform-origin:left top;
+  padding-top:0;max-width:100%;}
 .auth-greeting{margin:0 8px;font-size:11.5px;color:var(--text-faint);text-align:center;}
 .aura-badge{margin:10px 8px 16px;padding:8px 12px;border-radius:var(--radius-s);background:var(--accent-soft);color:var(--accent-strong);font-family:var(--font-mono);font-size:11.5px;font-weight:600;text-align:center;}
 
@@ -573,8 +578,17 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .study-nav .btn{padding:6px 12px;font-size:12px;}
 .study-progress{font-size:12px;color:var(--text-faint);text-align:center;margin:0;display:flex;flex-direction:column;gap:1px;line-height:1.3;}
 .study-progress b{font-size:12.5px;color:var(--text-dim);font-weight:600;}
-.study-bar{height:3px;border-radius:3px;background:var(--bg-soft);overflow:hidden;margin:0 0 10px;}
+.study-bar{height:3px;border-radius:3px;background:var(--bg-soft);overflow:hidden;margin:0 0 9px;}
 .study-bar-fill{height:100%;background:var(--khaki-ring);transition:width .18s;}
+/* Три счётчика над карточкой: сколько знаю, сколько повторю ещё, сколько не знаю */
+.study-tally{display:flex;gap:6px;margin:0 0 12px;font-family:var(--font-mono);letter-spacing:.4px;}
+.study-tally span{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:5px 4px;border-radius:6px;border:1px solid var(--border);background:var(--bg-soft);color:var(--text-faint);}
+.study-tally i{font-style:normal;font-size:9px;opacity:.85;line-height:1.25;text-align:center;}
+.study-tally b{font-size:13px;line-height:1;color:inherit;}
+.study-tally .st-know{color:var(--good);}
+.study-tally .st-again{color:var(--khaki);}
+.study-tally .st-dont{color:var(--bad);}
 .study-actions{display:flex;gap:8px;justify-content:center;}
 .study-actions .btn{flex:1;max-width:170px;}
 .btn-know{background:var(--good);border-color:var(--good);color:#fff;}
@@ -590,25 +604,43 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 @media (hover:hover){.theory-collapse:hover{color:var(--accent-strong);border-color:var(--accent);}}
 .theory-topic{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;padding-right:26px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 /* ---------- Лекции и семинары ----------
-   Овал вида материала: лекция всегда коричневая, семинар — хаки. Если материалы
-   прикреплены друг к другу, их овалы стоят вплотную — один общий «склеенный» овал. */
-.mat-kind{display:inline-block;border-radius:12px;padding:2px 9px;font-family:var(--font-mono);font-size:9px;letter-spacing:.8px;text-transform:uppercase;flex-shrink:0;}
+   Маленькая метка вида материала: просто аккуратная подпись. Лекция коричневая, семинар хаки. */
+.mat-kind{
+  display:inline-block;box-sizing:border-box;padding:3px 8px;border-radius:3px;flex-shrink:0;
+  font-family:var(--font-mono);font-size:8.5px;letter-spacing:.9px;text-transform:uppercase;line-height:1.4;
+}
 .mat-kind.lecture{background:var(--accent-soft);color:var(--accent-strong);}
 .mat-kind.seminar{background:var(--khaki-soft);color:var(--khaki);}
 .theory-group{margin-bottom:14px;}
 .theory-group .theory-item{margin-bottom:8px;}
 .theory-group .theory-item:last-child{margin-bottom:0;}
-.theory-group.linked{border-left:2px solid var(--khaki-ring);padding-left:12px;border-radius:2px;}
-.theory-group.linked .theory-item{margin-bottom:6px;}
-.kind-pills{display:inline-flex;border-radius:12px;overflow:hidden;margin-bottom:7px;}
-.kind-pill{font-family:var(--font-mono);font-size:9px;letter-spacing:.8px;text-transform:uppercase;padding:3px 11px;white-space:nowrap;}
-.kind-pill.lecture{background:var(--accent-soft);color:var(--accent-strong);}
-.kind-pill.seminar{background:var(--khaki-soft);color:var(--khaki);}
-.kind-pill+.kind-pill{box-shadow:inset 1px 0 0 var(--border);}
+
+/* Прикреплённые друг к другу материалы = ОДИН отрывной билет: сами большие прямоугольники
+   лекции и семинара склеены в одну карточку, между ними линия отрыва пунктиром и круглые
+   выемки по левому и правому краю. Скругления остаются только по внешнему контуру. */
+.theory-group.linked .theory-item{margin-bottom:0;border-radius:0;}
+.theory-group.linked .theory-item:first-child{border-radius:var(--radius-m) var(--radius-m) 0 0;border-bottom:none;}
+.theory-group.linked .theory-item:last-child{border-radius:0 0 var(--radius-m) var(--radius-m);}
+.theory-group.linked .theory-item:not(:first-child):not(:last-child){border-bottom:none;}
+/* линия отрыва между склеенными половинами: короткие штрихи, как перфорация на билете
+   (border:dashed даёт слишком длинные и бледные штрихи) */
+.theory-group.linked .theory-item + .theory-item{
+  border-top:none;
+  background-image:repeating-linear-gradient(to right,var(--text-faint) 0 3px,transparent 3px 7px);
+  background-size:100% 1px;background-repeat:no-repeat;background-position:left top;
+}
+/* выемки: круги цветом фона страницы, центр ровно на линии отрыва у левого и правого края */
+.theory-group.linked .theory-item + .theory-item::before,
+.theory-group.linked .theory-item + .theory-item::after{
+  content:"";position:absolute;top:-8px;width:16px;height:16px;border-radius:50%;
+  background:var(--bg);pointer-events:none;
+}
+.theory-group.linked .theory-item + .theory-item::before{left:-8px;}
+.theory-group.linked .theory-item + .theory-item::after{right:-8px;}
 /* Выбор «лекция / семинар» в шапке редактора — те же два цвета, что и в списке */
 .te-kind-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px;}
-.te-kind-pick{display:inline-flex;border-radius:14px;overflow:hidden;border:1px solid var(--border);}
-.kind-opt{border:none;background:transparent;font-family:var(--font-mono);font-size:10px;letter-spacing:.9px;text-transform:uppercase;padding:6px 14px;color:var(--text-faint);border-radius:0;}
+.te-kind-pick{display:inline-flex;border-radius:4px;overflow:hidden;border:1px solid var(--border);}
+.kind-opt{border:none;background:transparent;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;padding:6px 13px;color:var(--text-faint);border-radius:0;}
 .kind-opt+.kind-opt{box-shadow:inset 1px 0 0 var(--border);}
 .kind-opt.lecture.on{background:var(--accent-soft);color:var(--accent-strong);font-weight:600;}
 .kind-opt.seminar.on{background:var(--khaki-soft);color:var(--khaki);font-weight:600;}
@@ -684,8 +716,10 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .ov-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
 
 /* ---------- План: базовый минимум / роскошный максимум ---------- */
-.plan-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:22px;align-items:start;}
-@media (max-width:900px){.plan-grid{grid-template-columns:1fr;}}
+/* матрице отдана колонка пошире: в узкой её подписи и задачи выглядели сжатыми */
+.plan-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px;align-items:start;}
+/* на средних экранах две колонки делают матрицу совсем узкой — отдаём ей всю ширину */
+@media (max-width:1150px){.plan-grid{grid-template-columns:1fr;}}
 .plan-tier-label{font-size:11px;color:var(--text-faint);font-weight:400;letter-spacing:1.2px;text-transform:uppercase;
   opacity:.6;margin:18px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
 .plan-tier-label:first-child{margin-top:0;}
@@ -706,18 +740,26 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 /* ---------- Матрица Эйзенхауэра ---------- */
 .eis-wrap{border:1px solid var(--border);border-radius:var(--radius-l);padding:18px;background:var(--surface);}
 .eis-title{font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--text-dim);margin-bottom:0;text-align:left;letter-spacing:1.6px;text-transform:uppercase;}
-.eis-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:8px;align-items:start;}
-.eis-cell{border-radius:var(--radius-m);padding:10px;display:flex;flex-direction:column;color:var(--text);position:relative;overflow:hidden;border:1px solid var(--border);min-height:150px;transition:min-height .18s ease,padding .18s ease;}
-.eis-cell.collapsed{min-height:0;padding:9px 34px 9px 10px;}
+.eis-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:10px;align-items:start;}
+.eis-cell{border-radius:var(--radius-m);padding:12px 12px 12px 13px;display:flex;flex-direction:column;color:var(--text);position:relative;border:1px solid var(--border);min-height:150px;transition:min-height .18s ease,padding .18s ease;}
+.eis-cell.collapsed{min-height:0;padding:10px 36px 10px 13px;}
 .eis-cell.collapsed .ec-chips,.eis-cell.collapsed .ec-add{display:none;}
-.eis-cell .ec-label{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:.4px;opacity:.75;line-height:1.4;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+/* Подпись квадрата: своя строка целиком, кнопки её не поджимают — иначе название переносилось
+   посреди слова и выглядело сжатым */
+.eis-cell .ec-label{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.7px;opacity:.8;line-height:1.4;margin:0 52px 9px 0;display:flex;align-items:center;gap:6px;}
 .eis-cell.collapsed .ec-label{margin-bottom:0;}
 .ec-count{font-family:var(--font-mono);font-size:9px;opacity:.6;}
-.eis-cell .ec-add{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:1px solid var(--border);
-  color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+/* Плюс нарисован двумя полосками, а не символом «+»: у шрифтового плюса своя высота строки,
+   из-за неё он в кружке всегда стоял чуть выше центра */
+.eis-cell .ec-add{position:absolute;top:9px;right:9px;width:19px;height:19px;border-radius:50%;background:var(--surface);border:1px solid var(--border);
+  font-size:0;line-height:0;cursor:pointer;padding:0;}
+.eis-cell .ec-add::before,.eis-cell .ec-add::after{content:"";position:absolute;left:50%;top:50%;background:var(--text-dim);border-radius:1px;}
+.eis-cell .ec-add::before{width:9px;height:1.5px;transform:translate(-50%,-50%);}
+.eis-cell .ec-add::after{width:1.5px;height:9px;transform:translate(-50%,-50%);}
 @media (hover:hover){.eis-cell .ec-add:hover{background:var(--accent-soft);border-color:var(--accent);}}
-.ec-collapse{position:absolute;top:9px;right:9px;width:16px;height:16px;border:none;background:transparent;color:var(--text-faint);
-  font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;opacity:.55;transition:opacity .12s,color .12s;}
+@media (hover:hover){.eis-cell .ec-add:hover::before,.eis-cell .ec-add:hover::after{background:var(--accent-strong);}}
+.ec-collapse{position:absolute;top:9px;right:9px;width:19px;height:19px;border:none;background:transparent;color:var(--text-faint);
+  font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;opacity:.55;transition:opacity .12s,color .12s;padding:0;}
 .eis-cell.collapsed .ec-collapse{top:9px;right:9px;}
 .eis-cell:not(.collapsed) .ec-collapse{right:32px;}
 @media (hover:hover){.ec-collapse:hover{opacity:1;color:var(--accent-strong);}}
@@ -725,13 +767,22 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .eis-cell.inq{background:var(--eis-inq);}
 .eis-cell.uniq{background:var(--eis-uniq);}
 .eis-cell.ninq{background:var(--eis-ninq);}
-.ec-chips{display:flex;flex-direction:column;gap:4px;overflow-y:auto;flex:1;}
-.eq-chip{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 7px;font-size:11px;cursor:pointer;line-height:1.3;}
+.ec-chips{display:flex;flex-direction:column;gap:5px;flex:1;}
+.eq-chip{display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px 7px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 8px;font-size:11.5px;cursor:pointer;line-height:1.35;}
 @media (hover:hover){.eq-chip:hover{border-color:var(--accent);}}
-.eq-chip-toggle{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--text-faint);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;}
+/* break-word, а не anywhere: последний рвал слова посреди («Повто|рить»), когда ячейка узкая */
+.eq-chip-text{flex:1 1 60%;min-width:0;overflow-wrap:break-word;}
+.eq-chip-toggle{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--text-faint);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;margin-top:1px;}
 @media (hover:hover){.eq-chip-toggle:hover{color:var(--good);border-color:var(--good);}}
-.eq-chip-date{margin-left:auto;font-family:var(--font-mono);font-size:9px;opacity:.7;white-space:nowrap;}
+.eq-chip-date{font-family:var(--font-mono);font-size:9px;opacity:.7;white-space:nowrap;flex-shrink:0;margin-top:2px;}
 .eq-empty{font-size:10.5px;opacity:.5;padding:4px 0;}
+/* На телефоне 2×2 давали ячейку ~146px — названия квадратов и задачи рвались посреди слова.
+   Ниже 620px матрица разворачивается в один столбец: каждый квадрат во всю ширину. */
+@media (max-width:620px){
+  .eis-wrap{padding:14px 12px;}
+  .eis-grid{grid-template-columns:1fr;}
+  .eis-cell{min-height:0;}
+}
 
 /* ---------- Недельная шкала планера ---------- */
 .week-strip{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
@@ -750,13 +801,26 @@ html[data-theme="dark"] .smoky-modal h3{color:#F0EDE5;}
 html[data-theme="dark"] .smoky-modal{color:#F0EDE5;}
 
 /* ---------- Заметки ---------- */
-.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;}
+/* align-items:start обязателен: иначе развёрнутая заметка растягивает по высоте всех соседей по ряду */
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;align-items:start;}
+/* развёрнутая заметка занимает всю строку — длинный текст читается нормально, а не в узкой колонке */
+.note-card.open{grid-column:1/-1;}
 .note-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:14px 16px;display:flex;flex-direction:column;min-height:120px;}
 .note-editable{min-height:220px;}
 .note-editable h2,.n-body h2{font-family:var(--font-display);font-size:19px;font-weight:700;margin:10px 0 6px;}
 .note-editable h3,.n-body h3{font-family:var(--font-display);font-size:15px;font-weight:600;margin:8px 0 4px;color:var(--text-dim);}
 .note-card .n-title{font-family:var(--font-display);font-weight:700;font-size:14px;margin-bottom:6px;}
-.note-card .n-body{font-size:12.5px;color:var(--text-dim);line-height:1.5;flex:1;overflow:hidden;max-height:100px;}
+/* Свёрнутая заметка показывает начало с мягким затуханием, развёрнутая — весь текст */
+.note-card .n-body{font-size:12.5px;color:var(--text-dim);line-height:1.5;flex:1;overflow:hidden;max-height:120px;position:relative;overflow-wrap:anywhere;}
+.note-card .n-body::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26px;
+  background:linear-gradient(to bottom,transparent,var(--surface));pointer-events:none;}
+.note-card.open .n-body{max-height:none;overflow:visible;}
+.note-card.open .n-body::after{display:none;}
+.note-card .n-body img{max-width:100%;height:auto;}
+.note-card .n-body table{max-width:100%;}
+.note-card .n-more{align-self:flex-start;margin-top:7px;border:none;background:transparent;padding:0;
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.5px;color:var(--accent-strong);cursor:pointer;}
+.note-card .n-more[hidden]{display:none;}
 .note-card .n-date{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);margin-top:8px;}
 .note-card .n-actions{display:flex;gap:6px;margin-top:8px;}
 
@@ -973,6 +1037,7 @@ table.lec-table th{background:var(--bg-soft);font-weight:600;}
     <div class="sidebar-resizer" id="sidebarResizer"></div>
     <div class="brand">
       <h1>PRIMUS<span class="brand-dot">.</span></h1>
+      <div class="brand-rule"></div>
       <div class="sub">the best platform for successful studying</div>
     </div>
     <div class="auth-greeting" id="authGreeting"></div>
@@ -2686,7 +2751,8 @@ const GUIDE_SECTIONS = [
   {id:'theory', title:'Теория', body:`Конспекты лекций. <b>«Добавить материал»</b> — создать лекцию: тема, дата, текст.
     <h4>Лекция или семинар</h4>
     <p>В самом верху формы выбираешь, что записываешь: <b>Лекция</b> или <b>Семинар</b>. Рядом — <b>«Прикрепить к…»</b>: семинар можно привязать к своей лекции (и наоборот), а можно оставить <b>«не прикреплять»</b> — тогда материал просто стоит сам по себе.</p>
-    <p>Прикреплённые материалы в списке идут <b>рядом, одной группой</b>, и сверху у них склеенный овал из двух половинок: <b>коричневая — лекция, хаки — семинар</b>. Так сразу видно, что это одна пара, а не два разных конспекта. У каждого материала есть и свой маленький овал того же цвета.</p>
+    <p>Прикреплённые друг к другу материалы в списке склеены в <b>один отрывной билет</b>: лекция и семинар стоят вплотную, между ними линия отрыва пунктиром и круглые выемки по краям — сразу видно, что это одна пара, а не два разных конспекта. Каждая половина разворачивается и сворачивается отдельно, билет при этом не распадается.</p>
+    <p>Подпись в углу говорит, что это: <b>коричневая — лекция, хаки — семинар</b>.</p>
     <h4>Панель форматирования</h4>
     <p>Панель с кнопками закреплена <b>сверху экрана</b> и видна всё время, пока лекция открыта, — к ней не нужно листать, и она не пропадает при прокрутке. Подпись на панели показывает, к какому полю сейчас относятся кнопки.</p>
     <ul>
@@ -2718,7 +2784,9 @@ const GUIDE_SECTIONS = [
     <p>Окно <b>не закрывается</b> после вставки — тему и любую карточку ещё можно поправить. Завершает работу только кнопка <b>«Готово»</b>.</p>
     <p>Уже готовый сет открывается кнопкой <b>«Изменить сет»</b> в его шапке: там меняется название темы, правятся и удаляются карточки. Рядом — <b>«Переместить сет»</b> (в другой предмет) и <b>«Удалить сет»</b>.</p>
     <h4>Изучение</h4>
-    <p><b>«Изучить»</b> запускает сессию в стиле Quizlet: тап — перевернуть карточку, свайп вправо/влево или кнопки «Знаю» / «Не знаю» — оценить, стрелки «Назад»/«Вперёд» — просто полистать. Сверху видно, <b>какая карточка по счёту</b> («Карточка 7 из 20»), сколько осталось и полоска прогресса.</p>
+    <p><b>«Изучить»</b> запускает сессию в стиле Quizlet: тап — перевернуть карточку, свайп вправо/влево или кнопки «Знаю» / «Не знаю» — оценить, стрелки «Назад»/«Вперёд» — просто полистать.</p>
+    <p>Сверху видно, <b>какая карточка по счёту</b> («Карточка 7 из 20»), и три счётчика: <b>Знаю</b>, <b>Повторю ещё</b>, <b>Не знаю</b>. Номер идёт подряд и не зависит от того, что нажала — любая из трёх кнопок просто переводит на следующую карточку.</p>
+    <p>Всё, что не ушло в «Знаю», возвращается <b>вторым кругом</b> в конце сессии (наверху тогда написано «круг 2»). Сессия закончится, когда все карточки окажутся в «Знаю».</p>
     <p>Сессию можно бросить в любой момент — прогресс сохраняется, даже если просто закрыть приложение. При следующем заходе наверху появится баннер <b>«Продолжить с того же места»</b>, и карточки пойдут ровно с той, на которой остановилась.</p>`},
   {id:'notebook', title:'Тетрадь', body:`Рисование от руки — стилусом или мышью (палец только скроллит и зумит). Перо, карандаш (с текстурой), маркер, ластик — у каждого своя толщина. Страницы пролистываются вниз бесконечно, можно менять цвет/разлиновку бумаги.`},
   {id:'practice', title:'Практика', body:`5 режимов заданий: Задачи, Кейсы, Соответствие, Вставка слова, Открытый вопрос — переключаются вкладками сверху. <b>«Добавить задания по теме»</b> — вставить готовые задания, которые оформит ИИ по материалу лекции.<br>Именно здесь (а не в обычном изучении карточек) ошибки попадают в раздел <b>WON</b>.`},
@@ -2727,7 +2795,8 @@ const GUIDE_SECTIONS = [
   {id:'won', title:'WON — работа над ошибками', body:`Карточки, в которых была ошибка именно в <b>Практике</b> или заданиях (не в обычном изучении карточек) — отдельный список для прицельного повторения слабых мест.`},
   {id:'progress', title:'Progress', body:`Aura и уровень наверху, недельный планер (базовый минимум / роскошный максимум), матрица Эйзенхауэра для срочных/важных дел, и календарь — маленькая сетка «ударного режима» (стрик выполненных дней) плюс полноценный календарь с событиями по неделям и месяцам.`},
   {id:'timers', title:'Timers', body:`Pomodoro (25 минут работы / 5 минут перерыва) и обычный секундомер. «Старт» — начать, «Стоп»/«Продолжить» — приостановить без сохранения, <b>«Закончить»</b> — сохранить время в записи внизу. Записи можно удалить (с подтверждением).`},
-  {id:'notes', title:'Notes', body:`Свободные заметки с форматированием — как на iPhone.`},
+  {id:'notes', title:'Notes', body:`Свободные заметки с той же панелью форматирования, что и в лекциях: жирный, курсив, заголовки, списки, маркеры.<br>
+    В списке заметка показывает начало текста, а кнопка <b>«Читать полностью»</b> разворачивает её целиком во всю ширину — текст больше не обрезается. Кнопка <b>«Развернуть все»</b> наверху открывает сразу все заметки.`},
   {id:'storage', title:'Storage', body:`Экспорт и импорт всего прогресса файлом (перенос между устройствами — localStorage сам не синхронизируется), регулировка масштаба интерфейса и <b>корзина</b> — там лежит всё недавно удалённое, любую запись можно вернуть.`}
 ];
 // Информационный блок — идёт отдельно от инструкции, внизу страницы.
@@ -3009,12 +3078,14 @@ function renderEisGrid(){
   if(!eisGrid) return;
   eisGrid.innerHTML = EIS_QUADS.map(q=>{
     const items = STORE.planTasks.filter(t=>t.quadrant===q.id && !t.done);
-    const chips = items.slice(0,6).map(t=>`<div class="eq-chip" data-edit2="${t.id}"><span class="eq-chip-toggle" data-toggle2="${t.id}">✓</span>${esc(t.text)}${t.date?`<span class="eq-chip-date">${esc(fmtPlanDate(t.date))}</span>`:''}</div>`).join('');
+    // Показываем ВСЕ задачи квадрата. Раньше стоял slice(0,6), и седьмая и следующие задачи
+    // просто не появлялись — выглядело как «новые задачи не добавляются».
+    const chips = items.map(t=>`<div class="eq-chip" data-edit2="${t.id}"><span class="eq-chip-toggle" data-toggle2="${t.id}">✓</span><span class="eq-chip-text">${esc(t.text)}</span>${t.date?`<span class="eq-chip-date">${esc(fmtPlanDate(t.date))}</span>`:''}</div>`).join('');
     const collapsed = !!EIS_COLLAPSED[q.id];
     return `<div class="eis-cell ${q.cls} ${collapsed?'collapsed':''}" data-quad="${q.id}">
       <button class="ec-collapse" data-collapse="${q.id}" title="${collapsed?'Развернуть':'Свернуть'}">${collapsed?'▾':'▴'}</button>
       <button class="ec-add" data-quadadd="${q.id}">+</button>
-      <div class="ec-label">${q.label}${collapsed && items.length?`<span class="ec-count">${items.length}</span>`:''}</div>
+      <div class="ec-label">${q.label}${items.length?`<span class="ec-count">${items.length}</span>`:''}</div>
       <div class="ec-chips">${chips || '<div class="eq-empty">Пусто</div>'}</div>
     </div>`;
   }).join('');
@@ -3136,24 +3207,50 @@ function openPlanTaskModal(tier, taskId, _unused, presetQuad){
 }
 
 /* ---------- Заметки (как в iPhone Notes: заголовки, форматирование) ---------- */
+// Какие заметки развёрнуты. Свёрнутая показывает первые строки, развёрнутая — весь текст целиком:
+// раньше текст просто обрезался по высоте, и прочитать заметку в списке было нельзя.
+let NOTES_EXPANDED = {};
 function renderOvNotes(body){
-  body.innerHTML = `<div class="btn-row" style="margin-bottom:16px"><button class="btn btn-primary" id="btnAddNote">+ Новая заметка</button></div><div class="notes-grid" id="notesGrid"></div>`;
+  body.innerHTML = `<div class="btn-row" style="margin-bottom:16px">
+      <button class="btn btn-primary" id="btnAddNote">+ Новая заметка</button>
+      ${STORE.notes.length>1?`<button class="btn" id="btnNotesToggleAll">Развернуть все</button>`:''}
+    </div><div class="notes-grid" id="notesGrid"></div>`;
   const grid = document.getElementById('notesGrid');
   if(STORE.notes.length===0){
     grid.innerHTML = `<div class="empty-state">Заметок пока нет.</div>`;
   } else {
-    grid.innerHTML = STORE.notes.slice().reverse().map(n=>`
-      <div class="note-card">
+    grid.innerHTML = STORE.notes.slice().reverse().map(n=>{
+      const open = !!NOTES_EXPANDED[n.id];
+      return `
+      <div class="note-card ${open?'open':''}">
         <div class="n-title">${esc(n.title||'Без названия')}</div>
-        <div class="n-body">${n.body||''}</div>
+        <div class="n-body">${n.body||'<span style="opacity:.5">пусто</span>'}</div>
+        <button class="n-more" data-notetoggle="${n.id}">${open?'Свернуть ▴':'Читать полностью ▾'}</button>
         <div class="n-date">${fmtDate(n.date)}</div>
         <div class="n-actions">
           <button class="btn btn-sm" data-editnote="${n.id}">Изменить</button>
           <button class="btn btn-sm" data-sharenote="${n.id}">Поделиться</button>
           <button class="btn btn-sm" data-delnote="${n.id}">Удалить</button>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
+    // Кнопку «читать полностью» показываем только там, где текст реально не помещается
+    grid.querySelectorAll('.note-card').forEach(card=>{
+      const b = card.querySelector('.n-body'), more = card.querySelector('.n-more');
+      if(!card.classList.contains('open') && b.scrollHeight <= b.clientHeight + 2) more.hidden = true;
+    });
   }
+  grid.querySelectorAll('[data-notetoggle]').forEach(b=>b.onclick=()=>{
+    const id = b.dataset.notetoggle;
+    NOTES_EXPANDED[id] = !NOTES_EXPANDED[id];
+    renderOvNotes(body);
+  });
+  const toggleAll = document.getElementById('btnNotesToggleAll');
+  if(toggleAll) toggleAll.onclick=()=>{
+    const anyClosed = STORE.notes.some(n=>!NOTES_EXPANDED[n.id]);
+    STORE.notes.forEach(n=>{ NOTES_EXPANDED[n.id] = anyClosed; });
+    renderOvNotes(body);
+  };
   document.getElementById('btnAddNote').onclick=()=>openNoteModal(body);
   grid.querySelectorAll('[data-editnote]').forEach(b=>b.onclick=()=>openNoteModal(body, b.dataset.editnote));
   grid.querySelectorAll('[data-delnote]').forEach(b=>b.onclick=()=>{
@@ -3172,29 +3269,15 @@ function openNoteModal(body, noteId){
     <div class="field"><label>Заголовок</label><input id="noteTitle" value="${editing?esc(editing.title):''}"></div>
     <div class="field">
       <label>Текст</label>
-      <div class="rt-toolbar">
-        <button type="button" class="rt-btn" data-cmd="formatBlock" data-val="h2" title="Заголовок">H1</button>
-        <button type="button" class="rt-btn" data-cmd="formatBlock" data-val="h3" title="Подзаголовок">H2</button>
-        <button type="button" class="rt-btn" data-cmd="formatBlock" data-val="p" title="Обычный текст">Т</button>
-        <button type="button" class="rt-btn b" data-cmd="bold" title="Жирный">B</button>
-        <button type="button" class="rt-btn i" data-cmd="italic" title="Курсив">I</button>
-        <button type="button" class="rt-btn s" data-cmd="strikeThrough" title="Зачёркнутый">S</button>
-        <button type="button" class="rt-btn u" data-cmd="underline" title="Подчёркнутый">U</button>
-        <button type="button" class="rt-btn" data-cmd="insertUnorderedList" title="Список">•</button>
-      </div>
-      <div class="rt-editable note-editable" contenteditable="true" id="noteBody">${editing?(editing.body||''):''}</div>
+      <div class="rt-toolbar" data-for="noteBody">${richToolbarButtonsHtml('card')}</div>
+      <div class="rt-editable note-editable" contenteditable="true" id="noteBody" data-f="noteBody">${editing?(editing.body||''):''}</div>
     </div>
     <div class="modal-actions"><button class="btn" id="mCancelNote">Отмена</button><button class="btn btn-primary" id="mSaveNote">Сохранить</button></div>
   `;
   document.getElementById('modalBody').classList.add('modal-lg');
-  document.querySelectorAll('.rt-toolbar .rt-btn').forEach(btn=>{
-    btn.addEventListener('mousedown',(e)=>e.preventDefault());
-    btn.addEventListener('click',()=>{
-      const editable = document.getElementById('noteBody');
-      editable.focus();
-      try{ document.execCommand(btn.dataset.cmd, false, btn.dataset.val||null); }catch(err){}
-    });
-  });
+  // Кнопки панели работают через общий делегированный обработчик (pointerdown на document).
+  // Своя проводка здесь была опасна: querySelectorAll('.rt-toolbar .rt-btn') цеплял ВСЕ панели
+  // на странице, и после открытия заметки кнопки в других полях срабатывали дважды.
   document.getElementById('mCancelNote').onclick=closeOverlay;
   document.getElementById('mSaveNote').onclick=()=>{
     const vals = { title: document.getElementById('noteTitle').value.trim(), body: document.getElementById('noteBody').innerHTML.trim() };
@@ -3885,7 +3968,10 @@ function renderCardsGrid(body,key){
   }
   if(!CARDS_TOPIC_COLLAPSED[key]) CARDS_TOPIC_COLLAPSED[key] = {};
   const savedSession = STORE.studySessions && STORE.studySessions[key];
-  const savedValidCount = savedSession ? savedSession.queue.filter(id=>findCard(key,id)).length : 0;
+  const savedRoundCount = savedSession ? savedSession.queue.filter(id=>findCard(key,id)).length : 0;
+  const savedNextCount = savedSession ? (savedSession.nextRound||[]).filter(id=>findCard(key,id)).length : 0;
+  // «осталось» — это непройденный хвост текущего круга плюс карточки, отложенные на следующий круг
+  const savedValidCount = Math.max(0, savedRoundCount - (savedSession ? (savedSession.idx||0) : 0)) + savedNextCount;
   const type = data.meta.type || "custom";
   function cardHtml(c){
     const {top,sub,body:cardBody,usage} = renderCardFace(type,c);
@@ -3944,7 +4030,7 @@ function renderCardsGrid(body,key){
   });
 
   const resumeBanner = savedValidCount>0 ? `<div class="resume-banner">
-    <span>Незавершённая сессия: остановились на карточке <b>${(savedSession.done||0)+1}</b> из <b>${savedSession.total||savedValidCount}</b> — осталось ${savedValidCount}.</span>
+    <span>Незавершённая сессия: остановились на карточке <b>${Math.min((savedSession.idx||0)+1, Math.max(1,savedRoundCount))}</b> из <b>${savedRoundCount||savedValidCount}</b>${(savedSession.round||1)>1?` (круг ${savedSession.round})`:''} — всего осталось ${savedValidCount}.</span>
     <div class="btn-row" style="margin:0"><button class="btn btn-primary" id="btnResumeSession">Продолжить с того же места</button><button class="btn" id="btnDiscardSession">Начать заново</button></div>
   </div>` : '';
   let html = resumeBanner + chipsHtml
@@ -4555,52 +4641,91 @@ function redrawCanvas(canvas, ctx, page){
 
 // Сохраняет прогресс текущей сессии, чтобы при закрытии (крестик/«Закрыть сессию») она не слетала —
 // при следующем открытии этой же категории предложим продолжить, как в Quizlet.
+/* Модель сессии:
+     queue    — карточки текущего круга по порядку;
+     idx      — на какой карточке круга стоим (0-based). Номер «карточка N из M» — это ровно idx+1
+                и длина круга, поэтому счёт идёт подряд и НЕ зависит от того, что нажали:
+                «Знаю», «Не знаю» и «Повторю ещё» одинаково двигают на следующую карточку;
+     nextRound— карточки, которые вернутся во втором круге («не знаю» и «повторю ещё»);
+     status   — cardId → 'know' | 'again' | 'dont', последний ответ по каждой карточке;
+                из него считаются три счётчика над карточкой;
+     round    — номер круга, total — сколько карточек было в самом начале. */
+function studyCounts(s){
+  const c = {know:0, again:0, dont:0};
+  Object.values(s.status||{}).forEach(v=>{ if(c[v]!==undefined) c[v]++; });
+  return c;
+}
 function saveStudySessionProgress(){
   const s = STUDY_SESSION;
   if(!s) return;
   if(!STORE.studySessions) STORE.studySessions = {};
-  if(s.queue.length===0){ delete STORE.studySessions[s.catKey]; }
-  else { STORE.studySessions[s.catKey] = {queue:s.queue.slice(), idx:s.idx, seen:s.seen, knew:s.knew, total:s.total, done:s.done, savedAt:todayISO()}; }
+  if(s.queue.length===0 && (!s.nextRound || s.nextRound.length===0)){ delete STORE.studySessions[s.catKey]; }
+  else {
+    STORE.studySessions[s.catKey] = {
+      queue:s.queue.slice(), idx:s.idx, nextRound:(s.nextRound||[]).slice(),
+      status:Object.assign({}, s.status), round:s.round||1, total:s.total,
+      savedAt:todayISO()
+    };
+  }
   saveStore();
 }
-// Восстанавливает сохранённую сессию ровно на том месте, где её оставили: та же очередь,
-// тот же номер карточки, тот же счёт. Возвращает false, если восстанавливать нечего.
+// Восстанавливает сохранённую сессию ровно на том месте, где её оставили: тот же круг,
+// та же карточка, те же счётчики. Возвращает false, если восстанавливать нечего.
 function resumeStudySession(catKey){
   const saved = STORE.studySessions && STORE.studySessions[catKey];
   if(!saved || !saved.queue) return false;
   const stillValid = saved.queue.filter(id=>findCard(catKey,id));
-  if(stillValid.length===0) return false;
+  const nextRound = (saved.nextRound||[]).filter(id=>findCard(catKey,id));
+  if(stillValid.length===0 && nextRound.length===0) return false;
   // индекс держим на той же карточке, даже если из очереди выпали удалённые
   const wasId = saved.queue[saved.idx];
   let idx = stillValid.indexOf(wasId);
-  if(idx<0) idx = Math.min(saved.idx, stillValid.length-1);
-  const done = Math.min(saved.done||0, Math.max(0,(saved.total||stillValid.length)-stillValid.length));
+  if(idx<0) idx = Math.min(saved.idx||0, Math.max(0,stillValid.length-1));
   STUDY_SESSION = {
     catKey, queue:stillValid, idx, flipped:false,
-    seen:saved.seen||0, knew:saved.knew||0,
-    total: saved.total || stillValid.length, done
+    nextRound, status: saved.status || {},
+    round: saved.round || 1,
+    total: saved.total || (stillValid.length + nextRound.length)
   };
+  if(STUDY_SESSION.queue.length===0) advanceStudyRound(STUDY_SESSION);
   renderStudyModal();
   openOverlay();
   return true;
 }
+// Круг закончился: карточки, помеченные «не знаю» и «повторю ещё», уходят в следующий круг.
+function advanceStudyRound(s){
+  if(s.nextRound && s.nextRound.length){
+    s.queue = s.nextRound;
+    s.nextRound = [];
+    s.idx = 0;
+    s.round = (s.round||1)+1;
+  } else {
+    s.queue = [];
+  }
+}
 function startStudySession(catKey, cardIds, startId){
   if(cardIds.length===0) return;
   const saved = STORE.studySessions && STORE.studySessions[catKey];
-  if(saved && saved.queue && saved.queue.length>0 && !startId){
+  if(saved && saved.queue){
     const stillValid = saved.queue.filter(id=>findCard(catKey,id));
-    if(stillValid.length>0){
-      const pos = (saved.done||0)+1, tot = saved.total||stillValid.length;
-      if(confirm(`Есть незавершённая сессия по этой категории — остановились на карточке ${pos} из ${tot} (осталось ${stillValid.length}).\n\nПродолжить с того же места?`)){
+    const nextLeft = (saved.nextRound||[]).filter(id=>findCard(catKey,id)).length;
+    const left = Math.max(0, stillValid.length - (saved.idx||0)) + nextLeft;
+    if(left>0){
+      const pos = Math.min((saved.idx||0)+1, Math.max(1,stillValid.length));
+      const where = `остановились на карточке ${pos} из ${stillValid.length||left} (всего осталось ${left})`;
+      // Тап по конкретной карточке тоже спрашиваем: иначе незавершённая сессия молча стиралась
+      const msg = startId
+        ? `Есть незавершённая сессия по этой категории — ${where}.\n\nПродолжить её с того же места?\nОтмена — начать новую сессию с выбранной карточки (прогресс прошлой не сохранится).`
+        : `Есть незавершённая сессия по этой категории — ${where}.\n\nПродолжить с того же места?`;
+      if(confirm(msg)){
         if(resumeStudySession(catKey)) return;
       }
     }
     delete STORE.studySessions[catKey]; saveStore();
   }
-  let ids = cardIds.slice();
+  let ids = shuffle(cardIds.slice());
   if(startId){ ids = [startId, ...ids.filter(id=>id!==startId)]; }
-  STUDY_SESSION = { catKey, queue: shuffle(ids), idx:0, flipped:false, seen:0, knew:0, total:ids.length, done:0 };
-  if(startId){ STUDY_SESSION.queue = [startId, ...shuffle(ids.filter(id=>id!==startId))]; }
+  STUDY_SESSION = { catKey, queue: ids, idx:0, flipped:false, nextRound:[], status:{}, round:1, total:ids.length };
   renderStudyModal();
   openOverlay();
 }
@@ -4608,10 +4733,15 @@ function renderStudyModal(){
   const s = STUDY_SESSION;
   const modal = document.getElementById('modalBody');
   modal.classList.add('modal-lg');
+  if(s && s.queue.length===0 && s.nextRound && s.nextRound.length) advanceStudyRound(s);
   if(!s || s.queue.length===0){
     if(s && STORE.studySessions) delete STORE.studySessions[s.catKey];
     saveStore();
-    modal.innerHTML = `<h3>Сессия завершена</h3><div class="empty-state">Все карточки пройдены: «Знаю» — ${s?s.knew:0} из ${s?s.seen:0} попыток.</div><div class="modal-actions"><button class="btn btn-primary" id="mCloseStudy">Готово</button></div>`;
+    const c = s ? studyCounts(s) : {know:0,again:0,dont:0};
+    modal.innerHTML = `<h3>Сессия завершена</h3>
+      <div class="empty-state">Пройдено карточек: <b>${s?s.total:0}</b>.<br>
+        «Знаю» — ${c.know}${c.again?` · «Повторю ещё» — ${c.again}`:''}${c.dont?` · «Не знаю» — ${c.dont}`:''}</div>
+      <div class="modal-actions"><button class="btn btn-primary" id="mCloseStudy">Готово</button></div>`;
     document.getElementById('mCloseStudy').onclick=()=>{ modal.classList.remove('modal-lg'); STUDY_SESSION=null; closeOverlay(); buildAllData(); renderAll(); };
     return;
   }
@@ -4621,17 +4751,23 @@ function renderStudyModal(){
   if(!card){ s.queue.splice(s.idx,1); renderStudyModal(); return; }
   const type = (APP_DATA[s.catKey]||{}).meta ? APP_DATA[s.catKey].meta.type : "custom";
   const {top,sub,body,usage} = renderCardFace(type,card);
+  const counts = studyCounts(s);
   modal.innerHTML = `
     <h3>Изучение — ${esc(getCategoryDisplayName(s.catKey))}</h3>
     <div class="study-nav">
       <button class="btn" id="btnPrevCard" ${s.queue.length<2?'disabled':''}>‹ Назад</button>
       <div class="study-progress">
-        <b>Карточка ${(s.done||0)+s.idx+1} из ${s.total||s.queue.length}</b>
-        <span>осталось ${s.queue.length} · «Знаю» ${s.knew}</span>
+        <b>Карточка ${s.idx+1} из ${s.queue.length}</b>
+        <span>${(s.round||1)>1?`круг ${s.round} · `:''}всего в сессии ${s.total}</span>
       </div>
       <button class="btn" id="btnNextCard" ${s.queue.length<2?'disabled':''}>Вперёд ›</button>
     </div>
-    <div class="study-bar"><div class="study-bar-fill" style="width:${Math.round(((s.done||0)/(s.total||s.queue.length))*100)}%"></div></div>
+    <div class="study-bar"><div class="study-bar-fill" style="width:${Math.round((s.idx/s.queue.length)*100)}%"></div></div>
+    <div class="study-tally">
+      <span class="st-know"><i>Знаю</i><b>${counts.know}</b></span>
+      <span class="st-again"><i>Повторю ещё</i><b>${counts.again}</b></span>
+      <span class="st-dont"><i>Не знаю</i><b>${counts.dont}</b></span>
+    </div>
     <div class="study-card-wrap">
       <div class="study-card" id="studyCard">
         <span class="sc-swipe-hint dont">Не знаю</span>
@@ -4658,32 +4794,34 @@ function renderStudyModal(){
   document.getElementById('btnPrevCard').onclick=goPrev;
   document.getElementById('btnNextCard').onclick=goNext;
 
-  function requeue(){
-    const id = s.queue.splice(s.idx,1)[0];
-    s.queue.push(id);
-    if(s.idx >= s.queue.length) s.idx = 0;
+  // Любой из трёх ответов делает одно и то же с порядком: ставит отметку и переходит к
+  // СЛЕДУЮЩЕЙ по счёту карточке. Карточка никуда не «прыгает» внутри круга, поэтому номер
+  // «карточка N из M» идёт подряд независимо от того, что нажали.
+  function answer(kind){
+    s.status[cardId] = kind;
+    const inNext = (s.nextRound||[]).indexOf(cardId);
+    if(kind === 'know'){
+      if(inNext>=0) s.nextRound.splice(inNext,1); // передумала — во второй круг не тащим
+    } else if(inNext<0){
+      (s.nextRound = s.nextRound || []).push(cardId);
+    }
+    s.idx++;
     s.flipped = false;
-    s.seen++;
+    if(s.idx >= s.queue.length) advanceStudyRound(s);
     saveStudySessionProgress();
     renderStudyModal();
   }
-  function markKnow(){
-    review(card, true);
-    s.queue.splice(s.idx,1);
-    if(s.idx >= s.queue.length) s.idx = 0;
-    s.flipped=false; s.seen++; s.knew++; s.done=(s.done||0)+1;
-    saveStudySessionProgress();
-    renderStudyModal();
-  }
+  function markKnow(){ review(card, true); answer('know'); }
+  function markAgain(){ answer('again'); }
   function markDontKnow(){
     // «Работа над ошибками» — только для практики/заданий, не для карточек: свайп «Не знаю» в
     // Quizlet-режиме — обычная часть spaced repetition, не должен попадать в WON.
     review(card, false, {skipMistake:true});
-    requeue();
+    answer('dont');
   }
   document.getElementById('btnKnow').onclick=markKnow;
   document.getElementById('btnDontKnow').onclick=markDontKnow;
-  document.getElementById('btnAgain').onclick=requeue;
+  document.getElementById('btnAgain').onclick=markAgain;
 
   /* ---- Свайп влево/вправо как в Quizlet: вправо = «Знаю», влево = «Не знаю» ---- */
   const cardEl = document.getElementById('studyCard');
@@ -4861,7 +4999,7 @@ function renderTheory(body,key){
     html += `<div class="empty-state">Пока нет конспектов. Открой лекцию, запиши тему и дату, а материал и остальное — по шагам.</div>`;
   } else {
     // Прикреплённые друг к другу материалы (лекция + её семинар) идут в списке рядом,
-    // одной группой: сверху склеенные овалы разных цветов, ниже — сами материалы.
+    // одной группой, соединённые тонкой линией слева.
     const byId = {}; materials.forEach(m=>byId[m.id]=m);
     const rootOf = (m)=>{ let cur=m, guard=0; while(cur.linkedTo && byId[cur.linkedTo] && guard++<6) cur = byId[cur.linkedTo]; return cur; };
     const groups = []; const groupByRoot = {};
@@ -4874,13 +5012,10 @@ function renderTheory(body,key){
     groups.forEach(g=>g.sort((a,b)=>(a.linkedTo?1:0)-(b.linkedTo?1:0)));
 
     groups.forEach(group=>{
+    // Прикреплённые материалы связывает тонкая линия слева — отдельной «шапки» над группой нет,
+    // вид каждого материала виден по его собственному билету внутри карточки.
     const linked = group.length>1;
-    html += `<div class="theory-group ${linked?'linked':''}">`;
-    if(linked){
-      html += `<div class="kind-pills" title="Эти материалы прикреплены друг к другу">${
-        group.map(g=>`<span class="kind-pill ${materialKind(g)}">${MAT_KIND_LABEL[materialKind(g)]}</span>`).join('')
-      }</div>`;
-    }
+    html += `<div class="theory-group ${linked?'linked':''}"${linked?' title="Эти материалы прикреплены друг к другу"':''}>`;
     group.forEach(m=>{
       const kind = materialKind(m);
       const dateLabel = m.dateEnd && m.dateEnd!==m.dateStart ? `${fmtDate(m.dateStart)} — ${fmtDate(m.dateEnd)}` : fmtDate(m.dateStart||m.date);
@@ -5517,13 +5652,23 @@ const RT_HIGHLIGHTS = [
   {val:'rgba(42,58,84,.20)',    title:'Тёмно-синий маркер', swatch:'rgba(42,58,84,.35)'}
 ];
 // Один и тот же набор кнопок используется и в панели над полем, и в плавающей панели снизу.
-function richToolbarButtonsHtml(isMain){
+// mode: true / 'main' — поле «Текст лекции» (с кнопкой ключевого слова),
+//       false / 'notes' — остальные поля лекции,
+//       'card' — поля карточки: то же форматирование, но без таблицы, разделителя и ключевых слов,
+//               которым в маленьком поле карточки делать нечего.
+function richToolbarButtonsHtml(mode){
+  const isMain = mode === true || mode === 'main';
+  const isCard = mode === 'card';
   const hlBtns = RT_HIGHLIGHTS.map(h=>
     `<button type="button" class="rt-btn hl" data-cmd="hiliteColor" data-val="${h.val}" style="background:${h.swatch}" title="${h.title}"></button>`
   ).join('');
   const kwBtn = isMain
     ? `<button type="button" class="rt-btn rt-btn-wide rt-kw" data-cmd="kwcard" title="Сделать ключевым словом и карточкой">Ключевое слово + карточка</button>`
     : '';
+  const blockBtns = isCard ? '' : `
+      <button type="button" class="rt-btn" data-cmd="divider" title="Разделительная линия">⎯</button>
+      <button type="button" class="rt-btn" data-cmd="table" title="Вставить таблицу">▦</button>
+      <span class="rt-sep"></span>`;
   return `<button type="button" class="rt-btn b" data-cmd="bold" title="Жирный">B</button>
       <button type="button" class="rt-btn i" data-cmd="italic" title="Курсив">I</button>
       <button type="button" class="rt-btn u" data-cmd="underline" title="Подчёркнутый">U</button>
@@ -5537,9 +5682,7 @@ function richToolbarButtonsHtml(isMain){
       <button type="button" class="rt-btn" data-cmd="insertOrderedList" title="Нумерованный список">1.</button>
       <button type="button" class="rt-btn" data-cmd="dashlist" title="Список чёрточками">—</button>
       <span class="rt-sep"></span>
-      <button type="button" class="rt-btn" data-cmd="divider" title="Разделительная линия">⎯</button>
-      <button type="button" class="rt-btn" data-cmd="table" title="Вставить таблицу">▦</button>
-      <span class="rt-sep"></span>
+      ${blockBtns}
       ${hlBtns}
       <button type="button" class="rt-btn" data-cmd="hiliteColor" data-val="transparent" title="Убрать маркер">✕</button>
       ${kwBtn}`;
@@ -6360,15 +6503,12 @@ function openManageCategoriesModal(){
 }
 
 /* ---------- Общий помощник: rich-text поле (жирный/курсив/зачёркнутый/подчёркнутый) ---------- */
+// Поле карточки: та же панель форматирования, что и в лекциях (жирный, курсив, заголовки,
+// списки, маркеры) — раньше здесь были только B/I/S/U.
 function richField(id, label, html, placeholder){
   return `<div class="field">
     <label>${esc(label)}</label>
-    <div class="rt-toolbar" data-for="${id}">
-      <button type="button" class="rt-btn b" data-cmd="bold" title="Жирный">B</button>
-      <button type="button" class="rt-btn i" data-cmd="italic" title="Курсив">I</button>
-      <button type="button" class="rt-btn s" data-cmd="strikeThrough" title="Зачёркнутый">S</button>
-      <button type="button" class="rt-btn u" data-cmd="underline" title="Подчёркнутый">U</button>
-    </div>
+    <div class="rt-toolbar" data-for="${id}">${richToolbarButtonsHtml('card')}</div>
     <div class="rt-editable" contenteditable="true" id="${id}" data-f="${id}" data-placeholder="${esc(placeholder||'')}">${html||''}</div>
   </div>`;
 }
