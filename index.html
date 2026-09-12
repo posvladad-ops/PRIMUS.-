@@ -45,6 +45,20 @@ html[data-theme="dark"]{
   --shadow:0 10px 30px rgba(0,0,0,.38);
   --wine:#5E2430;
   --wine-soft:rgba(94,36,48,.20);
+  /* Цвета повторений в планере: карточки — тёмно-синий, лекции — коричневый,
+     семинары — хаки, WON — винный. Все полупрозрачные, чтобы текст читался. */
+  --navy:#3C5680;
+  --navy-soft:rgba(60,86,128,.28);
+  /* Приглушённые («дымчатые») версии — только для повторений в планере и матрице:
+     чуть меньше насыщенности и прозрачнее, чтобы цвет читался, но не кричал. */
+  --sr-card-bg:rgba(74,92,120,.20);
+  --sr-lecture-bg:rgba(104,76,56,.16);
+  --sr-seminar-bg:rgba(130,124,100,.14);
+  --sr-won-bg:rgba(98,60,66,.17);
+  --sr-card-fg:#8FA6C4;
+  --sr-lecture-fg:#A8815E;
+  --sr-seminar-fg:#A39A76;
+  --sr-won-fg:#B08087;
   --eis-uiq:rgba(94,36,48,.32);
   --eis-inq:rgba(110,63,60,.30);
   --eis-uniq:rgba(92,82,48,.28);
@@ -72,6 +86,16 @@ html[data-theme="light"]{
   --shadow:0 10px 26px rgba(50,45,35,.08);
   --wine:#7A3540;
   --wine-soft:rgba(122,53,64,.10);
+  --navy:#40587E;
+  --navy-soft:rgba(64,88,126,.14);
+  --sr-card-bg:rgba(78,96,124,.11);
+  --sr-lecture-bg:rgba(112,84,62,.10);
+  --sr-seminar-bg:rgba(128,122,98,.10);
+  --sr-won-bg:rgba(116,74,80,.09);
+  --sr-card-fg:#53688C;
+  --sr-lecture-fg:#7A5A40;
+  --sr-seminar-fg:#78714F;
+  --sr-won-fg:#8A5158;
   --eis-uiq:rgba(122,53,64,.22);
   --eis-inq:rgba(135,82,74,.20);
   --eis-uniq:rgba(114,104,66,.18);
@@ -555,6 +579,7 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .cs-set-body{padding:0 10px 10px;}
 .cs-set-body .set-row{background:var(--surface);}
 .btn-sm{padding:4px 9px;font-size:11px;}
+.cards-more{width:100%;margin-top:10px;font-size:12px;color:var(--text-dim);}
 /* Короткое сообщение поверх открытой модалки — чтобы не переписывать её содержимое */
 #miniToast{
   position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(14px);
@@ -565,6 +590,43 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 }
 #miniToast b{font-size:12.5px;color:var(--text);}
 #miniToast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ---------- Предупреждение о нехватке места ---------- */
+#storageBanner{
+  position:fixed;left:0;right:0;bottom:0;z-index:300;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:var(--khaki-soft);border-top:1px solid var(--khaki);
+  font-size:12px;color:var(--text-dim);
+}
+#storageBanner b{color:var(--text);font-size:12.5px;}
+#storageBanner.danger{background:var(--wine-soft);border-top-color:var(--bad);}
+#storageBanner.danger b{color:var(--bad);}
+#storageBanner span{flex:1 1 200px;min-width:0;}
+#storageBanner .btn{flex-shrink:0;}
+body.has-storage-banner .main{padding-bottom:90px;}
+/* Место на устройстве */
+.su-bar{height:10px;border-radius:6px;background:var(--bg-soft);border:1px solid var(--border);overflow:hidden;}
+.su-fill{height:100%;background:var(--khaki-ring);transition:width .2s;}
+.su-bar.warn .su-fill{background:var(--khaki);}
+.su-bar.danger .su-fill{background:var(--bad);}
+.su-num{font-family:var(--font-mono);font-size:11.5px;color:var(--text-faint);margin-top:7px;}
+.su-num.warn{color:var(--khaki);}
+.su-num.danger{color:var(--bad);}
+.su-alert{margin-top:10px;padding:10px 12px;border:1px solid var(--bad);border-radius:var(--radius-s);background:var(--wine-soft);font-size:12px;color:var(--text-dim);line-height:1.55;}
+.su-parts{margin-top:14px;display:flex;flex-direction:column;gap:6px;}
+.su-part{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-dim);flex-wrap:wrap;}
+.su-part .sp-name{flex:1 1 150px;min-width:0;display:flex;flex-direction:column;}
+.su-part .sp-hint{font-size:10px;color:var(--text-faint);}
+.su-part .sp-bar{flex:1 1 90px;height:5px;border-radius:4px;background:var(--bg-soft);overflow:hidden;min-width:60px;}
+.su-part .sp-bar i{display:block;height:100%;background:var(--accent-strong);opacity:.7;}
+.su-part .sp-size{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);width:64px;text-align:right;flex-shrink:0;}
+.su-sub{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-faint);margin:18px 0 8px;}
+.su-files{display:flex;flex-direction:column;gap:6px;}
+.su-file{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-s);padding:8px 10px;font-size:12px;}
+.su-file .sf-name{flex:1 1 140px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.su-file .sf-mat{color:var(--text-faint);font-size:11px;flex:1 1 120px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.su-file .sf-size{font-family:var(--font-mono);font-size:10.5px;color:var(--text-faint);flex-shrink:0;}
 .mini-btn{border:1px solid var(--border);background:var(--surface);border-radius:6px;padding:4px 7px;color:var(--text-faint);font-size:11px;}
 @media (hover:hover){.mini-btn:hover{color:var(--accent);border-color:var(--accent);}}
 .mini-btn.pin-on{color:var(--accent-strong);border-color:var(--accent-strong);background:var(--accent-soft);}
@@ -762,6 +824,30 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .plan-task.done .pt-check{background:var(--good);border-color:var(--good);color:#fff;}
 .plan-task.done .pt-text{text-decoration:line-through;color:var(--text-faint);}
 .plan-task .pt-quad{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+/* ---------- Повторения в плане ----------
+   Каждый вид — своим полупрозрачным цветом: карточки тёмно-синий, лекции коричневый,
+   семинары хаки, WON винный. Плюс маленькая подпись, что именно повторять. */
+.plan-task.sr-card,.eq-chip.sr-card{background:var(--sr-card-bg);border-color:var(--sr-card-fg);}
+.plan-task.sr-lecture,.eq-chip.sr-lecture{background:var(--sr-lecture-bg);border-color:var(--sr-lecture-fg);}
+.plan-task.sr-seminar,.eq-chip.sr-seminar{background:var(--sr-seminar-bg);border-color:var(--sr-seminar-fg);}
+.plan-task.sr-won,.eq-chip.sr-won{background:var(--sr-won-bg);border-color:var(--sr-won-fg);}
+.sr-tag{display:inline-block;margin-right:7px;padding:1px 7px;border-radius:3px;
+  font-family:var(--font-mono);font-size:8.5px;letter-spacing:.8px;text-transform:uppercase;vertical-align:1px;}
+.sr-tag.sr-card{background:var(--sr-card-bg);color:var(--sr-card-fg);}
+.sr-tag.sr-lecture{background:var(--sr-lecture-bg);color:var(--sr-lecture-fg);}
+.sr-tag.sr-seminar{background:var(--sr-seminar-bg);color:var(--sr-seminar-fg);}
+.sr-tag.sr-won{background:var(--sr-won-bg);color:var(--sr-won-fg);}
+/* Заголовки «Лекции» / «Семинары» в разделе повторения */
+.lec-kind-head{font-family:var(--font-mono);font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;
+  margin:14px 0 7px;padding-left:2px;opacity:.9;}
+.lec-kind-head.kind-lecture{color:var(--sr-lecture-fg);}
+.lec-kind-head.kind-seminar{color:var(--sr-seminar-fg);}
+.mode-tab .mt-sep{opacity:.35;margin:0 1px;}
+.set-sr-chip{font-family:var(--font-mono);font-size:9.5px;color:var(--sr-card-fg);background:var(--sr-card-bg);
+  border-radius:10px;padding:2px 8px;white-space:nowrap;}
+.sr-card-row .rg-mark{background:var(--sr-card-fg);}
+.lec-row.kind-lecture .rg-mark{background:var(--sr-lecture-fg);}
+.lec-row.kind-seminar .rg-mark{background:var(--sr-seminar-fg);}
 .plan-task .pt-text{flex:1;font-size:13px;cursor:text;}
 .plan-task .pt-deadline{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);white-space:nowrap;}
 .plan-task .pt-del{border:none;background:transparent;color:var(--text-faint);cursor:pointer;font-size:12px;padding:2px 4px;}
@@ -819,8 +905,11 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 }
 
 /* ---------- Недельная шкала планера ---------- */
-.week-strip{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
-.week-days{display:flex;gap:5px;flex:1;}
+.week-strip{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+/* Подпись месяца над неделей — мелко и тихо, чтобы не спорила с числами */
+.week-month{flex:1 0 100%;font-family:var(--font-mono);font-size:9.5px;letter-spacing:1.1px;
+  text-transform:uppercase;color:var(--text-faint);opacity:.75;margin-bottom:2px;padding-left:2px;}
+.week-days{display:flex;gap:5px;flex:1;min-width:0;}
 .week-day-pick{flex:1;text-align:center;padding:6px 2px;border-radius:var(--radius-s);background:transparent;border:1px solid transparent;cursor:pointer;}
 @media (hover:hover){.week-day-pick:hover{border-color:var(--border);}}
 .week-day-pick.active{background:var(--accent-soft);border-color:var(--accent);}
@@ -935,10 +1024,16 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
 #floatFormatBar .tbl-tools{position:static;margin-bottom:8px;}
 /* Подпись, к какому полю относятся кнопки — панель теперь видна всё время, пока открыта лекция */
 .fb-target{font-family:var(--font-mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px;display:block;}
-/* Левый край панели — ровно правый край сайдбара, померенный по факту. Через var(--sidebar-w)
-   было неверно при масштабе интерфейса: #app масштабируется через zoom, сайдбар становится шире
-   своей переменной, и панель наезжала на него. */
-#floatFormatBar{left:var(--float-bar-left,0px);}
+/* Левый край панели считается формулой, а не измерением. Сайдбар шириной --sidebar-w лежит
+   внутри #app, который масштабируется через zoom, поэтому его видимый правый край — это
+   ширина × масштаб. Панель живёт вне #app, её left задаётся в тех же экранных пикселях,
+   так что calc даёт точное совпадение при любой ширине сайдбара и любом масштабе.
+   Измерение здесь было хрупким: закешированное значение могло разойтись с реальным,
+   и панель уезжала на нулевую позицию, накрывая сайдбар. */
+#floatFormatBar{left:0;}
+@media (min-width:821px){
+  #floatFormatBar{left:calc(var(--sidebar-w,256px) * var(--app-zoom,1));}
+}
 /* чтобы панель не перекрывала верх формы — высоту панели меряем и кладём в переменную */
 body.has-float-bar .theory-editor{padding-top:var(--float-bar-h,120px);}
 /* прокрутка к полю (в том числе автоматическая, вслед за курсором) останавливается под панелью,
@@ -2215,14 +2310,26 @@ function defaultStore(){
     trash:[], // корзина: [{id,type,label,sub,catKey,deletedAt,payload}] — недавно удалённое, можно вернуть
     theoryDraft:null, // старый одиночный черновик — оставлен для переноса со старых версий
     theoryTabs:[], // открытые материалы: [{id,catKey,materialId,values}] — переживают уход в другой раздел и перезагрузку
+    setSR:{}, // "catKey::topicId" -> {catKey,topicId,srStart,srLevel,nextReview} — сеты карточек на повторении
     finalTests:{} // catKey -> [{id,topicId,title,deadline,createdDate,completed,completedDate,sections:{key:[],full:[],cases:[],questions:[],fun:[]}}]
   };
 }
+/* ---------- Место в памяти браузера ----------
+   Браузер даёт сайту примерно 5 МБ на localStorage, и текст лекций, файлы к ним и тетради
+   лежат именно там. Раньше при переполнении запись молча срывалась (ошибка уходила в консоль),
+   и лекция просто не сохранялась — понять это было невозможно. Теперь: место считается при
+   каждой записи, на 80% приходит предупреждение, а сорвавшаяся запись поднимает тревогу
+   с единственным правильным советом — немедленно выгрузить прогресс файлом. */
+const STORE_LIMIT_BYTES = 5 * 1024 * 1024;   // практический предел localStorage в браузерах
+const STORE_WARN_RATIO = 0.8;
+let STORAGE_USED_BYTES = 0;      // сколько занимает прогресс (UTF-16, как считает браузер)
+let STORAGE_WRITE_FAILED = false;// последняя запись не прошла — данные есть только в памяти
+let STORAGE_WARNED_AT = 0;       // чтобы не повторять предупреждение на каждое нажатие
 function loadStore(){
   let s = defaultStore();
   try{
     const raw = localStorage.getItem(STORE_KEY);
-    if(raw) s = Object.assign(s, JSON.parse(raw));
+    if(raw){ s = Object.assign(s, JSON.parse(raw)); STORAGE_USED_BYTES = raw.length * 2; }
   }catch(e){ console.warn("storage read error", e); }
   // защита от неполной структуры
   Object.keys(defaultStore()).forEach(k=>{ if(s[k]===undefined) s[k]=defaultStore()[k]; });
@@ -2230,9 +2337,376 @@ function loadStore(){
   return s;
 }
 let STORE = loadStore();
+
+function bytesOfString(s){ return (s==null ? 0 : String(s).length) * 2; }   // строки хранятся в UTF-16
+function fmtBytes(b){
+  if(b >= 1024*1024) return (b/(1024*1024)).toFixed(1).replace('.',',') + ' МБ';
+  return Math.round(b/1024) + ' КБ';
+}
+/* ==========================================================================
+   ХРАНИЛИЩЕ ПРОГРЕССА
+   Раньше всё лежало в localStorage — а он даёт сайту жёсткие ~5 МБ и не расширяется.
+   Одна карточка с разбором от ИИ весит около 2 КБ, лекция с разбором — около 28 КБ,
+   то есть тысяча карточек и сотня лекций упирались в потолок. Поэтому основное хранилище —
+   IndexedDB: там объём измеряется долей свободного места на устройстве, то есть сотнями
+   мегабайт и гигабайтами.
+
+   Что важно понимать про устройство этого кода:
+   · STORE как был единственным источником правды в памяти, так и остался — весь остальной
+     код ничего не знает о том, куда именно пишется прогресс;
+   · saveStore() по-прежнему вызывается синхронно из 70+ мест, но теперь он лишь помечает
+     «есть что записать» и ставит отложенную запись — поэтому «Знаю» на карточке не ждёт диска;
+   · лекции и тетради лежат ОТДЕЛЬНЫМИ записями, а не одним куском: правка одной лекции
+     переписывает только её. Это же разбиение потом ляжет в основу синхронизации;
+   · localStorage остаётся как запасной вариант (если IndexedDB недоступна) и как
+     нетронутая резервная копия на момент переезда.
+   ========================================================================== */
+const IDB_NAME = 'primus_store';
+const IDB_VERSION = 1;
+const IDB_KV = 'kv';        // верхнеуровневые ключи STORE, кроме materials/notebooks
+const IDB_DOCS = 'docs';    // по записи на лекцию и на тетрадь
+// Эти ключи хранятся поштучно в docs, остальные — целиком в kv
+const DOC_KEYS = {materials:'mat', notebooks:'nb'};
+
+let PERSIST_MODE = 'local';     // 'idb' | 'local' — куда реально пишем
+let IDB = null;
+let PERSIST_DIRTY = false;
+let PERSIST_TIMER = null;
+let PERSIST_FLUSHING = null;    // Promise текущей записи, чтобы не запускать две сразу
+const PERSIST_CACHE = new Map();// ключ записи -> её JSON на момент последней записи (пишем только изменившееся)
+const PERSIST_DEBOUNCE = 450;
+
+function idbOpen(){
+  return new Promise((resolve, reject)=>{
+    if(!window.indexedDB) return reject(new Error('no indexedDB'));
+    let req;
+    try{ req = indexedDB.open(IDB_NAME, IDB_VERSION); }
+    catch(e){ return reject(e); }
+    req.onupgradeneeded = ()=>{
+      const db = req.result;
+      if(!db.objectStoreNames.contains(IDB_KV)) db.createObjectStore(IDB_KV);
+      if(!db.objectStoreNames.contains(IDB_DOCS)) db.createObjectStore(IDB_DOCS);
+    };
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error || new Error('indexedDB open failed'));
+    req.onblocked = ()=>reject(new Error('indexedDB blocked'));
+  });
+}
+function idbReadAll(db, storeName){
+  return new Promise((resolve, reject)=>{
+    const out = [];
+    const tx = db.transaction(storeName, 'readonly');
+    const st = tx.objectStore(storeName);
+    const req = st.openCursor();
+    req.onsuccess = ()=>{
+      const cur = req.result;
+      if(!cur) return resolve(out);
+      out.push({key: cur.key, value: cur.value});
+      cur.continue();
+    };
+    req.onerror = ()=>reject(req.error);
+  });
+}
+// Одна транзакция на всю пачку: и записи, и удаления. Либо всё, либо ничего.
+function idbWriteBatch(db, puts, deletes){
+  return new Promise((resolve, reject)=>{
+    const names = [IDB_KV, IDB_DOCS];
+    const tx = db.transaction(names, 'readwrite');
+    tx.oncomplete = ()=>resolve(true);
+    tx.onerror = ()=>reject(tx.error || new Error('write failed'));
+    tx.onabort = ()=>reject(tx.error || new Error('write aborted'));
+    puts.forEach(p=>{ try{ tx.objectStore(p.store).put(p.value, p.key); }catch(e){ /* транзакция сама упадёт */ } });
+    deletes.forEach(d=>{ try{ tx.objectStore(d.store).delete(d.key); }catch(e){} });
+  });
+}
+
+// Раскладывает STORE на записи: {store, key, json, value}
+function persistRecords(){
+  const recs = [];
+  Object.keys(STORE).forEach(k=>{
+    if(DOC_KEYS[k]) return;                       // лекции и тетради — ниже, поштучно
+    let json;
+    // JSON.stringify(undefined) возвращает не строку, а undefined — такой ключ пишем как null,
+    // иначе одна случайная undefined-переменная роняла бы всю запись прогресса
+    try{ json = JSON.stringify(STORE[k] === undefined ? null : STORE[k]); }catch(e){ return; }
+    if(typeof json !== 'string') return;
+    recs.push({store: IDB_KV, key: k, json, value: STORE[k] === undefined ? null : STORE[k]});
+  });
+  Object.keys(DOC_KEYS).forEach(topKey=>{
+    const prefix = DOC_KEYS[topKey];
+    const byCat = STORE[topKey] || {};
+    Object.keys(byCat).forEach(catKey=>{
+      (byCat[catKey]||[]).forEach((item, ord)=>{
+        if(!item || !item.id) return;
+        const wrapped = {catKey, ord, data:item};
+        let json;
+        try{ json = JSON.stringify(wrapped); }catch(e){ return; }
+        if(typeof json !== 'string') return;
+        recs.push({store: IDB_DOCS, key: prefix+':'+item.id, json, value: wrapped});
+      });
+    });
+  });
+  return recs;
+}
+// Собирает STORE обратно из записей IndexedDB
+function storeFromRecords(kvRows, docRows){
+  const s = defaultStore();
+  kvRows.forEach(r=>{ s[r.key] = r.value; });
+  Object.keys(DOC_KEYS).forEach(k=>{ s[k] = {}; });
+  const buckets = {};
+  docRows.forEach(r=>{
+    const [prefix] = String(r.key).split(':');
+    const topKey = Object.keys(DOC_KEYS).find(k=>DOC_KEYS[k]===prefix);
+    if(!topKey || !r.value || !r.value.data) return;
+    const catKey = r.value.catKey || 'general';
+    (buckets[topKey] = buckets[topKey] || {});
+    (buckets[topKey][catKey] = buckets[topKey][catKey] || []).push({ord: r.value.ord||0, data:r.value.data});
+  });
+  Object.keys(buckets).forEach(topKey=>{
+    Object.keys(buckets[topKey]).forEach(catKey=>{
+      s[topKey][catKey] = buckets[topKey][catKey].sort((a,b)=>a.ord-b.ord).map(x=>x.data);
+    });
+  });
+  // добиваем недостающие ключи значениями по умолчанию
+  Object.keys(defaultStore()).forEach(k=>{ if(s[k]===undefined) s[k]=defaultStore()[k]; });
+  s.dailyGoals = Object.assign({learned:10,tasks:15,rno:5}, s.dailyGoals||{});
+  return s;
+}
+
+// Записывает в IndexedDB всё, что изменилось с прошлого раза. Возвращает true при успехе.
+async function persistFlush(){
+  if(PERSIST_MODE !== 'idb' || !IDB) return persistToLocal();
+  if(PERSIST_FLUSHING) { await PERSIST_FLUSHING; }
+  PERSIST_DIRTY = false;
+  const recs = persistRecords();
+  const puts = [];
+  const seen = new Set();
+  let bytes = 0;
+  recs.forEach(r=>{
+    const cacheKey = r.store+'/'+r.key;
+    seen.add(cacheKey);
+    bytes += bytesOfString(r.json);
+    if(PERSIST_CACHE.get(cacheKey) !== r.json) puts.push(r);
+  });
+  const deletes = [];
+  PERSIST_CACHE.forEach((_v, cacheKey)=>{
+    if(seen.has(cacheKey)){ return; }
+    const i = cacheKey.indexOf('/');
+    deletes.push({store: cacheKey.slice(0,i), key: cacheKey.slice(i+1)});
+  });
+  STORAGE_USED_BYTES = bytes;
+  if(!puts.length && !deletes.length){ updateStorageBanner(); return true; }
+  PERSIST_FLUSHING = idbWriteBatch(IDB, puts, deletes)
+    .then(()=>{
+      puts.forEach(r=>PERSIST_CACHE.set(r.store+'/'+r.key, r.json));
+      deletes.forEach(d=>PERSIST_CACHE.delete(d.store+'/'+d.key));
+      if(STORAGE_WRITE_FAILED){ STORAGE_WRITE_FAILED = false; }
+      updateStorageBanner();
+      return true;
+    })
+    .catch((e)=>{
+      console.warn('idb write error', e);
+      STORAGE_WRITE_FAILED = true;
+      updateStorageBanner();
+      openStorageFullModal();
+      return false;
+    })
+    .finally(()=>{ PERSIST_FLUSHING = null; });
+  return PERSIST_FLUSHING;
+}
+// Запасной путь: одним куском в localStorage (когда IndexedDB недоступна)
+function persistToLocal(){
+  let json;
+  try{ json = JSON.stringify(STORE); }
+  catch(e){ console.warn('store serialize error', e); return false; }
+  STORAGE_USED_BYTES = bytesOfString(json);
+  try{
+    localStorage.setItem(STORE_KEY, json);
+    if(STORAGE_WRITE_FAILED){ STORAGE_WRITE_FAILED = false; }
+    updateStorageBanner();
+    warnIfStorageTight();
+    return true;
+  }catch(e){
+    console.warn('storage write error', e);
+    STORAGE_WRITE_FAILED = true;
+    updateStorageBanner();
+    openStorageFullModal();
+    return false;
+  }
+}
+
+/* saveStore() — как и раньше, вызывается отовсюду синхронно.
+   В режиме IndexedDB он только помечает изменения и ставит отложенную запись: диск не держит
+   интерфейс. Там, где важно знать результат записи наверняка (сохранение лекции), есть
+   saveStoreNow() — он дожидается настоящей записи. */
 function saveStore(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(STORE)); }
-  catch(e){ console.warn("storage write error", e); }
+  if(PERSIST_MODE !== 'idb') return persistToLocal();
+  PERSIST_DIRTY = true;
+  clearTimeout(PERSIST_TIMER);
+  PERSIST_TIMER = setTimeout(()=>{ persistFlush(); }, PERSIST_DEBOUNCE);
+  return true;
+}
+async function saveStoreNow(){
+  clearTimeout(PERSIST_TIMER);
+  if(PERSIST_MODE !== 'idb') return persistToLocal();
+  return await persistFlush();
+}
+// Сворачивание вкладки и уход со страницы — дописываем немедленно, не дожидаясь таймера.
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden' && PERSIST_DIRTY) persistFlush(); });
+window.addEventListener('pagehide', ()=>{ if(PERSIST_DIRTY) persistFlush(); });
+
+/* Переезд со старого хранилища. Выполняется один раз, и старая копия в localStorage
+   НЕ удаляется — она остаётся нетронутой резервной копией на момент переезда. */
+async function initPersistence(){
+  let db = null;
+  try{ db = await idbOpen(); }
+  catch(e){
+    console.warn('IndexedDB недоступна, остаёмся на localStorage', e);
+    PERSIST_MODE = 'local';
+    return;
+  }
+  IDB = db;
+  let kvRows = [], docRows = [];
+  try{
+    kvRows = await idbReadAll(db, IDB_KV);
+    docRows = await idbReadAll(db, IDB_DOCS);
+  }catch(e){
+    console.warn('IndexedDB read error', e);
+    PERSIST_MODE = 'local';
+    return;
+  }
+  PERSIST_MODE = 'idb';
+  if(kvRows.length === 0 && docRows.length === 0){
+    // первый запуск на IndexedDB: переносим то, что уже есть в localStorage (STORE его уже прочитал)
+    const ok = await persistFlush();
+    if(ok){
+      STORE.migratedToIdbAt = new Date().toISOString();
+      await persistFlush();
+    } else {
+      PERSIST_MODE = 'local';   // перенос не удался — работаем по-старому, данные целы
+    }
+    return;
+  }
+  // обычный запуск: собираем STORE из записей
+  STORE = storeFromRecords(kvRows, docRows);
+  PERSIST_CACHE.clear();
+  let bytes = 0;
+  persistRecords().forEach(r=>{ PERSIST_CACHE.set(r.store+'/'+r.key, r.json); bytes += bytesOfString(r.json); });
+  STORAGE_USED_BYTES = bytes;
+}
+// Сколько места реально доступно. В режиме IndexedDB спрашиваем у браузера — там это
+// доля свободного места на устройстве, а не фиксированные 5 МБ.
+let STORAGE_QUOTA_BYTES = 0;
+async function refreshStorageQuota(){
+  if(PERSIST_MODE !== 'idb'){ STORAGE_QUOTA_BYTES = STORE_LIMIT_BYTES; return; }
+  try{
+    if(navigator.storage && navigator.storage.estimate){
+      const est = await navigator.storage.estimate();
+      if(est && est.quota) STORAGE_QUOTA_BYTES = est.quota;
+    }
+  }catch(e){}
+  if(!STORAGE_QUOTA_BYTES) STORAGE_QUOTA_BYTES = 512*1024*1024; // разумная оценка, если браузер молчит
+}
+function storageLimitBytes(){ return STORAGE_QUOTA_BYTES || STORE_LIMIT_BYTES; }
+// Мягкое предупреждение при приближении к пределу — не чаще одного раза на каждые 5%.
+function warnIfStorageTight(){
+  const ratio = STORAGE_USED_BYTES / storageLimitBytes();
+  updateStorageBanner();
+  if(ratio < STORE_WARN_RATIO) { STORAGE_WARNED_AT = 0; return; }
+  const step = Math.floor(ratio * 20);
+  if(step <= STORAGE_WARNED_AT) return;
+  STORAGE_WARNED_AT = step;
+  if(typeof openInfoModalOver === 'function'){
+    openInfoModalOver('Память почти заполнена',
+      `Занято ${fmtBytes(STORAGE_USED_BYTES)} из ${fmtBytes(storageLimitBytes())}. Выгрузи прогресс файлом и освободи место в разделе Storage — иначе новые лекции перестанут сохраняться.`);
+  }
+}
+// Красная полоса вверху, пока место на исходе или запись сорвалась.
+function updateStorageBanner(){
+  let el = document.getElementById('storageBanner');
+  const ratio = STORAGE_USED_BYTES / storageLimitBytes();
+  const show = STORAGE_WRITE_FAILED || ratio >= STORE_WARN_RATIO;
+  if(!show){ if(el) el.remove(); document.body.classList.remove('has-storage-banner'); return; }
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'storageBanner';
+    document.body.appendChild(el);
+  }
+  document.body.classList.add('has-storage-banner');
+  el.className = STORAGE_WRITE_FAILED ? 'danger' : '';
+  el.innerHTML = STORAGE_WRITE_FAILED
+    ? `<b>Память браузера переполнена — последние изменения НЕ сохранены.</b>
+       <span>Они пока живы только на экране. Выгрузи прогресс файлом прямо сейчас, потом освободи место.</span>
+       <button class="btn btn-sm" id="sbExport">Выгрузить файлом</button>
+       <button class="btn btn-sm" id="sbOpen">Освободить место</button>`
+    : `<b>Память почти заполнена: ${fmtBytes(STORAGE_USED_BYTES)} из ${fmtBytes(storageLimitBytes())}.</b>
+       <span>Скоро лекции перестанут сохраняться.</span>
+       <button class="btn btn-sm" id="sbOpen">Освободить место</button>`;
+  const ex = el.querySelector('#sbExport'); if(ex) ex.onclick = exportStoreJSON;
+  const op = el.querySelector('#sbOpen'); if(op) op.onclick = ()=>{ VIEW='storage'; renderAll(); setTimeout(()=>{ const s=document.getElementById('storageUsage'); if(s) s.scrollIntoView({behavior:'smooth',block:'center'}); },80); };
+}
+function openStorageFullModal(){
+  if(document.getElementById('overlay').classList.contains('show')) return; // не перебиваем открытое окно
+  document.getElementById('modalBody').innerHTML = `
+    <h3 style="color:var(--bad)">Не удалось сохранить</h3>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.65;margin-bottom:10px">
+      Память браузера, отведённая платформе, заполнена. Всё, что ты сейчас набрала, <b>есть на экране,
+      но не записано на устройство</b> — при перезагрузке страницы оно пропадёт.
+    </p>
+    <p style="font-size:13px;color:var(--text-dim);line-height:1.65;margin-bottom:14px">
+      Сделай по порядку:<br>
+      1. <b>Выгрузи прогресс файлом</b> — это резервная копия, она не зависит от браузера.<br>
+      2. Освободи место: очисти корзину, убери тяжёлые файлы из старых лекций.<br>
+      3. Вернись и сохрани материал заново.
+    </p>
+    <div class="modal-actions">
+      <button class="btn" id="mSfClose">Закрыть</button>
+      <button class="btn" id="mSfFree">Освободить место</button>
+      <button class="btn btn-primary" id="mSfExport">Выгрузить файлом</button>
+    </div>`;
+  document.getElementById('mSfClose').onclick = closeOverlay;
+  document.getElementById('mSfExport').onclick = ()=>{ exportStoreJSON(); };
+  document.getElementById('mSfFree').onclick = ()=>{ closeOverlay(); VIEW='storage'; renderAll(); };
+  openOverlay();
+}
+// Из чего складывается занятое место — чтобы было видно, что именно чистить.
+function storageBreakdown(){
+  const size = (v)=>{ try{ return bytesOfString(JSON.stringify(v||null)); }catch(e){ return 0; } };
+  let attach = 0, notebooks = 0, materials = 0;
+  Object.keys(STORE.materials||{}).forEach(k=>{
+    (STORE.materials[k]||[]).forEach(m=>{
+      const a = size(m.attachments);
+      attach += a;
+      materials += Math.max(0, size(m) - a);
+    });
+  });
+  notebooks = size(STORE.notebooks);
+  const parts = [
+    {name:'Файлы к лекциям', bytes:attach, hint:'картинки и документы внутри лекций'},
+    {name:'Тетради', bytes:notebooks, hint:'рукописные страницы'},
+    {name:'Лекции и семинары', bytes:materials, hint:'текст конспектов'},
+    {name:'Карточки', bytes:size(STORE.extraCards)+size(STORE.customCards)+size(STORE.cardOverrides)+size(STORE.cardProgress), hint:''},
+    {name:'Корзина', bytes:size(STORE.trash), hint:'удалённое, что ещё можно вернуть'},
+    {name:'Открытые черновики', bytes:size(STORE.theoryTabs), hint:''},
+    {name:'Заметки', bytes:size(STORE.notes), hint:''},
+    {name:'Планер и календарь', bytes:size(STORE.planTasks)+size(STORE.calEvents), hint:''},
+    {name:'Обложка', bytes:size(STORE.coverImage), hint:''}
+  ];
+  const known = parts.reduce((n,p)=>n+p.bytes, 0);
+  parts.push({name:'Остальное', bytes:Math.max(0, STORAGE_USED_BYTES - known), hint:'настройки, прогресс, мелочи'});
+  return parts.filter(p=>p.bytes > 512).sort((a,b)=>b.bytes-a.bytes);
+}
+// Самые тяжёлые файлы внутри лекций — их удаление освобождает место быстрее всего.
+function heaviestAttachments(limit){
+  const out = [];
+  Object.keys(STORE.materials||{}).forEach(k=>{
+    (STORE.materials[k]||[]).forEach(m=>{
+      (m.attachments||[]).forEach((a,i)=>{
+        out.push({catKey:k, matId:m.id, matTitle:m.title||'Без названия', idx:i, name:a.name||'файл', bytes:bytesOfString(String(a.data||''))});
+      });
+    });
+  });
+  return out.sort((a,b)=>b.bytes-a.bytes).slice(0, limit||8);
 }
 
 /* ==========================================================================
@@ -2647,7 +3121,24 @@ function bumpStreak(){
   else if(STORE.lastActiveDate!==today) STORE.streak = 1;
   STORE.lastActiveDate = today;
 }
-function markMistake(cardId){ if(!STORE.mistakeIds.includes(cardId)) STORE.mistakeIds.push(cardId); }
+function markMistake(cardId){
+  if(!STORE.mistakeIds.includes(cardId)) STORE.mistakeIds.push(cardId);
+  // ошибка из практики попадает и в план — своей винной пометкой
+  const card = allCards().find(c=>c.id===cardId);
+  if(card && card.next_review) scheduleWonReminder(card.catKey, card.next_review);
+}
+// Одна сводная задача «разобрать ошибки» на дату — не по задаче на каждую карточку.
+function scheduleWonReminder(catKey, date){
+  if(!date) return;
+  if(!STORE.planTasks) STORE.planTasks = [];
+  const exists = STORE.planTasks.some(t=>t.srAutoWon && t.srCat===catKey && t.date===date && !t.done);
+  if(exists) return;
+  STORE.planTasks.push({
+    id: uid('plan'), done:false, createdDate:todayISO(), date,
+    text: `Работа над ошибками: ${getCategoryDisplayName(catKey)}`, tier:'min', quadrant:'uiq', deadline:null,
+    srAutoWon:true, srCat:catKey, srKind:'won'
+  });
+}
 function clearMistakeIfMastered(card){
   if(card.level>=3){
     const i=STORE.mistakeIds.indexOf(card.id);
@@ -2666,7 +3157,7 @@ function scheduleSpacedReviewReminder(catKey, date){
   STORE.planTasks.push({
     id: uid('plan'), done:false, createdDate:todayISO(), date,
     text: `Повторение: ${name} (spaced repetition)`, tier:'min', quadrant:'uiq', deadline:null,
-    srAuto:true, srCat:catKey
+    srAuto:true, srCat:catKey, srKind:'card'
   });
 }
 
@@ -2720,6 +3211,9 @@ let CAT_SUBVIEW = {};
 let CARDS_TOPIC_COLLAPSED = {}; // catKey -> {topicId: true} — свёрнутые темы-овалы на вкладке «Карточки»
 let CARDS_TOPIC_PANEL = {};     // catKey -> true, если список тем раскрыт кнопкой «Темы»
 let CARDS_TOPIC_PICKED = {};    // catKey -> [topicId] — выбранные темы (накапливаются)
+// Сколько карточек сета уже показано. На тысячах карточек рисовать всё сразу нельзя.
+const CARDS_PAGE_SIZE = 48;
+let CARDS_SHOWN_LIMIT = {};     // catKey -> {topicId: сколько показывать}
 let STUDY_SESSION = null; // {catKey, queue:[cardId], idx, flipped, stats:{seen,knew}}
 
 /* ==========================================================================
@@ -2876,7 +3370,12 @@ const GUIDE_SECTIONS = [
   {id:'notebook', title:'Тетрадь', body:`Рисование от руки — стилусом или мышью (палец только скроллит и зумит). Перо, карандаш (с текстурой), маркер, ластик — у каждого своя толщина. Страницы пролистываются вниз бесконечно, можно менять цвет/разлиновку бумаги.`},
   {id:'practice', title:'Практика', body:`5 режимов заданий: Задачи, Кейсы, Соответствие, Вставка слова, Открытый вопрос — переключаются вкладками сверху. <b>«Добавить задания по теме»</b> — вставить готовые задания, которые оформит ИИ по материалу лекции.<br>Именно здесь (а не в обычном изучении карточек) ошибки попадают в раздел <b>WON</b>.`},
   {id:'test', title:'Тест', body:`Финальная проверка темы целиком, можно с дедлайном. 5 разделов: проверка самого главного, полный тест, кейсы, ответы на вопросы, интересные задания. Задания вставляются от ИИ так же, как в лекциях и практике — своей кнопкой «Скопировать запрос для ИИ».`},
-  {id:'review', title:'Spaced Repetition', body:`Всё, что «созрело» для повторения сегодня — отдельно карточки, отдельно лекции (переключение вкладками сверху). Карточки можно сгруппировать по теме и повторить только нужную группу.
+  {id:'review', title:'Spaced Repetition', body:`Всё, что «созрело» для повторения сегодня — отдельно карточки, отдельно лекции (переключение вкладками сверху).
+    <h4>Повторение карточек</h4>
+    <p>Сет можно отправить на повторение так же, как лекцию: кнопка <b>«На повторение»</b> в шапке сета в разделе Карточки. Выбираешь точку отсчёта — и сет возвращается по тем же интервалам.</p>
+    <p>На вкладке «Карточки» нажимаешь <b>«Повторить»</b> — и сразу открывается <b>обычное окно изучения</b>: та же карточка, тот же переворот, свайпы и кнопки «Знаю / Повторю ещё / Не знаю», те же счётчики. Никакого отдельного вида повторения больше нет.</p>
+    <p>Когда сет пройден целиком, он сам уходит на следующую дату расписания — внизу сессии написано, на какую.</p>
+    <p>Карточки, которые «созрели» сами по себе (по своему личному прогрессу), тоже собираются в группы и повторяются так же. Любую такую группу можно кнопкой <b>«В расписание»</b> перевести в постоянный сет на повторении.</p>
     <h4>Как считается расписание лекций</h4>
     <p>У каждой лекции есть <b>точка отсчёта</b> — день, который ты выбрала, отправляя её на повторение. От неё считаются все пять дат: <b>+1, +4, +11, +25 и +55 дней</b> (то есть интервалы 1, 3, 7, 14 и 30 дней один за другим).</p>
     <p>Нажми на строку лекции — раскроется всё расписание целиком: пройденные даты зачёркнуты, ближайшая выделена, рядом написана точка отсчёта.</p>
@@ -2888,11 +3387,34 @@ const GUIDE_SECTIONS = [
     </ul>
     <p>Когда пройдены все пять повторений, лекция уходит из списка — цикл закончен.</p>`},
   {id:'won', title:'WON — работа над ошибками', body:`Карточки, в которых была ошибка именно в <b>Практике</b> или заданиях (не в обычном изучении карточек) — отдельный список для прицельного повторения слабых мест.`},
-  {id:'progress', title:'Progress', body:`Aura и уровень наверху, недельный планер (базовый минимум / роскошный максимум), матрица Эйзенхауэра для срочных/важных дел, и календарь — маленькая сетка «ударного режима» (стрик выполненных дней) плюс полноценный календарь с событиями по неделям и месяцам.`},
+  {id:'progress', title:'Progress', body:`Aura и уровень наверху, недельный планер (базовый минимум / роскошный максимум), матрица Эйзенхауэра для срочных/важных дел, и календарь — маленькая сетка «ударного режима» (стрик выполненных дней) плюс полноценный календарь с событиями по неделям и месяцам.
+    <h4>Повторения в плане</h4>
+    <p>Всё, что платформа ставит на повторение, попадает в планер и в матрицу само — и каждый вид покрашен по-своему, чтобы с одного взгляда было видно, что за день предстоит:</p>
+    <ul>
+      <li><span class="sr-tag sr-card">Карточки</span> — тёмно-синий;</li>
+      <li><span class="sr-tag sr-lecture">Лекция</span> — коричневый;</li>
+      <li><span class="sr-tag sr-seminar">Семинар</span> — хаки;</li>
+      <li><span class="sr-tag sr-won">WON</span> — винный, работа над ошибками.</li>
+    </ul>
+    <p>Твои собственные задачи остаются обычными, без цвета — так повторения не теряются среди них.</p>`},
   {id:'timers', title:'Timers', body:`Pomodoro (25 минут работы / 5 минут перерыва) и обычный секундомер. «Старт» — начать, «Стоп»/«Продолжить» — приостановить без сохранения, <b>«Закончить»</b> — сохранить время в записи внизу. Записи можно удалить (с подтверждением).`},
   {id:'notes', title:'Notes', body:`Свободные заметки с той же панелью форматирования, что и в лекциях: жирный, курсив, заголовки, списки, маркеры.<br>
     В списке заметка показывает начало текста, а кнопка <b>«Читать полностью»</b> разворачивает её целиком во всю ширину — текст больше не обрезается. Кнопка <b>«Развернуть все»</b> наверху открывает сразу все заметки.`},
   {id:'storage', title:'Storage', body:`Экспорт и импорт всего прогресса файлом (перенос между устройствами — localStorage сам не синхронизируется) и регулировка масштаба интерфейса.
+    <h4>Место на устройстве</h4>
+    <p>Прогресс хранится в большом хранилище браузера, и места там <b>несколько гигабайт</b> — это доля свободного места на самом устройстве. Тысячи карточек и сотни лекций помещаются свободно: 3000 карточек с разбором от ИИ занимают меньше процента.</p>
+    <p>Здесь всё равно видно, сколько занято и <b>чем именно</b> — чтобы не копить лишнего:</p>
+    <ul>
+      <li>Полоса и разбивка показывают, что съедает больше всего. Обычно это <b>файлы к лекциям</b> и <b>тетради</b>.</li>
+      <li>Ниже — список самых тяжёлых приложенных файлов, каждый можно удалить отдельно. Текст лекции при этом остаётся.</li>
+      <li><b>«Очистить корзину»</b> тоже освобождает место, но безвозвратно.</li>
+    </ul>
+    <p>Если место всё-таки подойдёт к концу (например, набралось очень много файлов и тетрадей), на 80% придёт предупреждение. А если записать не удалось, платформа <b>прямо скажет об этом</b> и не закроет лекцию, пока та не сохранится, — предложит сначала выгрузить прогресс файлом.</p>
+    <p>На старых устройствах, где большое хранилище недоступно, платформа работает по-прежнему в маленьком — в разделе будет написано, что доступно всего несколько мегабайт. Тогда за объёмом стоит следить.</p>
+    <p><b>Экспорт файлом — главная страховка.</b> Он не зависит ни от браузера, ни от свободного места: делай его время от времени и особенно перед чисткой.</p>
+    <h4>Важно для айфона и айпада</h4>
+    <p>Safari стирает данные сайтов, которыми не пользовались около недели. На приложение, <b>добавленное на домашний экран</b>, это не распространяется.</p>
+    <p>Поэтому PRIMUS нужно именно <b>поставить на экран</b>, а не держать вкладкой в браузере: открой платформу в Safari → кнопка «Поделиться» → «На экран „Домой“». Иначе можно вернуться после каникул к пустой платформе. И в любом случае держи свежий файл экспорта.</p>
     <h4>Корзина</h4>
     <p>Внизу раздела лежит всё недавно удалённое, и любую запись можно вернуть одной кнопкой: <b>карточки и целые сеты</b> (сет возвращается одной записью, со всеми карточками и прогрессом), <b>лекции и семинары</b>, <b>тетради</b>, <b>заметки</b>, <b>тесты</b>, <b>записи времени</b>, <b>предметы</b>, <b>задачи планера</b>, <b>события календаря</b> и <b>темы</b>.</p>
     <p>Корзина держит последние 60 записей. Безвозвратна только кнопка «Очистить корзину».</p>`}
@@ -2962,6 +3484,7 @@ function renderStoragePage(main){
       <button class="btn" id="btnImportData">Импорт прогресса из файла</button>
       <input type="file" id="importDataFile" accept="application/json" style="display:none">
     </div>
+    <div id="storageUsage" style="margin-top:28px"></div>
     <div id="trashBlock" style="margin-top:28px"></div>
   `;
   document.getElementById('fontScaleRange').addEventListener('input', (e)=>{
@@ -2976,7 +3499,72 @@ function renderStoragePage(main){
     const file = e.target.files[0];
     if(file) importStoreJSON(file);
   };
+  renderStorageUsage(main);
   renderTrashBlock(main);
+}
+
+function renderStorageUsage(main){
+  const wrap = document.getElementById('storageUsage');
+  if(!wrap) return;
+  refreshStorageQuota().then(()=>{ if(document.getElementById('storageUsage')===wrap) drawStorageUsage(main, wrap); });
+  drawStorageUsage(main, wrap);
+}
+function drawStorageUsage(main, wrap){
+  const limit = storageLimitBytes();
+  const ratio = Math.min(1, STORAGE_USED_BYTES / limit);
+  const pct = STORAGE_USED_BYTES/limit < 0.005 ? '<1' : Math.round(ratio*100);
+  const level = STORAGE_WRITE_FAILED || ratio>=0.95 ? 'danger' : (ratio>=STORE_WARN_RATIO ? 'warn' : 'ok');
+  const parts = storageBreakdown();
+  const heavy = heaviestAttachments(6);
+  const idb = PERSIST_MODE === 'idb';
+  wrap.innerHTML = `
+    <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:6px">Место на устройстве</h3>
+    <div class="desc" style="margin-bottom:12px">
+      ${idb
+        ? `Прогресс хранится в большом хранилище браузера (IndexedDB) — доступно около <b>${fmtBytes(limit)}</b>, это доля свободного места на устройстве. Тысячи карточек и сотни лекций помещаются свободно.`
+        : `Это устройство не поддерживает большое хранилище, поэтому прогресс лежит в маленьком: всего около ${fmtBytes(limit)}. Следи за объёмом и почаще делай экспорт.`}
+    </div>
+    <div class="su-bar ${level}"><div class="su-fill" style="width:${Math.max(2,pct)}%"></div></div>
+    <div class="su-num ${level}">Занято <b>${fmtBytes(STORAGE_USED_BYTES)}</b> из ${fmtBytes(storageLimitBytes())} · ${pct}%</div>
+    ${STORAGE_WRITE_FAILED ? `<div class="su-alert">Последняя запись не прошла — место кончилось. Выгрузи прогресс файлом и освободи место, иначе набранное пропадёт при перезагрузке.</div>` : ''}
+    <div class="su-parts">
+      ${parts.map(p=>`<div class="su-part">
+        <span class="sp-name">${esc(p.name)}${p.hint?`<span class="sp-hint">${esc(p.hint)}</span>`:''}</span>
+        <span class="sp-bar"><i style="width:${Math.max(2,Math.round(100*p.bytes/Math.max(1,STORAGE_USED_BYTES)))}%"></i></span>
+        <span class="sp-size">${fmtBytes(p.bytes)}</span>
+      </div>`).join('')}
+    </div>
+    ${heavy.length ? `
+      <div class="su-sub">Самые тяжёлые файлы в лекциях</div>
+      <div class="su-files">
+        ${heavy.map((h,i)=>`<div class="su-file">
+          <span class="sf-name">${esc(h.name)}</span>
+          <span class="sf-mat">${esc(h.matTitle)}</span>
+          <span class="sf-size">${fmtBytes(h.bytes)}</span>
+          <button class="btn btn-sm" data-delattach="${i}">Удалить файл</button>
+        </div>`).join('')}
+      </div>
+      <div class="desc" style="margin-top:8px">Сам текст лекции останется — удалится только приложенный файл.</div>
+    ` : ''}
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn" id="btnPurgeTrashQuick">Очистить корзину${(STORE.trash||[]).length?` (${STORE.trash.length})`:''}</button>
+      <button class="btn" id="btnRecalcStorage">Пересчитать</button>
+    </div>`;
+  wrap.querySelectorAll('[data-delattach]').forEach(btn=>btn.onclick=()=>{
+    const h = heavy[+btn.dataset.delattach];
+    if(!h) return;
+    if(!confirm(`Удалить файл «${h.name}» из лекции «${h.matTitle}»? Освободится ${fmtBytes(h.bytes)}. Вернуть его будет нельзя — только приложить заново.`)) return;
+    const m = (STORE.materials[h.catKey]||[]).find(x=>x.id===h.matId);
+    if(m && m.attachments) m.attachments.splice(h.idx,1);
+    saveStoreNow().then(()=>renderStorageUsage(main));
+  });
+  document.getElementById('btnPurgeTrashQuick').onclick=()=>{
+    if(!(STORE.trash||[]).length){ openInfoModal('Корзина пуста','Освобождать здесь нечего.'); return; }
+    if(!confirm('Очистить корзину? Это безвозвратно — вернуть удалённое будет уже нельзя.')) return;
+    STORE.trash = [];
+    saveStoreNow().then(()=>renderStoragePage(main));
+  };
+  document.getElementById('btnRecalcStorage').onclick=()=>{ saveStoreNow().then(()=>renderStorageUsage(main)); };
 }
 
 function renderTrashBlock(main){
@@ -3110,8 +3698,20 @@ function renderWeekStrip(){
   const wrap = document.getElementById('weekStrip');
   if(!wrap) return;
   const start = weekStart(PLAN_WEEK_OFFSET);
+  const end = addDays(start,6);
   const days = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-  let html = `<button class="mini-btn" id="weekPrev">‹</button><div class="week-days">`;
+  // Подпись с месяцем: «7 — 13 сент», а если неделя на стыке — «28 сент — 4 окт»
+  const shortMon = (iso)=>new Date(iso+"T00:00:00").toLocaleDateString('ru-RU',{month:'short'}).replace('.','');
+  const dayNum = (iso)=>new Date(iso+"T00:00:00").getDate();
+  const sameMonth = shortMon(start)===shortMon(end);
+  const yearNow = new Date(todayISO()+"T00:00:00").getFullYear();
+  const endYear = new Date(end+"T00:00:00").getFullYear();
+  const caption = (sameMonth
+      ? `${dayNum(start)} — ${dayNum(end)} ${shortMon(end)}`
+      : `${dayNum(start)} ${shortMon(start)} — ${dayNum(end)} ${shortMon(end)}`)
+    + (endYear!==yearNow ? ` ${endYear}` : '');
+  let html = `<div class="week-month">${esc(caption)}</div>
+    <button class="mini-btn" id="weekPrev">‹</button><div class="week-days">`;
   for(let i=0;i<7;i++){
     const iso = addDays(start,i);
     const dp = STORE.dailyProgress[iso];
@@ -3132,6 +3732,17 @@ function renderWeekStrip(){
   });
 }
 
+/* Вид повторения у задачи планера. Цвета: карточки — тёмно-синий, лекции — коричневый,
+   семинары — хаки, WON — винный. Старые задачи без метки определяем по признакам. */
+const SR_KIND_LABEL = {card:'Карточки', lecture:'Лекция', seminar:'Семинар', won:'WON'};
+function srKindOf(t){
+  if(!t) return null;
+  if(t.srKind && SR_KIND_LABEL[t.srKind]) return t.srKind;
+  if(t.srAutoSet || t.srAuto) return 'card';
+  if(t.srAutoLec) return 'lecture';
+  if(t.srAutoWon) return 'won';
+  return null;
+}
 function renderPlanLists(){
   const minWrap = document.getElementById('planMin');
   const maxWrap = document.getElementById('planMax');
@@ -3141,10 +3752,11 @@ function renderPlanLists(){
   const maxTasks = dayTasks.filter(t=>t.tier==='max');
   function taskRow(t){
     const quad = EIS_QUADS.find(q=>q.id===t.quadrant);
-    return `<div class="plan-task ${t.done?'done':''}" data-id="${t.id}">
+    const sr = srKindOf(t);
+    return `<div class="plan-task ${t.done?'done':''} ${sr?'sr-'+sr:''}" data-id="${t.id}">
       <span class="pt-check" data-toggle="${t.id}">✓</span>
       ${quad?`<span class="pt-quad" style="background:var(--eis-${quad.cls})"></span>`:''}
-      <span class="pt-text" data-edit="${t.id}">${esc(t.text)}</span>
+      <span class="pt-text" data-edit="${t.id}">${sr?`<span class="sr-tag sr-${sr}">${SR_KIND_LABEL[sr]}</span>`:''}${esc(t.text)}</span>
       ${t.deadline?`<span class="pt-deadline">${fmtDeadline(t.deadline)}</span>`:''}
       <button class="pt-del" data-del="${t.id}">✕</button>
     </div>`;
@@ -3180,7 +3792,10 @@ function renderEisGrid(){
     const items = STORE.planTasks.filter(t=>t.quadrant===q.id && !t.done);
     // Показываем ВСЕ задачи квадрата. Раньше стоял slice(0,6), и седьмая и следующие задачи
     // просто не появлялись — выглядело как «новые задачи не добавляются».
-    const chips = items.map(t=>`<div class="eq-chip" data-edit2="${t.id}"><span class="eq-chip-toggle" data-toggle2="${t.id}">✓</span><span class="eq-chip-text">${esc(t.text)}</span>${t.date?`<span class="eq-chip-date">${esc(fmtPlanDate(t.date))}</span>`:''}</div>`).join('');
+    const chips = items.map(t=>{
+      const sr = srKindOf(t);
+      return `<div class="eq-chip ${sr?'sr-'+sr:''}" data-edit2="${t.id}"><span class="eq-chip-toggle" data-toggle2="${t.id}">✓</span><span class="eq-chip-text">${sr?`<span class="sr-tag sr-${sr}">${SR_KIND_LABEL[sr]}</span>`:''}${esc(t.text)}</span>${t.date?`<span class="eq-chip-date">${esc(fmtPlanDate(t.date))}</span>`:''}</div>`;
+    }).join('');
     const collapsed = !!EIS_COLLAPSED[q.id];
     return `<div class="eis-cell ${q.cls} ${collapsed?'collapsed':''}" data-quad="${q.id}">
       <button class="ec-collapse" data-collapse="${q.id}" title="${collapsed?'Развернуть':'Свернуть'}">${collapsed?'▾':'▴'}</button>
@@ -4118,17 +4733,28 @@ function renderCardsGrid(body,key){
 
   const shownTopics = picked.length ? topicsWithCards.filter(x=>picked.includes(x.t.id)) : topicsWithCards;
   const shownCards = shownTopics.flatMap(x=>x.cards);
+  // Рисуем не все карточки сразу: на нескольких тысячах браузер строил бы тысячи блоков
+  // и вкладка открывалась бы пару секунд. Показываем первую порцию, остальное — по кнопке.
+  if(!CARDS_SHOWN_LIMIT[key]) CARDS_SHOWN_LIMIT[key] = {};
   let sectionsHtml = '';
   shownTopics.forEach(({t,cards})=>{
+    const limit = CARDS_SHOWN_LIMIT[key][t.id] || CARDS_PAGE_SIZE;
+    const visible = cards.slice(0, limit);
+    const rest = cards.length - visible.length;
     sectionsHtml += `<div class="cards-set">
       <div class="cards-set-head">
         <span class="cards-set-name">${esc(t.name)}</span>
         <span class="cards-set-count">${cards.length}</span>
+        ${(()=>{ const r=getSetSr(key,t.id); return r
+          ? `<span class="set-sr-chip" title="Сет на повторении">повтор ${esc(fmtDate(r.nextReview))}</span>`
+          : ''; })()}
+        <button class="btn ${getSetSr(key,t.id)?'':'btn-good'}" data-set-sr="${t.id}">${getSetSr(key,t.id)?'Перенести повторение':'На повторение'}</button>
         <button class="btn" data-set-edit="${t.id}">Изменить сет</button>
         <button class="btn" data-set-move="${t.id}">Переместить сет</button>
         <button class="btn" data-set-del="${t.id}">Удалить сет</button>
       </div>
-      <div class="grid" data-ctg-section="${t.id}">${cards.map(cardHtml).join('')}</div>
+      <div class="grid" data-ctg-section="${t.id}">${visible.map(cardHtml).join('')}</div>
+      ${rest>0 ? `<button class="btn cards-more" data-morecards="${t.id}">Показать ещё ${Math.min(rest, CARDS_PAGE_SIZE)} · осталось ${rest}</button>` : ''}
     </div>`;
   });
 
@@ -4198,6 +4824,14 @@ function renderCardsGrid(body,key){
   });
   body.querySelectorAll('[data-set-edit]').forEach(btn=>btn.onclick=()=>{
     openCardSetModal(key, btn.dataset.setEdit, ()=>renderCardsGrid(body,key));
+  });
+  body.querySelectorAll('[data-set-sr]').forEach(btn=>btn.onclick=()=>{
+    openSetSrModal(key, btn.dataset.setSr, ()=>renderCardsGrid(body,key));
+  });
+  body.querySelectorAll('[data-morecards]').forEach(btn=>btn.onclick=()=>{
+    const tId = btn.dataset.morecards;
+    CARDS_SHOWN_LIMIT[key][tId] = (CARDS_SHOWN_LIMIT[key][tId] || CARDS_PAGE_SIZE) + CARDS_PAGE_SIZE;
+    renderCardsGrid(body,key);
   });
   body.querySelectorAll('[data-edit]').forEach(el=>el.onclick=(e)=>{ e.stopPropagation(); openCardModal(key, el.dataset.edit); });
   body.querySelectorAll('[data-move]').forEach(el=>el.onclick=(e)=>{
@@ -4776,11 +5410,14 @@ function saveStudySessionProgress(){
   const s = STUDY_SESSION;
   if(!s) return;
   if(!STORE.studySessions) STORE.studySessions = {};
-  if(s.queue.length===0 && (!s.nextRound || s.nextRound.length===0)){ delete STORE.studySessions[s.catKey]; }
+  // Повторение сета живёт под своим ключом, чтобы не затирать обычную сессию по предмету
+  const key = s.sessionKey || s.catKey;
+  if(s.queue.length===0 && (!s.nextRound || s.nextRound.length===0)){ delete STORE.studySessions[key]; }
   else {
-    STORE.studySessions[s.catKey] = {
+    STORE.studySessions[key] = {
       queue:s.queue.slice(), idx:s.idx, nextRound:(s.nextRound||[]).slice(),
       status:Object.assign({}, s.status), round:s.round||1, total:s.total,
+      srSet:s.srSet||null, catKey:s.catKey,
       savedAt:todayISO()
     };
   }
@@ -4788,18 +5425,21 @@ function saveStudySessionProgress(){
 }
 // Восстанавливает сохранённую сессию ровно на том месте, где её оставили: тот же круг,
 // та же карточка, те же счётчики. Возвращает false, если восстанавливать нечего.
-function resumeStudySession(catKey){
-  const saved = STORE.studySessions && STORE.studySessions[catKey];
+function resumeStudySession(catKey, sessionKey){
+  const key = sessionKey || catKey;
+  const saved = STORE.studySessions && STORE.studySessions[key];
   if(!saved || !saved.queue) return false;
-  const stillValid = saved.queue.filter(id=>findCard(catKey,id));
-  const nextRound = (saved.nextRound||[]).filter(id=>findCard(catKey,id));
+  const cat = saved.catKey || catKey;
+  const stillValid = saved.queue.filter(id=>findCard(cat,id));
+  const nextRound = (saved.nextRound||[]).filter(id=>findCard(cat,id));
   if(stillValid.length===0 && nextRound.length===0) return false;
   // индекс держим на той же карточке, даже если из очереди выпали удалённые
   const wasId = saved.queue[saved.idx];
   let idx = stillValid.indexOf(wasId);
   if(idx<0) idx = Math.min(saved.idx||0, Math.max(0,stillValid.length-1));
   STUDY_SESSION = {
-    catKey, queue:stillValid, idx, flipped:false,
+    catKey: cat, sessionKey: key, srSet: saved.srSet || null,
+    queue:stillValid, idx, flipped:false,
     nextRound, status: saved.status || {},
     round: saved.round || 1,
     total: saved.total || (stillValid.length + nextRound.length)
@@ -4820,9 +5460,13 @@ function advanceStudyRound(s){
     s.queue = [];
   }
 }
-function startStudySession(catKey, cardIds, startId){
+// opts: {sessionKey, srSet:{catKey,topicId}} — повторение сета идёт под своим ключом
+// и по завершении двигает сет на следующую дату расписания.
+function startStudySession(catKey, cardIds, startId, opts){
   if(cardIds.length===0) return;
-  const saved = STORE.studySessions && STORE.studySessions[catKey];
+  opts = opts || {};
+  const sessionKey = opts.sessionKey || catKey;
+  const saved = STORE.studySessions && STORE.studySessions[sessionKey];
   if(saved && saved.queue){
     const stillValid = saved.queue.filter(id=>findCard(catKey,id));
     const nextLeft = (saved.nextRound||[]).filter(id=>findCard(catKey,id)).length;
@@ -4835,14 +5479,14 @@ function startStudySession(catKey, cardIds, startId){
         ? `Есть незавершённая сессия по этой категории — ${where}.\n\nПродолжить её с того же места?\nОтмена — начать новую сессию с выбранной карточки (прогресс прошлой не сохранится).`
         : `Есть незавершённая сессия по этой категории — ${where}.\n\nПродолжить с того же места?`;
       if(confirm(msg)){
-        if(resumeStudySession(catKey)) return;
+        if(resumeStudySession(catKey, sessionKey)) return;
       }
     }
-    delete STORE.studySessions[catKey]; saveStore();
+    delete STORE.studySessions[sessionKey]; saveStore();
   }
   let ids = shuffle(cardIds.slice());
   if(startId){ ids = [startId, ...ids.filter(id=>id!==startId)]; }
-  STUDY_SESSION = { catKey, queue: ids, idx:0, flipped:false, nextRound:[], status:{}, round:1, total:ids.length };
+  STUDY_SESSION = { catKey, sessionKey, srSet: opts.srSet||null, queue: ids, idx:0, flipped:false, nextRound:[], status:{}, round:1, total:ids.length };
   renderStudyModal();
   openOverlay();
 }
@@ -4852,12 +5496,21 @@ function renderStudyModal(){
   modal.classList.add('modal-lg');
   if(s && s.queue.length===0 && s.nextRound && s.nextRound.length) advanceStudyRound(s);
   if(!s || s.queue.length===0){
-    if(s && STORE.studySessions) delete STORE.studySessions[s.catKey];
+    if(s && STORE.studySessions) delete STORE.studySessions[s.sessionKey || s.catKey];
+    // Это было повторение сета по расписанию — двигаем сет на следующую дату
+    let srNote = '';
+    if(s && s.srSet){
+      reviewSet(s.srSet.catKey, s.srSet.topicId);
+      const rec = getSetSr(s.srSet.catKey, s.srSet.topicId);
+      srNote = rec && rec.nextReview
+        ? `<br><br>Сет повторён. Следующее повторение — <b>${esc(fmtDate(rec.nextReview))}</b>.`
+        : `<br><br>Сет прошёл все ${SR_INTERVALS.length} повторений — цикл закончен.`;
+    }
     saveStore();
     const c = s ? studyCounts(s) : {know:0,again:0,dont:0};
     modal.innerHTML = `<h3>Сессия завершена</h3>
       <div class="empty-state">Пройдено карточек: <b>${s?s.total:0}</b>.<br>
-        «Знаю» — ${c.know}${c.again?` · «Повторю ещё» — ${c.again}`:''}${c.dont?` · «Не знаю» — ${c.dont}`:''}</div>
+        «Знаю» — ${c.know}${c.again?` · «Повторю ещё» — ${c.again}`:''}${c.dont?` · «Не знаю» — ${c.dont}`:''}${srNote}</div>
       <div class="modal-actions"><button class="btn btn-primary" id="mCloseStudy">Готово</button></div>`;
     document.getElementById('mCloseStudy').onclick=()=>{ modal.classList.remove('modal-lg'); STUDY_SESSION=null; closeOverlay(); buildAllData(); renderAll(); };
     return;
@@ -5183,7 +5836,7 @@ let THEORY_COLLAPSED = {}; // materialId -> false, если явно развё�
 // Ставит в планер задачу-напоминание на дату повторения лекции. На одну дату+категорию — одна задача
 // в планере (чтобы не засорять план), но КАЖДАЯ лекция обязательно туда попадает: если на эту дату уже
 // есть задача по этой категории (от другой лекции), название новой лекции дописывается в неё, а не теряется.
-function scheduleLectureReviewReminder(catKey, date, title, matId){
+function scheduleLectureReviewReminder(catKey, date, title, matId, kind){
   if(!STORE.planTasks) STORE.planTasks = [];
   const name = getCategoryDisplayName(catKey);
   const existing = STORE.planTasks.find(t=>t.srAutoLec && t.srCat===catKey && t.date===date && !t.done);
@@ -5194,8 +5847,8 @@ function scheduleLectureReviewReminder(catKey, date, title, matId){
   }
   STORE.planTasks.push({
     id: uid('plan'), done:false, createdDate:todayISO(), date,
-    text: `Повторить лекцию: ${name} — ${title}`, tier:'min', quadrant:'uiq', deadline:null,
-    srAutoLec:true, srCat:catKey, srMats: matId?[matId]:[]
+    text: `Повторить ${kind==='seminar'?'семинар':'лекцию'}: ${name} — ${title}`, tier:'min', quadrant:'uiq', deadline:null,
+    srAutoLec:true, srCat:catKey, srMats: matId?[matId]:[], srKind: kind==='seminar'?'seminar':'lecture'
   });
 }
 // Убирает будущие напоминания этой лекции из планера — чтобы после переноса или снятия
@@ -5249,7 +5902,7 @@ function scheduleLectureInitial(m, catKey, fromDate){
   m.srStart = start;
   m.srLevel = 0;
   m.nextReview = srScheduleFrom(start)[0];
-  scheduleLectureReviewReminder(catKey, m.nextReview, m.title, m.id);
+  scheduleLectureReviewReminder(catKey, m.nextReview, m.title, m.id, materialKind(m));
 }
 // Отметить лекцию повторённой — следующая дата берётся из того же расписания.
 function reviewMaterial(m, catKey){
@@ -5264,7 +5917,7 @@ function reviewMaterial(m, catKey){
     m.nextReview = srScheduleFrom(start)[m.srLevel];
     // если по расписанию дата уже позади (повторяла с опозданием) — отсчитываем от сегодня
     if(m.nextReview <= todayISO()) m.nextReview = addDays(todayISO(), SR_INTERVALS[m.srLevel]);
-    scheduleLectureReviewReminder(catKey, m.nextReview, m.title, m.id);
+    scheduleLectureReviewReminder(catKey, m.nextReview, m.title, m.id, materialKind(m));
   }
   saveStore();
 }
@@ -5277,16 +5930,101 @@ function removeLectureFromSr(m, catKey){
 /* Окно «на повторение»: выбираешь точку отсчёта и сразу видишь все пять дат.
    Оно же переносит уже поставленную лекцию — расписание пересчитывается от новой даты
    по той же схеме, а старые напоминания в планере убираются. */
-function openSrScheduleModal(catKey, m, onDone){
-  const already = !!m.nextReview;
-  const defStart = m.srStart || todayISO();
+/* ==========================================================================
+   ПОВТОРЕНИЕ СЕТОВ КАРТОЧЕК
+   Работает ровно так же, как повторение лекций: у сета есть точка отсчёта, от неё считаются
+   пять дат (+1, +4, +11, +25, +55), сет можно перенести и убрать. Разница только в том, что
+   «повторить» здесь открывает обычное окно изучения карточек — то же, что и в разделе Карточки.
+   ========================================================================== */
+function setSrKey(catKey, topicId){ return catKey + '::' + topicId; }
+function getSetSr(catKey, topicId){
+  return (STORE.setSR || {})[setSrKey(catKey, topicId)] || null;
+}
+function setCardsOf(catKey, topicId){
+  const data = APP_DATA[catKey];
+  if(!data) return [];
+  return data.cards.filter(c=>getCardTopicId(catKey, c) === topicId);
+}
+// Напоминание в планере. Помечаем вид повторения, чтобы в плане оно было своего цвета.
+function scheduleSetReviewReminder(catKey, topicId, date){
+  if(!STORE.planTasks) STORE.planTasks = [];
+  const name = getCategoryDisplayName(catKey);
+  const tName = topicName(catKey, topicId);
+  const exists = STORE.planTasks.find(t=>t.srAutoSet && t.srCat===catKey && t.srTopic===topicId && t.date===date && !t.done);
+  if(exists) return;
+  STORE.planTasks.push({
+    id: uid('plan'), done:false, createdDate:todayISO(), date,
+    text: `Повторить карточки: ${name} — ${tName}`, tier:'min', quadrant:'uiq', deadline:null,
+    srAutoSet:true, srCat:catKey, srTopic:topicId, srKind:'card'
+  });
+}
+function clearSetReminders(catKey, topicId){
+  if(!STORE.planTasks) return;
+  const today = todayISO();
+  STORE.planTasks = STORE.planTasks.filter(t=>{
+    if(!t.srAutoSet || t.srCat!==catKey || t.srTopic!==topicId || t.done) return true;
+    return t.date < today;   // прошлое не трогаем
+  });
+}
+function scheduleSetInitial(catKey, topicId, fromDate){
+  if(!STORE.setSR) STORE.setSR = {};
+  const start = fromDate || todayISO();
+  clearSetReminders(catKey, topicId);
+  const rec = {catKey, topicId, srStart:start, srLevel:0, nextReview: srScheduleFrom(start)[0]};
+  STORE.setSR[setSrKey(catKey, topicId)] = rec;
+  scheduleSetReviewReminder(catKey, topicId, rec.nextReview);
+  return rec;
+}
+function reviewSet(catKey, topicId){
+  const rec = getSetSr(catKey, topicId);
+  if(!rec) return;
+  const start = rec.srStart || todayISO();
+  rec.srLevel = Math.min((rec.srLevel||0)+1, SR_INTERVALS.length);
+  if(rec.srLevel >= SR_INTERVALS.length){
+    clearSetReminders(catKey, topicId);
+    delete STORE.setSR[setSrKey(catKey, topicId)];   // цикл пройден целиком
+  } else {
+    rec.nextReview = srScheduleFrom(start)[rec.srLevel];
+    if(rec.nextReview <= todayISO()) rec.nextReview = addDays(todayISO(), SR_INTERVALS[rec.srLevel]);
+    scheduleSetReviewReminder(catKey, topicId, rec.nextReview);
+  }
+  saveStore();
+}
+function removeSetFromSr(catKey, topicId){
+  clearSetReminders(catKey, topicId);
+  if(STORE.setSR) delete STORE.setSR[setSrKey(catKey, topicId)];
+  saveStore();
+}
+// Все сеты, поставленные на повторение (с живыми карточками)
+function scheduledSets(){
+  const out = [];
+  Object.keys(STORE.setSR || {}).forEach(k=>{
+    const rec = STORE.setSR[k];
+    if(!rec || !rec.nextReview) return;
+    const cards = setCardsOf(rec.catKey, rec.topicId);
+    if(!cards.length) return;                       // сет удалили — молча пропускаем
+    out.push({rec, cards});
+  });
+  return out.sort((a,b)=>String(a.rec.nextReview).localeCompare(String(b.rec.nextReview)));
+}
+function dueSets(){
+  const today = todayISO();
+  return scheduledSets().filter(x=>x.rec.nextReview <= today);
+}
+
+/* Общее окно «на повторение»: одно и то же и для лекции, и для сета карточек.
+   opts: {title, kindWord, cur:{srStart,srLevel,nextReview}|null, onApply(startISO), onRemove()} */
+function openSrPlanModal(opts){
+  const cur = opts.cur;
+  const already = !!(cur && cur.nextReview);
+  const defStart = (cur && cur.srStart) || todayISO();
   const preview = (startISO)=>srScheduleFrom(startISO)
     .map((d,i)=>`<li><b>${esc(fmtDate(d))}</b> <span style="color:var(--text-faint)">— через ${SR_OFFSETS[i]} дн. после старта</span></li>`).join('');
   document.getElementById('modalBody').innerHTML = `
     <h3>${already?'Перенести повторение':'Отправить на повторение'}</h3>
     <p style="font-size:12.5px;color:var(--text-dim);line-height:1.6;margin-bottom:12px">
-      ${materialKind(m)==='seminar'?'Семинар':'Лекция'} «<b>${esc(m.title)}</b>».
-      ${already?`Сейчас ближайшее повторение — <b>${esc(fmtDate(m.nextReview))}</b>, пройдено ${m.srLevel||0} из ${SR_INTERVALS.length}.
+      ${esc(opts.kindWord)} «<b>${esc(opts.title)}</b>».
+      ${already?`Сейчас ближайшее повторение — <b>${esc(fmtDate(cur.nextReview))}</b>, пройдено ${cur.srLevel||0} из ${SR_INTERVALS.length}.
         Новая точка отсчёта сдвинет всё расписание целиком и начнёт цикл заново.`:''}
     </p>
     <div class="field">
@@ -5305,28 +6043,48 @@ function openSrScheduleModal(catKey, m, onDone){
     </div>`;
   const input = document.getElementById('srStartInput');
   input.addEventListener('input',()=>{
-    const v = input.value || todayISO();
-    document.getElementById('srPreview').innerHTML = preview(v);
+    document.getElementById('srPreview').innerHTML = preview(input.value || todayISO());
   });
   document.getElementById('mSrCancel').onclick=closeOverlay;
   const rm = document.getElementById('mSrRemove');
   if(rm) rm.onclick=()=>{
-    if(!confirm(`Убрать «${m.title}» из повторения? Напоминания исчезнут, сам материал останется.`)) return;
-    removeLectureFromSr(m, catKey);
+    if(!confirm(`Убрать «${opts.title}» из повторения? Напоминания исчезнут, сам материал останется.`)) return;
+    opts.onRemove();
     closeOverlay();
-    if(onDone) onDone();
+    if(opts.onDone) opts.onDone();
     renderNav();
   };
   document.getElementById('mSrSave').onclick=()=>{
-    scheduleLectureInitial(m, catKey, input.value || todayISO());
+    const when = opts.onApply(input.value || todayISO());
     saveStore();
     closeOverlay();
-    if(onDone) onDone();
+    if(opts.onDone) opts.onDone();
     renderNav();
     openInfoModal(already?'Перенесено':'Отправлено на повторение',
-      `Ближайшее повторение — <b>${esc(fmtDate(m.nextReview))}</b>. Всё расписание пересчитано от выбранной даты.`);
+      `Ближайшее повторение — <b>${esc(fmtDate(when))}</b>. Всё расписание пересчитано от выбранной даты.`);
   };
   openOverlay();
+}
+function openSrScheduleModal(catKey, m, onDone){
+  openSrPlanModal({
+    title: m.title,
+    kindWord: materialKind(m)==='seminar' ? 'Семинар' : 'Лекция',
+    cur: m.nextReview ? {srStart:m.srStart, srLevel:m.srLevel, nextReview:m.nextReview} : null,
+    onApply: (start)=>{ scheduleLectureInitial(m, catKey, start); return m.nextReview; },
+    onRemove: ()=>removeLectureFromSr(m, catKey),
+    onDone
+  });
+}
+function openSetSrModal(catKey, topicId, onDone){
+  const cur = getSetSr(catKey, topicId);
+  openSrPlanModal({
+    title: topicName(catKey, topicId),
+    kindWord: 'Сет карточек',
+    cur,
+    onApply: (start)=>scheduleSetInitial(catKey, topicId, start).nextReview,
+    onRemove: ()=>removeSetFromSr(catKey, topicId),
+    onDone
+  });
 }
 
 /* Полоска открытых материалов. Показывается и над списком, и в самом редакторе:
@@ -5411,7 +6169,7 @@ function renderTheory(body,key){
         <button class="theory-collapse" data-collapse-mat="${m.id}" title="${collapsed?'Развернуть':'Свернуть'}">${collapsed?'▾':'▴'}</button>
         <div class="theory-topic"><span class="mat-kind ${kind}">${MAT_KIND_LABEL[kind]}</span>${esc(topicName(key,m.topicId))}</div>
         <div class="theory-title-row"><div class="theory-title">${esc(m.title)}</div><div class="theory-date">${srLabel}${dateLabel}</div></div>
-        <div class="theory-collapsible">
+        ${collapsed ? '' : `<div class="theory-collapsible">
         ${m.keywords&&m.keywords.length?`<div class="theory-keywords">${m.keywords.map(k=>`<span class="kw-chip">${esc(k)}</span>`).join('')}</div>`:''}
         <div class="theory-block"><div class="tb-label">Главные вопросы</div><div class="tb-body">${m.mainQuestions||'<span style="opacity:.5">пока не заполнено</span>'}</div></div>
         <div class="theory-block"><div class="tb-label">${kind==='seminar'?'Материал семинара':'Материал лекции'}</div><div class="tb-body theory-material-preview">${m.materialText||'<span style="opacity:.5">пусто</span>'}</div></div>
@@ -5431,7 +6189,7 @@ function renderTheory(body,key){
           <button class="btn" data-edittheory="${m.id}">Изменить</button>
           <button class="btn" data-deltheory="${m.id}">Удалить</button>
         </div>
-        </div>
+        </div>`}
       </div>`;
     });
     html += `</div>`;
@@ -5758,6 +6516,15 @@ function renderTheoryEditor(body, key){
       openInfoModal('Файл слишком большой', 'Файлы хранятся прямо на устройстве вместе с лекцией, поэтому лимит — 2 МБ. Сожми файл или приложи ссылку в заметках.');
       return;
     }
+    // Файл в base64 занимает примерно на треть больше самого файла, и ляжет он в ту же
+    // память браузера. Проверяем заранее — иначе лекция потом просто не сохранится.
+    const projected = STORAGE_USED_BYTES + file.size * 1.4 * 2;
+    if(projected > storageLimitBytes()){
+      openInfoModal('Не хватит места',
+        `Сейчас занято ${fmtBytes(STORAGE_USED_BYTES)} из ${fmtBytes(storageLimitBytes())}, и этот файл туда не поместится.<br><br>
+         Освободи место в разделе <b>Storage</b> — там видно, что занимает больше всего, — или приложи ссылку на файл в заметках вместо самого файла.`);
+      return;
+    }
     const reader = new FileReader();
     reader.onload = ()=>{
       attachments.push({name:file.name, type:file.type, size:file.size, data:reader.result});
@@ -5832,7 +6599,7 @@ function renderTheoryEditor(body, key){
     clearTimeout(draftTimer);
     closeTheoryTab(id, false);   // сам спросит, если было набрано что-то не сохранённое
   };
-  document.getElementById('teSave').onclick=()=>{
+  document.getElementById('teSave').onclick=async ()=>{
     const vals = Object.assign(currentVals(), { date: draft.dateStart || todayISO() });
     if(!STORE.materials[key]) STORE.materials[key]=[];
     let createdMaterial = null;
@@ -5853,8 +6620,14 @@ function renderTheoryEditor(body, key){
       pendingKwCards = [];
     }
     const savedTabId = THEORY_ACTIVE_ID;
+    // Дожидаемся НАСТОЯЩЕЙ записи на устройство, а не откладываем её: если места не хватило,
+    // вкладку закрывать нельзя и рапортовать об успехе тоже — материал остаётся открытым.
+    const written = await saveStoreNow();
+    if(!written){
+      if(createdMaterial) STORE.materials[key] = STORE.materials[key].filter(m=>m!==createdMaterial);
+      return;
+    }
     clearDraft();
-    saveStore();
     buildAllData();
     closeTheoryTab(savedTabId, true);   // материал в библиотеке — вкладку можно закрывать молча
     // body после перерисовки уже другой — берём актуальный контейнер, иначе кнопки в окне
@@ -6528,10 +7301,10 @@ function finishFinalTestSession(listBody){
 // а не общий список вперемешку.
 let SR_TAB = 'cards';
 function renderReview(main){
-  main.innerHTML = `<div class="topbar"><div><h2>Spaced Repetition</h2><div class="desc">Карточки и лекции, срок повторения которых наступил</div></div></div>
+  main.innerHTML = `<div class="topbar"><div><h2>Spaced Repetition</h2><div class="desc">Карточки, лекции и семинары, срок повторения которых наступил</div></div></div>
     <div class="mode-tabs" style="margin-bottom:14px">
       <button class="mode-tab ${SR_TAB==='cards'?'active':''}" id="srTabCards">Карточки</button>
-      <button class="mode-tab ${SR_TAB==='lectures'?'active':''}" id="srTabLectures">Лекции</button>
+      <button class="mode-tab ${SR_TAB==='lectures'?'active':''}" id="srTabLectures">Лекции <span class="mt-sep">|</span> Семинары</button>
     </div>
     <div id="reviewBody"></div>`;
   document.getElementById('srTabCards').onclick=()=>{ SR_TAB='cards'; renderReview(main); };
@@ -6539,45 +7312,119 @@ function renderReview(main){
   if(SR_TAB==='lectures'){ renderReviewLectures(main); return; }
   renderReviewCards(main);
 }
+/* Вкладка «Карточки» в разделе Spaced Repetition.
+   Никаких «начать повторение» и отдельного вида карточек: нажимаешь на сет — открывается
+   ровно то же окно изучения, что и в разделе Карточки, с теми же кнопками и счётчиками.
+   Когда сет пройден, он сам уходит на следующую дату расписания. */
 function renderReviewCards(main){
-  const due = reviewDueCards();
+  const today = todayISO();
   const rb = document.getElementById("reviewBody");
-  rb.innerHTML = `<div class="btn-row" style="margin-bottom:14px"><button class="btn btn-primary" id="btnAddToReview">Добавить карточку на повторение</button></div><div id="reviewBody2"></div>`;
-  document.getElementById('btnAddToReview').onclick=()=>openAddToReviewModal(main);
-  const rb2 = document.getElementById("reviewBody2");
-  if(due.length===0){ rb2.innerHTML = `<div class="empty-state">Все карточки повторены. Загляни завтра!</div>`; return; }
+  const sets = scheduledSets();
+  const due = reviewDueCards();
 
-  // группировка по категории+теме
-  const groups = {};
+  // Карточки, которые «созрели» сами по себе, группируем по предмету и теме
+  const adHoc = {};
   due.forEach(c=>{
     const topicId = getCardTopicId(c.catKey, c);
+    if(getSetSr(c.catKey, topicId)) return;      // этот сет уже идёт по расписанию — не дублируем
     const gKey = c.catKey+"::"+topicId;
-    if(!groups[gKey]) groups[gKey] = { catKey:c.catKey, topicId, cards:[] };
-    groups[gKey].cards.push(c);
+    if(!adHoc[gKey]) adHoc[gKey] = {catKey:c.catKey, topicId, cards:[]};
+    adHoc[gKey].cards.push(c);
   });
-  const groupList = Object.values(groups).sort((a,b)=>b.cards.length-a.cards.length);
+  const adHocList = Object.values(adHoc).sort((a,b)=>b.cards.length-a.cards.length);
+  const dueScheduled = sets.filter(x=>x.rec.nextReview <= today);
+  const upcoming = sets.filter(x=>x.rec.nextReview > today);
+  const totalDue = dueScheduled.reduce((n,x)=>n+x.cards.length,0) + adHocList.reduce((n,x)=>n+x.cards.length,0);
 
-  let html = `<div class="review-summary">Сегодня на повторение: <b>${due.length} карточек</b></div><div class="review-groups" id="reviewGroups">`;
-  groupList.forEach(g=>{
-    const catName = APP_DATA[g.catKey] ? APP_DATA[g.catKey].meta.name : g.catKey;
-    html += `<div class="review-group" data-g="${esc(g.catKey)}::${esc(g.topicId)}">
+  const rowHtml = (catKey, topicId, cards, scheduled, isDue)=>{
+    const catName = getCategoryDisplayName(catKey);
+    const rec = scheduled ? getSetSr(catKey, topicId) : null;
+    const status = isDue
+      ? `<span class="rg-due">сегодня</span>`
+      : `<span class="rg-when">повтор ${esc(fmtDate(rec.nextReview))}</span>`;
+    return `<div class="review-group lec-row sr-card-row ${isDue?'':'lec-upcoming'}" data-setrow="${esc(catKey)}::${esc(topicId)}">
       <span class="rg-mark"></span>
-      <span class="rg-text"><b>${esc(catName)}</b> (тема: ${esc(topicName(g.catKey,g.topicId))})</span>
-      <span class="rg-count">${g.cards.length} карточек</span>
-    </div>`;
-  });
-  html += `</div><button class="btn btn-primary" id="btnStartReview" style="margin-top:16px">Начать повторение</button><div id="reviewSession"></div>`;
-  rb2.innerHTML = html;
-
-  let activeFilter = null;
-  rb2.querySelectorAll('.review-group').forEach(g=>g.onclick=()=>{
-    rb2.querySelectorAll('.review-group').forEach(x=>x.classList.remove('active'));
-    if(activeFilter===g.dataset.g){ activeFilter=null; } else { activeFilter=g.dataset.g; g.classList.add('active'); }
-  });
-  document.getElementById('btnStartReview').onclick=()=>{
-    const queue = activeFilter ? due.filter(c=>(c.catKey+"::"+getCardTopicId(c.catKey,c))===activeFilter) : due.slice();
-    runReviewSession(document.getElementById('reviewSession'), queue, false);
+      <span class="rg-text"><b>${esc(catName)}</b> — ${esc(topicName(catKey,topicId))}</span>
+      ${status}
+      <span class="rg-count">${cards.length} карточек${rec?` · пройдено ${rec.srLevel||0} из ${SR_INTERVALS.length}`:''}</span>
+      ${isDue?`<button class="btn btn-good" data-srstart="${esc(catKey)}::${esc(topicId)}">Повторить</button>`:''}
+      ${!scheduled && isDue?`<button class="btn" data-srplan="${esc(catKey)}::${esc(topicId)}">В расписание</button>`:''}
+    </div>
+    ${rec?`<div class="lec-schedule" data-setsched="${esc(catKey)}::${esc(topicId)}" hidden>
+      <div class="lec-schedule-title">Расписание повторений${rec.srStart?` · точка отсчёта ${esc(fmtDate(rec.srStart))}`:''}</div>
+      <ol class="lec-schedule-list">${srScheduleFrom(rec.srStart||rec.nextReview).map((d,i)=>{
+        const done = i < (rec.srLevel||0);
+        const isNext = i === (rec.srLevel||0);
+        return `<li class="${done?'sd-done':''}${isNext?' sd-next':''}">${esc(fmtDate(isNext?rec.nextReview:d))}${done?' — пройдено':(isNext?' — ближайшее':'')}</li>`;
+      }).join('')}</ol>
+      <div class="lec-schedule-note">Интервалы ${SR_INTERVALS.join(', ')} дней от точки отсчёта. Сет уходит на следующую дату, когда пройдёшь его целиком.</div>
+      <div class="btn-row" style="margin:8px 0 0">
+        <button class="btn btn-sm" data-srmove="${esc(catKey)}::${esc(topicId)}">Перенести</button>
+        <button class="btn btn-sm" data-srdrop="${esc(catKey)}::${esc(topicId)}">Убрать из повторения</button>
+      </div>
+    </div>`:''}`;
   };
+
+  let html = `<div class="btn-row" style="margin-bottom:14px">
+    <button class="btn" id="btnAddToReview">Добавить карточку на повторение</button>
+  </div>`;
+
+  if(totalDue===0 && upcoming.length===0){
+    html += `<div class="empty-state">Пока ничего не ждёт повторения.<br>Отправь сет на повторение кнопкой <b>«На повторение»</b> в разделе Карточки — и он будет возвращаться по расписанию.</div>`;
+  } else {
+    if(totalDue>0){
+      html += `<div class="review-summary">Сегодня на повторение: <b>${totalDue} карточек</b> в ${dueScheduled.length+adHocList.length} сет${(dueScheduled.length+adHocList.length)===1?'е':'ах'}</div>`;
+      dueScheduled.forEach(x=>{ html += rowHtml(x.rec.catKey, x.rec.topicId, x.cards, true, true); });
+      adHocList.forEach(g=>{ html += rowHtml(g.catKey, g.topicId, g.cards, false, true); });
+    } else {
+      html += `<div class="review-summary">На сегодня карточек нет — всё повторено</div>`;
+    }
+    if(upcoming.length){
+      html += `<div class="lec-section-head">Сеты на повторении — ждут своей даты</div>`;
+      upcoming.forEach(x=>{ html += rowHtml(x.rec.catKey, x.rec.topicId, x.cards, true, false); });
+      html += `<div class="lec-hint">Нажми на строку, чтобы посмотреть расписание сета, перенести его или убрать.</div>`;
+    }
+  }
+  rb.innerHTML = html;
+  document.getElementById('btnAddToReview').onclick=()=>openAddToReviewModal(main);
+
+  // Повторить сет — то же окно изучения, что и в разделе Карточки
+  rb.querySelectorAll('[data-srstart]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
+    const [catKey, topicId] = btn.dataset.srstart.split('::');
+    const scheduled = !!getSetSr(catKey, topicId);
+    const cards = scheduled
+      ? setCardsOf(catKey, topicId)
+      : due.filter(c=>c.catKey===catKey && getCardTopicId(catKey,c)===topicId);
+    if(!cards.length) return;
+    startStudySession(catKey, cards.map(c=>c.id), null, {
+      sessionKey: 'sr:'+catKey+'::'+topicId,
+      srSet: scheduled ? {catKey, topicId} : null
+    });
+  });
+  // Поставить «созревший» сам по себе сет на постоянное расписание
+  rb.querySelectorAll('[data-srplan]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
+    const [catKey, topicId] = btn.dataset.srplan.split('::');
+    openSetSrModal(catKey, topicId, ()=>renderReviewCards(main));
+  });
+  rb.querySelectorAll('[data-srmove]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
+    const [catKey, topicId] = btn.dataset.srmove.split('::');
+    openSetSrModal(catKey, topicId, ()=>renderReviewCards(main));
+  });
+  rb.querySelectorAll('[data-srdrop]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
+    const [catKey, topicId] = btn.dataset.srdrop.split('::');
+    if(!confirm(`Убрать сет «${topicName(catKey,topicId)}» из повторения? Сами карточки останутся на месте.`)) return;
+    removeSetFromSr(catKey, topicId);
+    renderReviewCards(main);
+    renderNav();
+  });
+  rb.querySelectorAll('[data-setrow]').forEach(row=>row.onclick=()=>{
+    const sched = rb.querySelector(`[data-setsched="${row.dataset.setrow}"]`);
+    if(sched) sched.hidden = !sched.hidden;
+  });
 }
 
 function reviewDueMaterials(){
@@ -6605,18 +7452,19 @@ function renderReviewLectures(main){
   const upcoming = all.filter(x=>x.m.nextReview > today);
   const rb = document.getElementById("reviewBody");
   if(all.length===0){
-    rb.innerHTML = `<div class="empty-state">Пока ни одна лекция не отправлена на повторение.<br>Открой лекцию в разделе Теория и нажми «Отправить на повторение».</div>`;
+    rb.innerHTML = `<div class="empty-state">Пока ни одна лекция и ни один семинар не отправлены на повторение.<br>Открой материал в разделе Теория и нажми «Отправить на повторение».</div>`;
     return;
   }
   const rowHtml = ({catKey,m}, isDue)=>{
     const catName = getCategoryDisplayName(catKey);
     const passed = m.srLevel||0;
+    const kind = materialKind(m);
     const status = isDue
       ? `<span class="rg-due">сегодня</span>`
       : `<span class="rg-when">повтор ${esc(fmtDate(m.nextReview))}</span>`;
-    return `<div class="review-group lec-row ${isDue?'':'lec-upcoming'}" data-lecrow="${m.id}" data-leccat="${catKey}">
+    return `<div class="review-group lec-row kind-${kind} ${isDue?'':'lec-upcoming'}" data-lecrow="${m.id}" data-leccat="${catKey}">
       <span class="rg-mark"></span>
-      <span class="rg-text"><b>${esc(catName)}</b> — ${esc(m.title)}
+      <span class="rg-text"><span class="mat-kind ${kind}">${MAT_KIND_LABEL[kind]}</span><b>${esc(catName)}</b> — ${esc(m.title)}
         <span style="color:var(--text-faint)">(${esc(topicName(catKey,m.topicId))})</span></span>
       ${status}
       <span class="rg-count">пройдено ${passed} из ${SR_INTERVALS.length}</span>
@@ -6639,17 +7487,27 @@ function renderReviewLectures(main){
     </div>`;
   };
 
+  // Лекции и семинары показываем раздельно — так видно, чего именно ждёт день
+  const split = (list)=>({
+    lec: list.filter(x=>materialKind(x.m)==='lecture'),
+    sem: list.filter(x=>materialKind(x.m)==='seminar')
+  });
+  const countText = (l,s)=>[l?`<b>${l}</b> лекц.`:'', s?`<b>${s}</b> семин.`:''].filter(Boolean).join(' · ');
   let html = '';
   if(due.length){
-    html += `<div class="review-summary">Сегодня на повторение: <b>${due.length} лекций</b></div>`;
-    html += due.map(x=>rowHtml(x, true)).join('');
+    const d = split(due);
+    html += `<div class="review-summary">Сегодня на повторение: ${countText(d.lec.length, d.sem.length)}</div>`;
+    if(d.lec.length){ html += `<div class="lec-kind-head kind-lecture">Лекции</div>` + d.lec.map(x=>rowHtml(x, true)).join(''); }
+    if(d.sem.length){ html += `<div class="lec-kind-head kind-seminar">Семинары</div>` + d.sem.map(x=>rowHtml(x, true)).join(''); }
   } else {
-    html += `<div class="review-summary">На сегодня лекций нет — всё повторено</div>`;
+    html += `<div class="review-summary">На сегодня ничего нет — всё повторено</div>`;
   }
   if(upcoming.length){
-    html += `<div class="lec-section-head">Недавно отправлено на повторение — ждут своей даты</div>`;
-    html += upcoming.map(x=>rowHtml(x, false)).join('');
-    html += `<div class="lec-hint">Нажми на строку, чтобы посмотреть, в какие дни лекция будет напоминать о себе.</div>`;
+    const u = split(upcoming);
+    html += `<div class="lec-section-head">Отправлено на повторение — ждут своей даты</div>`;
+    if(u.lec.length){ html += `<div class="lec-kind-head kind-lecture">Лекции</div>` + u.lec.map(x=>rowHtml(x, false)).join(''); }
+    if(u.sem.length){ html += `<div class="lec-kind-head kind-seminar">Семинары</div>` + u.sem.map(x=>rowHtml(x, false)).join(''); }
+    html += `<div class="lec-hint">Нажми на строку, чтобы посмотреть расписание, перенести его или убрать.</div>`;
   }
   rb.innerHTML = html;
 
@@ -7331,17 +8189,12 @@ function measureFloatBar(geometry){
   const vv = window.visualViewport;
   setFloatVar('--float-bar-y', 'y', vv ? Math.max(0, Math.round(vv.offsetTop)) : 0);
   if(!geometry) return;
-  // левый край = фактический правый край сайдбара (учитывает и масштаб интерфейса, и телефон)
-  const sb = document.getElementById('sidebar');
-  let left = 0;
-  if(sb && window.innerWidth >= 821){
-    const r = sb.getBoundingClientRect();
-    if(r.width) left = Math.max(0, Math.round(r.right));
-  }
-  setFloatVar('--float-bar-left', 'left', left);
+  // Высоту пишем всегда, когда идёт полный пересчёт: он бывает редко (показ панели, поворот
+  // экрана, смена ширины сайдбара), а кеш тут только создавал риск рассинхронизации.
   const h = bar.offsetHeight;
-  if(h && FLOAT_BAR_LAST.h !== h+18){
-    setFloatVar('--float-bar-h', 'h', h+18);
+  if(h){
+    FLOAT_BAR_LAST.h = h+18;
+    document.documentElement.style.setProperty('--float-bar-h', (h+18)+'px');
     // чтобы прокрутка к полю (в том числе автоматическая, за курсором) не прятала его под панель
     document.documentElement.style.setProperty('--float-bar-scrollpad', (h+12)+'px');
   }
@@ -8489,9 +9342,10 @@ document.getElementById('themeSwitch').addEventListener('click',()=>{
 
 /* ---------- Масштаб интерфейса ---------- */
 function applyFontScale(){
-  document.getElementById('app').style.zoom = STORE.fontScale || 1;
-  // zoom меняет фактическую ширину сайдбара — панель форматирования должна за ним успеть
-  if(typeof syncFloatBarGeometry === 'function') setTimeout(syncFloatBarGeometry, 0);
+  const z = STORE.fontScale || 1;
+  document.getElementById('app').style.zoom = z;
+  // масштаб растягивает и сайдбар — панель форматирования упирается в его край по формуле
+  document.documentElement.style.setProperty('--app-zoom', String(z));
 }
 applyFontScale();
 
@@ -8610,8 +9464,6 @@ function applySidebarWidth(w){
   const clamped = Math.min(SIDEBAR_MAX_W, Math.max(SIDEBAR_MIN_W, Math.round(w) || SIDEBAR_DEFAULT_W));
   document.getElementById('app').style.gridTemplateColumns = `${clamped}px 1fr`;
   document.documentElement.style.setProperty('--sidebar-w', clamped+'px');
-  // панель форматирования упирается в правый край сайдбара — пересчитываем его
-  if(typeof syncFloatBarGeometry === 'function') syncFloatBarGeometry();
   return clamped;
 }
 applySidebarWidth(STORE.sidebarWidth || 256);
@@ -9291,17 +10143,29 @@ function seedDemoLecture(){
 /* ==========================================================================
    21. ИНИЦИАЛИЗАЦИЯ
    ========================================================================== */
-applyTheme();
-applyCoverImage();
-// seedLecturePack()/seedTenDayPlan() больше не запускаются автоматически — платформа для новых людей
-// стартует чистой (см. DEMO_CARD_COUNTS в buildAllData). На устройствах, где контент-пак уже был
-// разблокирован раньше (contentPackV1===true), это ничего не меняет — их полный контент как был, так и есть.
-buildAllData();
-seedDemoLecture();
-buildAllData(); // пересобираем: сид мог скрыть пустые предметы и завести тему для лекции-примера
-restoreTheoryTabs();
-renderAll();
-initAuthGate();
+// Старт асинхронный: сначала открывается основное хранилище (IndexedDB) и при первом запуске
+// туда переезжает всё, что лежало в localStorage. Пока это происходит, экран не рисуем —
+// иначе платформа мелькнула бы пустой и только потом наполнилась.
+(async function initApp(){
+  try{ await initPersistence(); }
+  catch(e){ console.warn('persistence init failed', e); }
+  try{ await refreshStorageQuota(); }catch(e){}
+
+  applyTheme();
+  applyCoverImage();
+  applyFontScale();
+  applySidebarWidth(STORE.sidebarWidth || 256);
+  // seedLecturePack()/seedTenDayPlan() больше не запускаются автоматически — платформа для новых людей
+  // стартует чистой (см. DEMO_CARD_COUNTS в buildAllData). На устройствах, где контент-пак уже был
+  // разблокирован раньше (contentPackV1===true), это ничего не меняет — их полный контент как был, так и есть.
+  buildAllData();
+  seedDemoLecture();
+  buildAllData(); // пересобираем: сид мог скрыть пустые предметы и завести тему для лекции-примера
+  restoreTheoryTabs();
+  renderAll();
+  initAuthGate();
+  updateStorageBanner(); // если места уже мало — предупреждаем сразу, не дожидаясь первой записи
+})();
 
 </script>
 <script>
