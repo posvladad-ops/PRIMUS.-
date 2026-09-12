@@ -411,6 +411,11 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .lec-schedule-title{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent-strong);margin-bottom:6px;}
 .lec-schedule-list{margin:0;padding-left:18px;font-size:12.5px;color:var(--text-dim);line-height:1.7;}
 .lec-schedule-note{font-size:11px;color:var(--text-faint);margin-top:8px;line-height:1.5;}
+.lec-schedule-list li.sd-done{color:var(--text-faint);text-decoration:line-through;}
+.lec-schedule-list li.sd-next{color:var(--accent-strong);font-weight:600;}
+.sr-preview{border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg-soft);padding:12px 14px;margin:4px 0 6px;}
+.sr-preview-title{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--accent-strong);margin-bottom:8px;}
+.ta-badge{display:inline-block;min-width:16px;padding:0 5px;border-radius:8px;background:rgba(255,255,255,.18);font-family:var(--font-mono);font-size:10px;margin-left:4px;}
 .theory-item.flash{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft);}
 .rno-banner{padding:12px 16px;border-radius:var(--radius-s);background:rgba(181,103,90,.12);border:1px solid var(--bad);color:var(--bad);font-size:13px;font-weight:600;margin-bottom:18px;}
 
@@ -541,6 +546,15 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .set-ai{border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg-soft);padding:10px 12px;margin:4px 0 16px;}
 .set-ai-head{font-family:var(--font-mono);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
 .set-rows-head{font-family:var(--font-mono);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:var(--text-faint);margin:0 0 8px;}
+/* Предпросмотр сетов, которые вернул ИИ: название правится прямо здесь, карточки — по раскрытию */
+.cs-empty{font-size:11.5px;color:var(--text-faint);padding:12px;border:1px dashed var(--border);border-radius:var(--radius-s);margin-bottom:12px;}
+.cs-set{border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg-soft);margin-bottom:8px;overflow:hidden;}
+.cs-set-head{display:flex;align-items:center;gap:8px;padding:8px 10px;flex-wrap:wrap;}
+.cs-set-name{flex:1 1 160px;min-width:0;padding:6px 9px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:16px;border-radius:6px;font-weight:600;}
+.cs-set-count{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:2px 8px;flex-shrink:0;}
+.cs-set-body{padding:0 10px 10px;}
+.cs-set-body .set-row{background:var(--surface);}
+.btn-sm{padding:4px 9px;font-size:11px;}
 /* Короткое сообщение поверх открытой модалки — чтобы не переписывать её содержимое */
 #miniToast{
   position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(14px);
@@ -691,8 +705,28 @@ h3.sec-head{font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter
 .te-notes-box{min-height:110px;background:var(--bg-soft);}
 .rt-btn.hl{width:20px;height:20px;border-radius:4px;padding:0;border:1px solid var(--border);}
 .kw-editor{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:26px;}
-.te-ai-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--accent-soft);border:1px dashed var(--accent);border-radius:var(--radius-m);padding:14px 16px;margin-bottom:20px;}
+.te-ai-row{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;background:var(--accent-soft);border:1px dashed var(--accent);border-radius:var(--radius-m);padding:14px 16px;margin-bottom:20px;}
 .te-ai-hint{font-size:11.5px;color:var(--text-dim);flex:1;min-width:200px;}
+.te-ai-wishes{flex:1 1 260px;min-width:0;}
+.te-ai-wishes label{display:block;font-size:11.5px;color:var(--text-dim);margin-bottom:5px;}
+.te-ai-wishes textarea{width:100%;min-height:54px;padding:8px 10px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:var(--radius-s);resize:vertical;}
+/* ---------- Полоска открытых материалов ----------
+   Несколько лекций и семинаров держатся открытыми одновременно; переключение между ними
+   не теряет набранное. Цвет точки — вид материала: коричневый лекция, хаки семинар. */
+.te-tabs{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.te-tabs-label{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text-faint);margin-right:2px;}
+.te-tab{display:inline-flex;align-items:center;gap:6px;max-width:min(260px,60vw);
+  padding:5px 8px 5px 9px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);
+  border-radius:var(--radius-s);font-size:12px;cursor:pointer;line-height:1.3;}
+.te-tab.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-strong);font-weight:600;}
+@media (hover:hover){.te-tab:hover{border-color:var(--accent);}}
+.te-tab .tt-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.te-tab .tt-cat{font-family:var(--font-mono);font-size:9px;color:var(--text-faint);flex-shrink:0;}
+.te-tab .tt-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--accent-strong);}
+.te-tab.kind-seminar .tt-dot{background:var(--khaki);}
+.te-tab .tt-close{border:none;background:transparent;color:var(--text-faint);font-size:11px;padding:0 1px;cursor:pointer;flex-shrink:0;border-radius:3px;}
+@media (hover:hover){.te-tab .tt-close:hover{color:var(--bad);}}
+.te-tab-new,.te-tab-list{color:var(--text-faint);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.4px;}
 .te-footer{display:flex;justify-content:flex-end;gap:10px;padding-bottom:30px;}
 
 .empty-state{padding:50px 20px;text-align:center;color:var(--text-faint);}
@@ -901,7 +935,10 @@ html[data-theme="dark"] .flip-digit-inner{color:#EFE4D2;}
 #floatFormatBar .tbl-tools{position:static;margin-bottom:8px;}
 /* Подпись, к какому полю относятся кнопки — панель теперь видна всё время, пока открыта лекция */
 .fb-target{font-family:var(--font-mono);font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px;display:block;}
-@media (min-width:821px){ #floatFormatBar{left:var(--sidebar-w,256px);} }
+/* Левый край панели — ровно правый край сайдбара, померенный по факту. Через var(--sidebar-w)
+   было неверно при масштабе интерфейса: #app масштабируется через zoom, сайдбар становится шире
+   своей переменной, и панель наезжала на него. */
+#floatFormatBar{left:var(--float-bar-left,0px);}
 /* чтобы панель не перекрывала верх формы — высоту панели меряем и кладём в переменную */
 body.has-float-bar .theory-editor{padding-top:var(--float-bar-h,120px);}
 /* прокрутка к полю (в том числе автоматическая, вслед за курсором) останавливается под панелью,
@@ -2176,7 +2213,8 @@ function defaultStore(){
     auth:null, // {name, loginAt} — заполняется после входа по паролю, см. ACCESS_CODES
     demoLectureV1:false, // лекция-пример по истории поставлена (один раз для нового человека)
     trash:[], // корзина: [{id,type,label,sub,catKey,deletedAt,payload}] — недавно удалённое, можно вернуть
-    theoryDraft:null, // автосохранённый черновик открытой лекции — подстраховка на случай закрытия без сохранения
+    theoryDraft:null, // старый одиночный черновик — оставлен для переноса со старых версий
+    theoryTabs:[], // открытые материалы: [{id,catKey,materialId,values}] — переживают уход в другой раздел и перезагрузку
     finalTests:{} // catKey -> [{id,topicId,title,deadline,createdDate,completed,completedDate,sections:{key:[],full:[],cases:[],questions:[],fun:[]}}]
   };
 }
@@ -2245,6 +2283,15 @@ function renameTopic(catKey, topicId, newName){
   saveStore(); buildAllData();
 }
 function deleteTopic(catKey, topicId){
+  // удалённая тема кладётся в корзину — её можно вернуть вместе с названием
+  if(typeof trashPush === 'function'){
+    const name = topicName(catKey, topicId);
+    const custom = (STORE.customTopics[catKey]||[]).find(t=>t.id===topicId);
+    trashPush('topic', name, {
+      topicId, name,
+      topic: custom ? JSON.parse(JSON.stringify(custom)) : null
+    }, catKey, getCategoryDisplayName(catKey));
+  }
   if(!STORE.deletedTopics[catKey]) STORE.deletedTopics[catKey]=[];
   if(!STORE.deletedTopics[catKey].includes(topicId)) STORE.deletedTopics[catKey].push(topicId);
   STORE.customTopics[catKey] = (STORE.customTopics[catKey]||[]).filter(t=>t.id!==topicId);
@@ -2420,7 +2467,9 @@ function renderCardFace(type,c){
     case "ita": return {top:c.phrase, sub:c.translation, body:c.grammar, usage:c.usage, connection:c.usage};
     case "lingvo": return {top:c.name, sub:c.sub, body:c.description, usage:c.connection, connection:c.connection};
     case "hist": return {top:c.name, sub:c.sub, body:c.description, usage:c.connection, connection:c.connection};
-    default: return {top:c.front||"Карточка", sub:c.back||"", body:c.back||"", usage:c.note||"", connection:c.note||""};
+    // back — это ответ, note — пояснение/связь. Раньше в body тоже стоял back, из-за чего
+    // на обороте карточки один и тот же текст печатался дважды.
+    default: return {top:c.front||"Карточка", sub:c.back||"", body:c.note||"", usage:"", connection:c.note||""};
   }
 }
 function genericPromptVerb(type){
@@ -2687,8 +2736,8 @@ function renderNav(){
   html += '</div>';
   nav.innerHTML = html;
   nav.querySelectorAll(".nav-item").forEach(el=>el.addEventListener("click",()=>{
-    if(!confirmLeaveTheory()) return;
-    THEORY_EDIT_STATE = null;
+    confirmLeaveTheory();
+    THEORY_ACTIVE_ID = null; syncTheoryEditState();
     VIEW=el.dataset.view; renderAll();
   }));
 
@@ -2712,8 +2761,8 @@ document.querySelector(".sidebar").addEventListener("click",(e)=>{
   if(!item) return;
   const toolViews = ["guide","progress","timers","rno","review","notes","storage"];
   if(toolViews.includes(item.dataset.view)){
-    if(!confirmLeaveTheory()) return;
-    THEORY_EDIT_STATE = null;
+    confirmLeaveTheory();
+    THEORY_ACTIVE_ID = null; syncTheoryEditState();
     VIEW = item.dataset.view; renderAll();
   }
 });
@@ -2753,15 +2802,26 @@ const GUIDE_SECTIONS = [
     <p>В самом верху формы выбираешь, что записываешь: <b>Лекция</b> или <b>Семинар</b>. Рядом — <b>«Прикрепить к…»</b>: семинар можно привязать к своей лекции (и наоборот), а можно оставить <b>«не прикреплять»</b> — тогда материал просто стоит сам по себе.</p>
     <p>Прикреплённые друг к другу материалы в списке склеены в <b>один отрывной билет</b>: лекция и семинар стоят вплотную, между ними линия отрыва пунктиром и круглые выемки по краям — сразу видно, что это одна пара, а не два разных конспекта. Каждая половина разворачивается и сворачивается отдельно, билет при этом не распадается.</p>
     <p>Подпись в углу говорит, что это: <b>коричневая — лекция, хаки — семинар</b>.</p>
-    <h4>Панель форматирования</h4>
-    <p>Панель с кнопками закреплена <b>сверху экрана</b> и видна всё время, пока лекция открыта, — к ней не нужно листать, и она не пропадает при прокрутке. Подпись на панели показывает, к какому полю сейчас относятся кнопки.</p>
+    <h4>Несколько материалов открыто сразу</h4>
+    <p>Не нужно закрывать одно, чтобы взяться за другое. Открытые материалы стоят полоской <b>«Открыто»</b> — и в списке, и внутри редактора:</p>
     <ul>
+      <li>лекция и её семинар могут быть открыты одновременно — переключаешься между ними одним нажатием, набранное не теряется;</li>
+      <li><b>«+ материал»</b> начинает новый конспект, не закрывая текущий;</li>
+      <li><b>«К списку»</b> возвращает к списку материалов, оставляя всё открытым;</li>
+      <li><b>✕</b> на вкладке закрывает материал (с вопросом, если там есть несохранённое).</li>
+    </ul>
+    <p>Точка на вкладке показывает вид: коричневая — лекция, хаки — семинар. Если материал из другого предмета, рядом написано, из какого.</p>
+    <p><b>Черновики не пропадают.</b> Можно уйти в любой раздел и вернуться — открытые материалы на месте. Они переживают даже перезагрузку страницы. Но в библиотеку материал попадает только по кнопке <b>«Сохранить материал»</b>.</p>
+    <h4>Панель форматирования</h4>
+    <p>Панель с кнопками закреплена <b>сверху экрана</b>, упирается точно в край бокового меню и видна всё время, пока лекция открыта, — к ней не нужно листать, и она не мигает при прокрутке. Подпись на панели показывает, к какому полю сейчас относятся кнопки.</p>
+    <ul>
+      <li><b>↶ / ↷</b> — отменить и вернуть, как в Word. Случайно стёрла слово — одно нажатие, и оно на месте. Отменяются и обычный набор, и вставка таблицы, и разделитель, и пометка ключевого слова.</li>
       <li><b>B / I / U / S</b> — жирный, курсив, подчёркнутый, зачёркнутый. Жирный — это просто жирный, в карточки он больше ничего не отправляет.</li>
       <li><b>H1 / H2 / ¶</b> — заголовок, подзаголовок, обычный текст.</li>
       <li><b>• / 1. / —</b> — списки точками, цифрами и чёрточками.</li>
-      <li><b>⎯</b> — разделительная линия внутри лекции, <b>▦</b> — таблица (как в заметках iPhone).</li>
+      <li><b>⎯</b> — разделительная линия внутри лекции, <b>▦</b> — таблица (как в заметках iPhone). После таблицы курсор встаёт в обычный абзац сразу под ней — печатать можно дальше без лишней пустой строки.</li>
       <li><b>Маркеры</b> — жёлтый, винный, хаки и тёмно-синий, все полупрозрачные, текст под ними читается. Крестик убирает выделение.</li>
-      <li><b>«Ключевое слово + карточка»</b> — выдели слово и нажми: оно подсветится овалом, попадёт в ключевые слова, а при сохранении по нему заведётся карточка (на обороте — предложение из лекции).</li>
+      <li><b>«Ключевое слово + карточка»</b> — выдели слово и нажми: оно подсветится овалом и попадёт в ключевые слова. Карточка по нему <b>не</b> заводится сразу — слово запоминается, и его подхватит кнопка «Создать карточки».</li>
     </ul>
     <h4>Знак (?)</h4>
     <p>Поставь <b>(?)</b> рядом с местом, которое не понял(а). Когда отправишь лекцию в ИИ, он разберёт каждое такое место отдельно — с нуля, простым языком и со связью с темой лекции. Разбор придёт в поле «Разбор непонятного».</p>
@@ -2769,11 +2829,36 @@ const GUIDE_SECTIONS = [
     <p>К лекции можно прикрепить любой файл до 2 МБ — презентацию, скан, фото доски. Он хранится прямо в лекции и скачивается по клику.</p>
     <h4>Таблица</h4>
     <p>Поставь курсор в любую ячейку — над полем появится панель управления таблицей: <b>+ строка</b>, <b>− строка</b>, <b>+ столбец</b>, <b>− столбец</b>, <b>Шапка вкл/выкл</b> и <b>Удалить таблицу</b>. Строка и столбец добавляются рядом с той ячейкой, в которой стоит курсор — как в заметках iPhone. Панель прячется, как только выходишь из таблицы.</p>
-    <h4>ИИ и повторение</h4>
-    <p><b>«Скопировать для ИИ» / «Вставить обработку от ИИ»</b> — ИИ разбирает лекцию и делает по ней карточки (все карточки одной лекции идут в один сет).</p>
-    <p><b>Сразу после сохранения новой лекции</b> платформа спросит, отправить ли её на повторение — нажми <b>«Отправить на повторение»</b>, и лекция попадёт в spaced repetition: напоминания придут через 1, 3, 7, 14 и 30 дней. Если нажать «Позже», лекция останется без повторения, но у неё в списке будет своя кнопка <b>«Добавить в spaced repetition»</b> — можно отправить в любой момент. Кнопка <b>«Повторил ✓»</b> продвигает лекцию на следующий интервал.</p>
+    <h4>Разбор материала через ИИ</h4>
+    <p>Над кнопками есть поле <b>«Пожелания к разбору»</b> — впиши туда что угодно («разбери подробнее вторую половину», «я путаю два термина»), и ИИ это учтёт.</p>
+    <p><b>«Скопировать для ИИ»</b> собирает подробный запрос. ИИ не пересказывает твою запись, а восстанавливает тему целиком:</p>
+    <ul>
+      <li>понимает, о чём шла речь, даже там, где записан обрывок фразы;</li>
+      <li><b>исправляет фактические ошибки</b> в конспекте — прямо пишет, что записано неверно и как правильно;</li>
+      <li><b>достраивает пробелы</b> — то, что прозвучало на лекции, но не успело попасть в запись;</li>
+      <li>раскладывает всё <b>по смысловым блокам</b>, а не сплошным текстом, и даёт костяк темы для повторения;</li>
+      <li>непонятные места разбирает <b>сгруппированными по темам</b> — и те, что помечены знаком (?), и те, где по обрывочности видно, что мысль потеряна.</li>
+    </ul>
+    <p><b>«Вставить обработку от ИИ»</b> заполняет поля осмысления. <b>Карточки здесь не создаются</b> — для них отдельная кнопка со своим, более подробным запросом.</p>
+    <h4>Карточки по лекции</h4>
+    <p>Карточки делаются <b>только по кнопке «Создать карточки»</b> на уже сохранённой лекции — само по себе сохранение материала карточек не заводит. Цифра на кнопке показывает, сколько слов ты отметила в тексте.</p>
+    <p>Кнопка открывает то же окно, что и «Несколько сетов через ИИ» в разделе Карточки: запрос уже содержит твой материал и отмеченные слова, а ИИ возвращает сразу несколько сетов, разбитых по смысловым блокам.</p>
+    <h4>Повторение</h4>
+    <p><b>Сразу после сохранения новой лекции</b> платформа предложит отправить её на повторение. В окне выбирается <b>точка отсчёта</b> — день, от которого считаются повторения, — и сразу видно все пять дат: старт +1, +4, +11, +25, +55 дней.</p>
+    <p>У сохранённой лекции есть кнопки <b>«Перенести повторение»</b> (новая точка отсчёта сдвигает всё расписание целиком) и <b>«Убрать из повторения»</b>. Кнопка <b>«Повторил ✓»</b> переводит на следующую дату из расписания.</p>
     <p><b>Важно:</b> лекция сохраняется только по кнопке «Сохранить материал». Если уйти на другую вкладку с несохранёнными правками — платформа напомнит.</p>`},
   {id:'cards', title:'Карточки', body:`Кнопка <b>«Темы»</b> прячет и показывает список тем; выбираешь одну или несколько — внизу остаются только их карточки.
+    <h4>Несколько сетов сразу — через ИИ</h4>
+    <p>Кнопка <b>«Несколько сетов через ИИ»</b> — для случая, когда материала много и он про разное: файл со словами по разделам, длинная лекция, список терминов.</p>
+    <ol>
+      <li>Вверху окна — поле <b>«Дополнительные пожелания к ИИ»</b>. Впиши что угодно: «подчёркивай ударения», «добавь транскрипцию», «делай упор на различия похожих терминов».</li>
+      <li><b>«Скопировать запрос для ИИ»</b> — запрос уже содержит твои пожелания и поля карточек этого предмета.</li>
+      <li>Вставь его в чат с ИИ (Claude, ChatGPT, DeepSeek, Gemini), добавь свой материал, если его не было, и скопируй ответ.</li>
+      <li><b>«Вставить ответ ИИ» → «Разобрать ответ»</b> — ниже появятся <b>сразу несколько сетов</b>, разбитых по смысловым блокам.</li>
+      <li>Видно, какие сеты получились: <b>название каждого правится прямо здесь</b>, кнопка «Карточки» раскрывает сет и даёт поправить каждую карточку, ✕ убирает лишнее.</li>
+      <li><b>«Сохранить»</b> — каждый сет становится отдельной темой, и дальше их можно править по отдельности.</li>
+    </ol>
+    <p>Карточки получаются подробные: определение, <b>запоминалка</b> (разбор слова по частям, созвучие, образ), конкретный пример и цепочка связи с темой.</p>
     <h4>Сет карточек — три пути в одном окне</h4>
     <p><b>«Сделать сет карточек»</b> открывает окно, где можно:</p>
     <ul>
@@ -2791,13 +2876,26 @@ const GUIDE_SECTIONS = [
   {id:'notebook', title:'Тетрадь', body:`Рисование от руки — стилусом или мышью (палец только скроллит и зумит). Перо, карандаш (с текстурой), маркер, ластик — у каждого своя толщина. Страницы пролистываются вниз бесконечно, можно менять цвет/разлиновку бумаги.`},
   {id:'practice', title:'Практика', body:`5 режимов заданий: Задачи, Кейсы, Соответствие, Вставка слова, Открытый вопрос — переключаются вкладками сверху. <b>«Добавить задания по теме»</b> — вставить готовые задания, которые оформит ИИ по материалу лекции.<br>Именно здесь (а не в обычном изучении карточек) ошибки попадают в раздел <b>WON</b>.`},
   {id:'test', title:'Тест', body:`Финальная проверка темы целиком, можно с дедлайном. 5 разделов: проверка самого главного, полный тест, кейсы, ответы на вопросы, интересные задания. Задания вставляются от ИИ так же, как в лекциях и практике — своей кнопкой «Скопировать запрос для ИИ».`},
-  {id:'review', title:'Spaced Repetition', body:`Всё, что «созрело» для повторения сегодня — отдельно карточки, отдельно лекции (переключение вкладками сверху). Карточки можно сгруппировать по теме и повторить только нужную группу.`},
+  {id:'review', title:'Spaced Repetition', body:`Всё, что «созрело» для повторения сегодня — отдельно карточки, отдельно лекции (переключение вкладками сверху). Карточки можно сгруппировать по теме и повторить только нужную группу.
+    <h4>Как считается расписание лекций</h4>
+    <p>У каждой лекции есть <b>точка отсчёта</b> — день, который ты выбрала, отправляя её на повторение. От неё считаются все пять дат: <b>+1, +4, +11, +25 и +55 дней</b> (то есть интервалы 1, 3, 7, 14 и 30 дней один за другим).</p>
+    <p>Нажми на строку лекции — раскроется всё расписание целиком: пройденные даты зачёркнуты, ближайшая выделена, рядом написана точка отсчёта.</p>
+    <h4>Перенести и убрать</h4>
+    <ul>
+      <li><b>«Перенести»</b> — выбираешь новую точку отсчёта, и <b>всё расписание пересчитывается от неё</b> по той же схеме. Старые напоминания из планера убираются, новые ставятся.</li>
+      <li><b>«Убрать из повторения»</b> — лекция уходит из списка совсем, напоминания исчезают, сам материал остаётся на месте.</li>
+      <li><b>«Повторил ✓»</b> — переводит на следующую дату расписания. Если повторяла с опозданием, следующая дата отсчитывается от сегодня, чтобы интервалы не схлопывались.</li>
+    </ul>
+    <p>Когда пройдены все пять повторений, лекция уходит из списка — цикл закончен.</p>`},
   {id:'won', title:'WON — работа над ошибками', body:`Карточки, в которых была ошибка именно в <b>Практике</b> или заданиях (не в обычном изучении карточек) — отдельный список для прицельного повторения слабых мест.`},
   {id:'progress', title:'Progress', body:`Aura и уровень наверху, недельный планер (базовый минимум / роскошный максимум), матрица Эйзенхауэра для срочных/важных дел, и календарь — маленькая сетка «ударного режима» (стрик выполненных дней) плюс полноценный календарь с событиями по неделям и месяцам.`},
   {id:'timers', title:'Timers', body:`Pomodoro (25 минут работы / 5 минут перерыва) и обычный секундомер. «Старт» — начать, «Стоп»/«Продолжить» — приостановить без сохранения, <b>«Закончить»</b> — сохранить время в записи внизу. Записи можно удалить (с подтверждением).`},
   {id:'notes', title:'Notes', body:`Свободные заметки с той же панелью форматирования, что и в лекциях: жирный, курсив, заголовки, списки, маркеры.<br>
     В списке заметка показывает начало текста, а кнопка <b>«Читать полностью»</b> разворачивает её целиком во всю ширину — текст больше не обрезается. Кнопка <b>«Развернуть все»</b> наверху открывает сразу все заметки.`},
-  {id:'storage', title:'Storage', body:`Экспорт и импорт всего прогресса файлом (перенос между устройствами — localStorage сам не синхронизируется), регулировка масштаба интерфейса и <b>корзина</b> — там лежит всё недавно удалённое, любую запись можно вернуть.`}
+  {id:'storage', title:'Storage', body:`Экспорт и импорт всего прогресса файлом (перенос между устройствами — localStorage сам не синхронизируется) и регулировка масштаба интерфейса.
+    <h4>Корзина</h4>
+    <p>Внизу раздела лежит всё недавно удалённое, и любую запись можно вернуть одной кнопкой: <b>карточки и целые сеты</b> (сет возвращается одной записью, со всеми карточками и прогрессом), <b>лекции и семинары</b>, <b>тетради</b>, <b>заметки</b>, <b>тесты</b>, <b>записи времени</b>, <b>предметы</b>, <b>задачи планера</b>, <b>события календаря</b> и <b>темы</b>.</p>
+    <p>Корзина держит последние 60 записей. Безвозвратна только кнопка «Очистить корзину».</p>`}
 ];
 // Информационный блок — идёт отдельно от инструкции, внизу страницы.
 const INFO_SECTIONS = [
@@ -3061,7 +3159,9 @@ function renderPlanLists(){
       if(t){ t.done=!t.done; checkPlanDayBonus(t.date); saveStore(); renderPlanLists(); renderEisGrid(); }
     });
     w.querySelectorAll('[data-del]').forEach(el=>el.onclick=()=>{
-      if(!confirm('Точно удалить? Это безвозвратно.')) return;
+      if(!confirm('Удалить задачу? Её можно будет вернуть из корзины в разделе Storage.')) return;
+      const task = STORE.planTasks.find(x=>x.id===el.dataset.del);
+      if(task) trashPush('plantask', task.text, {task:JSON.parse(JSON.stringify(task))}, null, fmtPlanDate(task.date));
       STORE.planTasks = STORE.planTasks.filter(x=>x.id!==el.dataset.del);
       saveStore(); renderPlanLists(); renderEisGrid();
     });
@@ -3182,6 +3282,8 @@ function openPlanTaskModal(tier, taskId, _unused, presetQuad){
   document.getElementById('mCancelPt').onclick=closeOverlay;
   if(editing){
     document.getElementById('mDelPt').onclick=()=>{
+      if(!confirm('Удалить задачу? Её можно будет вернуть из корзины в разделе Storage.')) return;
+      trashPush('plantask', editing.text, {task:JSON.parse(JSON.stringify(editing))}, null, fmtPlanDate(editing.date));
       STORE.planTasks = STORE.planTasks.filter(x=>x.id!==editing.id);
       saveStore(); closeOverlay(); renderPlanLists(); renderEisGrid();
     };
@@ -3719,7 +3821,8 @@ function openEventForm(event, prefillDate, returnFn){
   document.getElementById('evBack').onclick=()=>returnFn();
   if(isEdit){
     document.getElementById('evDelete').onclick=()=>{
-      if(!confirm('Точно удалить событие? Это безвозвратно.')) return;
+      if(!confirm('Удалить событие? Его можно будет вернуть из корзины в разделе Storage.')) return;
+      trashPush('calevent', ev.title||'Событие', {event:JSON.parse(JSON.stringify(ev))}, null, fmtDate(ev.date));
       STORE.calEvents = STORE.calEvents.filter(x=>x.id!==ev.id);
       saveStore();
       returnFn();
@@ -3804,8 +3907,8 @@ function renderCategoryView(main, key){
   `;
   // Уход с вкладки при открытой лекции — тоже через напоминание сохранить материал.
   const goTab = (name)=>()=>{
-    if(!confirmLeaveTheory()) return;
-    if(name!=='theory') THEORY_EDIT_STATE = null;
+    confirmLeaveTheory();
+    if(name!=='theory'){ THEORY_ACTIVE_ID = null; syncTheoryEditState(); }
     CAT_SUBVIEW[key]=name; renderAll();
   };
   document.getElementById("tabTopics").onclick=goTab('topics');
@@ -3852,7 +3955,7 @@ function renderTopicsTab(body, key){
     body.querySelectorAll('.topic-name-input').forEach(inp=>{
       inp.addEventListener('change',()=>{ renameTopic(key, inp.dataset.id, inp.value.trim()||'Без названия'); draw(); });
     });
-    body.querySelectorAll('[data-del-topic]').forEach(btn=>{ btn.onclick=()=>{ if(!confirm('Удалить тему? Карточки в ней не удалятся, но потеряют привязку к теме. Это безвозвратно.')) return; deleteTopic(key, btn.dataset.delTopic); draw(); }; });
+    body.querySelectorAll('[data-del-topic]').forEach(btn=>{ btn.onclick=()=>{ if(!confirm('Удалить тему? Карточки в ней не удалятся, но потеряют привязку к теме. Тему можно будет вернуть из корзины в разделе Storage.')) return; deleteTopic(key, btn.dataset.delTopic); draw(); }; });
     body.querySelectorAll('[data-pin-topic]').forEach(btn=>{ btn.onclick=()=>{ toggleTopicPin(key, btn.dataset.pinTopic); draw(); }; });
     initTopicDrag(document.getElementById('topicsList'), key, draw);
   }
@@ -4038,6 +4141,7 @@ function renderCardsGrid(body,key){
         <button class="btn btn-primary" id="btnStudy">Изучить (${shownCards.length})</button>
         <button class="btn" id="btnAddCard2">Добавить карточку</button>
         <button class="btn" id="btnCardSet">Сделать сет карточек</button>
+        <button class="btn" id="btnCardSets">Несколько сетов через ИИ</button>
        </div>`
     + aiInstructionsHtml('Как быстро сделать карточки — руками или через ИИ', [
         'Нажми «Сделать сет карточек» — всё происходит в одном окне: и ручной набор, и путь через ИИ.',
@@ -4073,8 +4177,20 @@ function renderCardsGrid(body,key){
   body.querySelectorAll('[data-set-del]').forEach(btn=>btn.onclick=()=>{
     const tId = btn.dataset.setDel;
     const setCards = data.cards.filter(c=>getCardTopicId(key,c)===tId);
-    if(!confirm(`Удалить весь сет «${topicName(key,tId)}» — ${setCards.length} карточек?\n\nИх можно будет вернуть из корзины в разделе Storage.`)) return;
-    setCards.forEach(c=>deleteCardQuiet(key, c.id));
+    if(!confirm(`Удалить весь сет «${topicName(key,tId)}» — ${setCards.length} карточек?\n\nЕго можно будет вернуть из корзины в разделе Storage целиком, одной записью.`)) return;
+    // весь сет — одна запись в корзине, иначе 30 карточек вытеснили бы оттуда всё остальное
+    const isCustom = !CATEGORY_META.find(m=>m.key===key);
+    const payload = {mode: isCustom?'custom':'extra', cards:[], rawIds:[], progress:{}, topicOverride:{}};
+    setCards.forEach(c=>{
+      const inCustom = (STORE.customCards[key]||[]).some(x=>x.id===c.id);
+      const inExtra = (STORE.extraCards[key]||[]).some(x=>x.id===c.id);
+      if(inCustom || inExtra) payload.cards.push(JSON.parse(JSON.stringify(c)));
+      else payload.rawIds.push(c.id);
+      if(STORE.cardProgress[c.id]) payload.progress[c.id] = STORE.cardProgress[c.id];
+      if(STORE.cardTopicOverride[c.id]) payload.topicOverride[c.id] = STORE.cardTopicOverride[c.id];
+    });
+    trashPush('cardset', topicName(key,tId), payload, key, `${setCards.length} карточек · ${getCategoryDisplayName(key)}`);
+    setCards.forEach(c=>deleteCard(key, c.id, true, true));
     saveStore(); buildAllData(); renderCardsGrid(body,key); renderNav();
   });
   body.querySelectorAll('[data-set-move]').forEach(btn=>btn.onclick=()=>{
@@ -4096,6 +4212,7 @@ function renderCardsGrid(body,key){
   document.getElementById('btnStudy').onclick=()=>startStudySession(key, shownCards.map(c=>c.id));
   document.getElementById('btnAddCard2').onclick=()=>openCardModal(key);
   document.getElementById('btnCardSet').onclick=()=>openCardSetModal(key, null, ()=>renderCardsGrid(body,key));
+  document.getElementById('btnCardSets').onclick=()=>openCardSetsModal(key, {onDone:()=>renderCardsGrid(body,key)});
 }
 // Запрос к ИИ на карточки именно этой категории — с её полями и форматом «::».
 function buildCardsAiExport(key){
@@ -4919,61 +5036,330 @@ document.addEventListener('click',(e)=>{
   if(found) openAttachmentViewer(found);
 });
 
-let THEORY_EDIT_STATE = null; // {catKey, materialId} — полноэкранный редактор (не модалка!)
-let THEORY_DIRTY = false; // в открытой лекции есть несохранённые правки
-// Единая проверка перед любым уходом из открытой лекции: напоминаем сохранить материал.
-// Возвращает true, если уходить можно.
-let THEORY_FLUSH_DRAFT = null; // ставится редактором лекции: немедленно записать черновик
-function confirmLeaveTheory(){
-  if(!THEORY_EDIT_STATE || !THEORY_DIRTY) return true;
-  const ok = confirm('В открытой лекции есть несохранённые изменения.\n\nСначала нажми «Сохранить материал» — иначе они потеряются.\n\nВсё равно уйти без сохранения?');
-  if(ok){
-    // уходим — но черновик дописываем сразу, чтобы материал можно было поднять обратно
-    if(typeof THEORY_FLUSH_DRAFT === 'function'){ try{ THEORY_FLUSH_DRAFT(); }catch(e){} }
-    THEORY_DIRTY = false;
+/* ==========================================================================
+   ОТКРЫТЫЕ МАТЕРИАЛЫ — несколько сразу
+   Можно держать открытыми лекцию и её семинар одновременно, начать новую лекцию, не закрывая
+   старую, и переключаться между ними вкладками. Набранное не теряется при переключении:
+   у каждой вкладки свой снимок полей, и он же пишется в STORE.theoryTabs, поэтому черновики
+   переживают уход в другой раздел и даже перезагрузку страницы.
+   ========================================================================== */
+let THEORY_TABS = [];          // [{id, catKey, materialId, values}]
+let THEORY_ACTIVE_ID = null;   // id активной вкладки или null — тогда показывается список
+let THEORY_EDIT_STATE = null;  // {catKey, materialId} активной вкладки — им пользуется весь остальной код
+let THEORY_DIRTY = false;      // в открытом материале есть несохранённые правки
+let THEORY_FLUSH_DRAFT = null; // ставится редактором: немедленно записать черновик
+let THEORY_CURRENT_VALS = null;// ставится редактором: прочитать текущее состояние полей
+let THEORY_DRAFT_TIMER = null; // отложенный автосейв текущего редактора (общий, чтобы гасить чужой)
+
+function theoryTabTitle(tab){
+  const v = tab.values;
+  if(v && v.title && v.title !== 'Без названия') return v.title;
+  if(tab.materialId){
+    const m = (STORE.materials[tab.catKey]||[]).find(x=>x.id===tab.materialId);
+    if(m) return m.title || 'Без названия';
   }
-  return ok;
+  return 'Новый материал';
+}
+function theoryTabKind(tab){
+  if(tab.values && tab.values.kind) return tab.values.kind;
+  if(tab.materialId){
+    const m = (STORE.materials[tab.catKey]||[]).find(x=>x.id===tab.materialId);
+    if(m) return materialKind(m);
+  }
+  return 'lecture';
+}
+function syncTheoryEditState(){
+  const tab = THEORY_TABS.find(t=>t.id===THEORY_ACTIVE_ID);
+  THEORY_EDIT_STATE = tab ? {catKey:tab.catKey, materialId:tab.materialId} : null;
+  return tab;
+}
+function persistTheoryTabs(){
+  STORE.theoryTabs = THEORY_TABS.map(t=>({id:t.id, catKey:t.catKey, materialId:t.materialId, values:t.values||null}));
+  saveStore();
+}
+// Снимает текущее состояние полей открытого редактора в его вкладку (и на диск).
+function captureTheoryTab(){
+  const tab = THEORY_TABS.find(t=>t.id===THEORY_ACTIVE_ID);
+  if(!tab || typeof THEORY_CURRENT_VALS !== 'function') return;
+  try{ tab.values = THEORY_CURRENT_VALS(); }catch(e){}
+  persistTheoryTabs();
+}
+function openTheoryTab(catKey, materialId){
+  captureTheoryTab();
+  let tab = THEORY_TABS.find(t=>t.catKey===catKey && (t.materialId||null)===(materialId||null));
+  if(!tab){
+    tab = {id: uid('tetab'), catKey, materialId: materialId||null, values:null};
+    THEORY_TABS.push(tab);
+  }
+  THEORY_ACTIVE_ID = tab.id;
+  syncTheoryEditState();
+  persistTheoryTabs();
+  VIEW = catKey;
+  CAT_SUBVIEW[catKey] = 'theory';
+  renderAll();
+}
+function activateTheoryTab(id){
+  if(id === THEORY_ACTIVE_ID) return;
+  captureTheoryTab();
+  const tab = THEORY_TABS.find(t=>t.id===id);
+  if(!tab) return;
+  THEORY_ACTIVE_ID = id;
+  syncTheoryEditState();
+  VIEW = tab.catKey;
+  CAT_SUBVIEW[tab.catKey] = 'theory';
+  renderAll();
+}
+// Закрыть вкладку. saved=true — материал только что сохранён, спрашивать не о чем.
+function closeTheoryTab(id, saved){
+  const i = THEORY_TABS.findIndex(t=>t.id===id);
+  if(i<0) return;
+  const tab = THEORY_TABS[i];
+  const isActive = tab.id === THEORY_ACTIVE_ID;
+  if(!saved){
+    if(isActive) captureTheoryTab();
+    const v = tab.values;
+    const hasText = v && ((v.title && v.title!=='Без названия') || stripHtml(v.materialText||'').trim() || stripHtml(v.notes||'').trim());
+    if(hasText && !confirm(`Закрыть «${theoryTabTitle(tab)}»? Всё, что не сохранено кнопкой «Сохранить материал», пропадёт.`)) return;
+  }
+  THEORY_TABS.splice(i,1);
+  if(isActive){
+    THEORY_DIRTY = false;
+    THEORY_FLUSH_DRAFT = null;
+    THEORY_CURRENT_VALS = null;
+    const next = THEORY_TABS[i] || THEORY_TABS[i-1] || null;
+    THEORY_ACTIVE_ID = next ? next.id : null;
+    if(next){ VIEW = next.catKey; CAT_SUBVIEW[next.catKey] = 'theory'; }
+  }
+  syncTheoryEditState();
+  persistTheoryTabs();
+  renderAll();
+}
+// Вернуться к списку материалов, не закрывая вкладки.
+function theoryBackToList(){
+  captureTheoryTab();
+  THEORY_ACTIVE_ID = null;
+  THEORY_DIRTY = false;
+  syncTheoryEditState();
+  renderAll();
+}
+/* Уход в другой раздел больше НЕ блокируется вопросом: набранное сохраняется в черновик вкладки
+   и на диск, вкладка остаётся открытой и ждёт возвращения. Сам материал по-прежнему попадает
+   в библиотеку только по кнопке «Сохранить материал» — об этом напоминает подпись над ней. */
+function confirmLeaveTheory(){
+  if(!THEORY_EDIT_STATE) return true;
+  captureTheoryTab();
+  if(typeof THEORY_FLUSH_DRAFT === 'function'){ try{ THEORY_FLUSH_DRAFT(); }catch(e){} }
+  if(THEORY_DIRTY && typeof openInfoModalOver === 'function'){
+    openInfoModalOver('Черновик сохранён', 'Материал остался открытым — вернись к нему в разделе Теория. Чтобы он попал в библиотеку, нажми «Сохранить материал».');
+  }
+  return true;
 }
 // Закрытие вкладки/приложения с несохранённой лекцией — браузер сам спросит подтверждение.
 window.addEventListener('beforeunload', (e)=>{
+  captureTheoryTab();
   if(THEORY_EDIT_STATE && THEORY_DIRTY){ e.preventDefault(); e.returnValue = ''; return ''; }
 });
+// Поднимает открытые материалы после перезагрузки. Список показывается сам — редактор не
+// открывается насильно, вкладки просто ждут наверху раздела Теория.
+function restoreTheoryTabs(){
+  THEORY_TABS = (STORE.theoryTabs||[]).filter(t=>t && t.catKey).map(t=>({
+    id: t.id || uid('tetab'), catKey: t.catKey, materialId: t.materialId||null, values: t.values||null
+  }));
+  // перенос со старой версии: единственный черновик становится обычной открытой вкладкой
+  const sd = STORE.theoryDraft;
+  if(sd && sd.catKey && (sd.title || sd.materialText)){
+    const exists = THEORY_TABS.some(t=>t.catKey===sd.catKey && (t.materialId||null)===(sd.materialId||null));
+    if(!exists) THEORY_TABS.push({id:uid('tetab'), catKey:sd.catKey, materialId:sd.materialId||null, values:sd});
+    STORE.theoryDraft = null;
+  }
+  // материалы, которых уже нет (удалили), закрываем
+  THEORY_TABS = THEORY_TABS.filter(t=>!t.materialId || (STORE.materials[t.catKey]||[]).some(m=>m.id===t.materialId));
+  THEORY_ACTIVE_ID = null;
+  syncTheoryEditState();
+  if(THEORY_TABS.length) persistTheoryTabs();
+}
 let THEORY_COLLAPSED = {}; // materialId -> false, если явно развёрнута (по умолчанию все свёрнуты — видно только тему)
 
 // Ставит в планер задачу-напоминание на дату повторения лекции. На одну дату+категорию — одна задача
 // в планере (чтобы не засорять план), но КАЖДАЯ лекция обязательно туда попадает: если на эту дату уже
 // есть задача по этой категории (от другой лекции), название новой лекции дописывается в неё, а не теряется.
-function scheduleLectureReviewReminder(catKey, date, title){
+function scheduleLectureReviewReminder(catKey, date, title, matId){
   if(!STORE.planTasks) STORE.planTasks = [];
   const name = getCategoryDisplayName(catKey);
   const existing = STORE.planTasks.find(t=>t.srAutoLec && t.srCat===catKey && t.date===date && !t.done);
   if(existing){
     if(!existing.text.includes(title)) existing.text += `, ${title}`;
+    if(matId){ existing.srMats = existing.srMats || []; if(!existing.srMats.includes(matId)) existing.srMats.push(matId); }
     return;
   }
   STORE.planTasks.push({
     id: uid('plan'), done:false, createdDate:todayISO(), date,
     text: `Повторить лекцию: ${name} — ${title}`, tier:'min', quadrant:'uiq', deadline:null,
-    srAutoLec:true, srCat:catKey
+    srAutoLec:true, srCat:catKey, srMats: matId?[matId]:[]
+  });
+}
+// Убирает будущие напоминания этой лекции из планера — чтобы после переноса или снятия
+// с повторения в плане не оставались задачи на старые даты.
+function clearLectureReminders(catKey, m){
+  if(!STORE.planTasks) return;
+  const today = todayISO();
+  STORE.planTasks = STORE.planTasks.filter(t=>{
+    if(!t.srAutoLec || t.srCat!==catKey || t.done) return true;
+    if(t.date < today) return true;                       // прошлое не трогаем
+    const mine = (t.srMats||[]).includes(m.id) || (!t.srMats && t.text && t.text.includes(m.title));
+    if(!mine) return true;
+    if((t.srMats||[]).length > 1){                        // задача общая на несколько лекций
+      t.srMats = t.srMats.filter(id=>id!==m.id);
+      t.text = t.text.split(', ').filter(p=>!p.includes(m.title)).join(', ');
+      return true;
+    }
+    return false;
   });
 }
 // Вид материала: лекция или семинар. У всего, что было записано до появления семинаров,
 // вида нет — считаем такие материалы лекциями.
 function materialKind(m){ return (m && m.kind === 'seminar') ? 'seminar' : 'lecture'; }
 const MAT_KIND_LABEL = {lecture:'Лекция', seminar:'Семинар'};
+/* ---------- Расписание повторений лекций ----------
+   Точка отсчёта хранится в m.srStart. Всё расписание считается ОТ НЕЁ по накопленным интервалам:
+   старт+1, старт+4, старт+11, старт+25, старт+55. Поэтому «перенести повторение» — это просто
+   другая точка отсчёта, и весь дальнейший план сдвигается по той же схеме.
+   m.srLevel — сколько повторений уже пройдено, m.nextReview — ближайшая дата. */
 const SR_INTERVALS = [1,3,7,14,30];
-// Первая постановка лекции в spaced repetition сразу после её создания/сохранения.
-function scheduleLectureInitial(m, catKey, fromDate){
-  m.srLevel = 0;
-  m.nextReview = addDays(fromDate || todayISO(), SR_INTERVALS[0]);
-  scheduleLectureReviewReminder(catKey, m.nextReview, m.title);
+// Накопленные смещения от точки отсчёта: [1, 4, 11, 25, 55]
+const SR_OFFSETS = SR_INTERVALS.reduce((acc,d)=>{ acc.push((acc[acc.length-1]||0)+d); return acc; }, []);
+// Полное расписание от точки отсчёта — ровно столько дат, сколько интервалов.
+function srScheduleFrom(startISO){
+  return SR_OFFSETS.map(off=>addDays(startISO, off));
 }
-// Отметить лекцию повторённой — продвигает по тем же интервалам, что и карточки.
+// Даты, которые ещё впереди по этому материалу (начиная с ближайшей).
+function upcomingReviewDates(m){
+  if(!m || !m.nextReview) return [];
+  const start = m.srStart || addDays(m.nextReview, -SR_OFFSETS[Math.min(m.srLevel||0, SR_OFFSETS.length-1)]);
+  const all = srScheduleFrom(start);
+  const rest = all.slice(Math.min(m.srLevel||0, all.length-1));
+  // ближайшая дата всегда та, что записана в материале (её могли перенести вручную)
+  if(rest.length) rest[0] = m.nextReview;
+  return rest;
+}
+// Поставить/переставить лекцию на повторение от указанной даты старта.
+function scheduleLectureInitial(m, catKey, fromDate){
+  const start = fromDate || todayISO();
+  clearLectureReminders(catKey, m);
+  m.srStart = start;
+  m.srLevel = 0;
+  m.nextReview = srScheduleFrom(start)[0];
+  scheduleLectureReviewReminder(catKey, m.nextReview, m.title, m.id);
+}
+// Отметить лекцию повторённой — следующая дата берётся из того же расписания.
 function reviewMaterial(m, catKey){
-  m.srLevel = Math.min((m.srLevel||0)+1, SR_INTERVALS.length-1);
-  m.nextReview = addDays(todayISO(), SR_INTERVALS[m.srLevel]);
-  scheduleLectureReviewReminder(catKey, m.nextReview, m.title);
+  const start = m.srStart || todayISO();
+  m.srLevel = Math.min((m.srLevel||0)+1, SR_INTERVALS.length);
+  if(m.srLevel >= SR_INTERVALS.length){
+    // цикл пройден целиком — лекция уходит из списка повторений
+    clearLectureReminders(m.srCat || catKey, m);
+    m.nextReview = null;
+    m.srDone = todayISO();
+  } else {
+    m.nextReview = srScheduleFrom(start)[m.srLevel];
+    // если по расписанию дата уже позади (повторяла с опозданием) — отсчитываем от сегодня
+    if(m.nextReview <= todayISO()) m.nextReview = addDays(todayISO(), SR_INTERVALS[m.srLevel]);
+    scheduleLectureReviewReminder(catKey, m.nextReview, m.title, m.id);
+  }
   saveStore();
+}
+// Снять лекцию с повторения совсем.
+function removeLectureFromSr(m, catKey){
+  clearLectureReminders(catKey, m);
+  m.nextReview = null; m.srLevel = 0; m.srStart = null;
+  saveStore();
+}
+/* Окно «на повторение»: выбираешь точку отсчёта и сразу видишь все пять дат.
+   Оно же переносит уже поставленную лекцию — расписание пересчитывается от новой даты
+   по той же схеме, а старые напоминания в планере убираются. */
+function openSrScheduleModal(catKey, m, onDone){
+  const already = !!m.nextReview;
+  const defStart = m.srStart || todayISO();
+  const preview = (startISO)=>srScheduleFrom(startISO)
+    .map((d,i)=>`<li><b>${esc(fmtDate(d))}</b> <span style="color:var(--text-faint)">— через ${SR_OFFSETS[i]} дн. после старта</span></li>`).join('');
+  document.getElementById('modalBody').innerHTML = `
+    <h3>${already?'Перенести повторение':'Отправить на повторение'}</h3>
+    <p style="font-size:12.5px;color:var(--text-dim);line-height:1.6;margin-bottom:12px">
+      ${materialKind(m)==='seminar'?'Семинар':'Лекция'} «<b>${esc(m.title)}</b>».
+      ${already?`Сейчас ближайшее повторение — <b>${esc(fmtDate(m.nextReview))}</b>, пройдено ${m.srLevel||0} из ${SR_INTERVALS.length}.
+        Новая точка отсчёта сдвинет всё расписание целиком и начнёт цикл заново.`:''}
+    </p>
+    <div class="field">
+      <label>Точка отсчёта — от какого дня считать повторения</label>
+      <input type="date" id="srStartInput" value="${defStart}">
+    </div>
+    <div class="sr-preview">
+      <div class="sr-preview-title">Расписание повторений</div>
+      <ol class="lec-schedule-list" id="srPreview">${preview(defStart)}</ol>
+      <div class="lec-schedule-note">Интервалы ${SR_INTERVALS.join(', ')} дней. Кнопка «Повторил ✓» переводит на следующую дату из этого списка.</div>
+    </div>
+    <div class="modal-actions">
+      ${already?`<button class="btn" id="mSrRemove" style="margin-right:auto;color:var(--bad)">Убрать из повторения</button>`:''}
+      <button class="btn" id="mSrCancel">Отмена</button>
+      <button class="btn btn-primary" id="mSrSave">${already?'Перенести':'Отправить'}</button>
+    </div>`;
+  const input = document.getElementById('srStartInput');
+  input.addEventListener('input',()=>{
+    const v = input.value || todayISO();
+    document.getElementById('srPreview').innerHTML = preview(v);
+  });
+  document.getElementById('mSrCancel').onclick=closeOverlay;
+  const rm = document.getElementById('mSrRemove');
+  if(rm) rm.onclick=()=>{
+    if(!confirm(`Убрать «${m.title}» из повторения? Напоминания исчезнут, сам материал останется.`)) return;
+    removeLectureFromSr(m, catKey);
+    closeOverlay();
+    if(onDone) onDone();
+    renderNav();
+  };
+  document.getElementById('mSrSave').onclick=()=>{
+    scheduleLectureInitial(m, catKey, input.value || todayISO());
+    saveStore();
+    closeOverlay();
+    if(onDone) onDone();
+    renderNav();
+    openInfoModal(already?'Перенесено':'Отправлено на повторение',
+      `Ближайшее повторение — <b>${esc(fmtDate(m.nextReview))}</b>. Всё расписание пересчитано от выбранной даты.`);
+  };
+  openOverlay();
+}
+
+/* Полоска открытых материалов. Показывается и над списком, и в самом редакторе:
+   activeId=null — мы в списке, ни одна вкладка не подсвечена. */
+function theoryTabsBarHtml(activeId){
+  if(!THEORY_TABS.length) return '';
+  const chips = THEORY_TABS.map(t=>{
+    const kind = theoryTabKind(t);
+    const other = t.catKey !== VIEW ? ` <span class="tt-cat">${esc(getCategoryDisplayName(t.catKey))}</span>` : '';
+    return `<div class="te-tab ${t.id===activeId?'active':''} kind-${kind}" data-tetab="${t.id}" title="${esc(theoryTabTitle(t))}">
+      <span class="tt-dot"></span>
+      <span class="tt-name">${esc(theoryTabTitle(t))}</span>${other}
+      <button type="button" class="tt-close" data-tetabclose="${t.id}" title="Закрыть">✕</button>
+    </div>`;
+  }).join('');
+  return `<div class="te-tabs">
+    <span class="te-tabs-label">Открыто</span>
+    ${chips}
+    <button type="button" class="te-tab te-tab-new" id="btnTheoryNewTab" title="Открыть ещё один материал">+ материал</button>
+    ${activeId?`<button type="button" class="te-tab te-tab-list" id="btnTheoryList" title="К списку материалов">К списку</button>`:''}
+  </div>`;
+}
+// Общая проводка полоски вкладок — одинаковая в списке и в редакторе.
+function wireTheoryTabsBar(root, key){
+  root.querySelectorAll('[data-tetabclose]').forEach(b=>b.onclick=(e)=>{
+    e.stopPropagation();
+    closeTheoryTab(b.dataset.tetabclose, false);
+  });
+  root.querySelectorAll('[data-tetab]').forEach(el=>el.onclick=()=>activateTheoryTab(el.dataset.tetab));
+  const nb = root.querySelector('#btnTheoryNewTab');
+  if(nb) nb.onclick=()=>openTheoryTab(key, null);
+  const lb = root.querySelector('#btnTheoryList');
+  if(lb) lb.onclick=()=>theoryBackToList();
 }
 
 function renderTheory(body,key){
@@ -4984,7 +5370,7 @@ function renderTheory(body,key){
   // редактор закрыт (сохранили или отменили) — верхняя панель форматирования не нужна
   if(typeof hideFloatFormatBar === 'function') hideFloatFormatBar();
   const materials = (STORE.materials[key]||[]);
-  let html = `<div class="btn-row" style="margin-bottom:10px">
+  let html = theoryTabsBarHtml(null) + `<div class="btn-row" style="margin-bottom:10px">
     <button class="btn btn-primary" id="btnAddTheory">Добавить материал</button>
     <button class="btn" id="btnImportTheory">Импортировать из файла</button>
     <input type="file" id="importTheoryFile" accept="application/json" style="display:none">
@@ -5037,9 +5423,11 @@ function renderTheory(body,key){
         ${m.application?`<div class="theory-block"><div class="tb-label">Как использовать</div><div class="tb-body">${m.application}</div></div>`:''}
         ${(m.attachments&&m.attachments.length)?`<div class="theory-block"><div class="tb-label">Файлы</div><div class="att-grid">${m.attachments.map((a,ai)=>attachmentTileHtml(a, `${m.id}:${ai}`)).join('')}</div></div>`:''}
         <div class="theory-actions">
-          <button class="btn btn-primary" data-mkcard="${m.id}">Сделать карточку</button>
-          <button class="btn ${m.nextReview?'':'btn-good'}" data-addsr-mat="${m.id}">Отправить на повторение</button>
+          <button class="btn btn-primary" data-makecards="${m.id}">Создать карточки${(m.kwCards&&m.kwCards.length)?` <span class="ta-badge">${m.kwCards.length}</span>`:''}</button>
+          <button class="btn" data-mkcard="${m.id}">Одна карточка вручную</button>
+          <button class="btn ${m.nextReview?'':'btn-good'}" data-addsr-mat="${m.id}">${m.nextReview?'Перенести повторение':'Отправить на повторение'}</button>
           ${m.nextReview ? `<button class="btn btn-good" data-review-mat="${m.id}">Повторил ✓</button>` : ''}
+          ${m.nextReview ? `<button class="btn" data-rmsr-mat="${m.id}">Убрать из повторения</button>` : ''}
           <button class="btn" data-edittheory="${m.id}">Изменить</button>
           <button class="btn" data-deltheory="${m.id}">Удалить</button>
         </div>
@@ -5050,7 +5438,8 @@ function renderTheory(body,key){
     });
   }
   body.innerHTML = html;
-  document.getElementById('btnAddTheory').onclick=()=>{ THEORY_EDIT_STATE={catKey:key, materialId:null}; renderTheory(body,key); };
+  wireTheoryTabsBar(body, key);
+  document.getElementById('btnAddTheory').onclick=()=>openTheoryTab(key, null);
   document.getElementById('btnImportTheory').onclick=()=>document.getElementById('importTheoryFile').click();
   document.getElementById('importTheoryFile').onchange=(e)=>{
     const file = e.target.files[0];
@@ -5071,29 +5460,35 @@ function renderTheory(body,key){
     if(m) reviewMaterial(m, key);
     renderTheory(body,key);
   });
+  body.querySelectorAll('[data-makecards]').forEach(btn=>btn.onclick=()=>{
+    const m = materials.find(x=>x.id===btn.dataset.makecards);
+    if(m) openCardSetsModal(key, {material:m, onDone:()=>renderTheory(body,key)});
+  });
   body.querySelectorAll('[data-addsr-mat]').forEach(btn=>btn.onclick=()=>{
     const m = materials.find(x=>x.id===btn.dataset.addsrMat);
+    if(m) openSrScheduleModal(key, m, ()=>renderTheory(body,key));
+  });
+  body.querySelectorAll('[data-rmsr-mat]').forEach(btn=>btn.onclick=()=>{
+    const m = materials.find(x=>x.id===btn.dataset.rmsrMat);
     if(!m) return;
-    // Первый раз — просто подтверждаем. Если лекция уже в повторении, повторное нажатие
-    // начинает цикл заново, поэтому спрашиваем отдельно и прямо про сброс прогресса.
-    if(m.nextReview){
-      const lvl = (m.srLevel||0)+1;
-      if(!confirm(`Эта лекция уже на повторении (следующее — ${fmtDate(m.nextReview)}, пройдено интервалов: ${lvl}).\n\nОтправить её сначала? Прогресс повторений сбросится, и цикл начнётся заново с первого дня.\n\nТочно отправить заново?`)) return;
-    } else {
-      if(!confirm('Отправить лекцию на повторение? Платформа будет напоминать вернуться к ней через 1, 3, 7, 14 и 30 дней.')) return;
-    }
-    scheduleLectureInitial(m, key, todayISO());
-    saveStore();
+    if(!confirm(`Убрать «${m.title}» из повторения? Напоминания по ней исчезнут, сам материал останется на месте.`)) return;
+    removeLectureFromSr(m, key);
     renderTheory(body,key);
     renderNav();
-    openInfoModal('Отправлено на повторение', `Первое повторение — <b>${esc(fmtDate(m.nextReview))}</b>.`);
   });
-  body.querySelectorAll('[data-edittheory]').forEach(btn=>btn.onclick=()=>{ THEORY_EDIT_STATE={catKey:key, materialId:btn.dataset.edittheory}; renderTheory(body,key); });
+  body.querySelectorAll('[data-edittheory]').forEach(btn=>btn.onclick=()=>openTheoryTab(key, btn.dataset.edittheory));
   body.querySelectorAll('[data-deltheory]').forEach(btn=>btn.onclick=()=>{
     if(!confirm('Удалить материал лекции? Его можно будет вернуть из корзины в разделе Storage.')) return;
     const mat = (STORE.materials[key]||[]).find(x=>x.id===btn.dataset.deltheory);
     if(mat) trashPush('material', mat.title, {material:JSON.parse(JSON.stringify(mat))}, key, getCategoryDisplayName(key));
     STORE.materials[key] = (STORE.materials[key]||[]).filter(x=>x.id!==btn.dataset.deltheory);
+    // если удалённый материал был открыт — его вкладка закрывается сама
+    const openTab = THEORY_TABS.find(t=>t.catKey===key && t.materialId===btn.dataset.deltheory);
+    if(openTab){
+      THEORY_TABS = THEORY_TABS.filter(t=>t.id!==openTab.id);
+      if(THEORY_ACTIVE_ID===openTab.id){ THEORY_ACTIVE_ID=null; syncTheoryEditState(); }
+      persistTheoryTabs();
+    }
     saveStore(); renderTheory(body,key);
   });
 }
@@ -5131,19 +5526,13 @@ function cardFieldsFromKeyword(catKey, word, context){
 }
 
 function renderTheoryEditor(body, key){
+  const activeTab = THEORY_TABS.find(t=>t.id===THEORY_ACTIVE_ID);
   const editing = THEORY_EDIT_STATE.materialId ? (STORE.materials[key]||[]).find(m=>m.id===THEORY_EDIT_STATE.materialId) : null;
   const topics = getCategoryTopics(key);
   let draft = editing || { title:'', dateStart:todayISO(), dateEnd:'', topicId:'general', mainQuestions:'', keywords:[], materialText:'', notes:'', explanation:'', unclear:'', facts:'', connections:'', application:'', attachments:[] };
-  // Если в прошлый раз лекцию закрыли не сохранив — предлагаем поднять черновик.
-  const sd = STORE.theoryDraft;
-  if(sd && sd.catKey===key && (sd.materialId||null)===(THEORY_EDIT_STATE.materialId||null) && (sd.title || sd.materialText)){
-    const when = sd.savedAt ? new Date(sd.savedAt).toLocaleString('ru-RU') : '';
-    if(confirm(`Есть несохранённый черновик этой лекции (${when}).\n\nВосстановить его?`)){
-      draft = Object.assign({}, draft, sd);
-    } else {
-      STORE.theoryDraft = null; saveStore();
-    }
-  }
+  // Черновик вкладки: то, что было набрано, но ещё не сохранено кнопкой. Подставляется молча —
+  // именно он позволяет переключаться между открытыми материалами и ничего не терять.
+  if(activeTab && activeTab.values) draft = Object.assign({}, draft, activeTab.values);
 
   let topicSelect = `<select id="theoryTopicSelect">`;
   topics.forEach(t=>{ topicSelect += `<option value="${t.id}" ${draft.topicId===t.id?'selected':''}>${esc(t.name)}</option>`; });
@@ -5164,6 +5553,7 @@ function renderTheoryEditor(body, key){
 
   body.innerHTML = `
     <div class="theory-editor">
+      ${theoryTabsBarHtml(THEORY_ACTIVE_ID)}
       <div class="te-header">
         <div class="te-kind-row">
           <div class="te-kind-pick" id="teKindPick">
@@ -5214,15 +5604,22 @@ function renderTheoryEditor(body, key){
       </div>
 
       <div class="te-ai-row">
-        <button class="btn" id="btnCopyForAi">Скопировать для ИИ</button>
-        <button class="btn" id="btnImportAi">Вставить обработку от ИИ</button>
+        <div class="te-ai-wishes">
+          <label for="theAiWishes">Пожелания к разбору — необязательно</label>
+          <textarea id="theAiWishes" placeholder="Например: подробнее разбери вторую половину · я путаю два термина, объясни разницу · добавь примеры из практики">${esc(draft.aiWishes||'')}</textarea>
+        </div>
+        <div class="btn-row" style="margin:0">
+          <button class="btn" id="btnCopyForAi">Скопировать для ИИ</button>
+          <button class="btn" id="btnImportAi">Вставить обработку от ИИ</button>
+        </div>
       </div>
-      ${aiInstructionsHtml('Как заполнить осмысление и карточки через ИИ', [
-        'Нажми «Скопировать для ИИ» — скопируется текст лекции и готовый запрос по шаблону PRIMUS.',
-        'Вставь скопированное в чат с любым ИИ-ассистентом (Claude, ChatGPT, Gemini и т.д.).',
+      ${aiInstructionsHtml('Как разобрать материал через ИИ', [
+        'Если есть пожелания — впиши их в поле выше, ИИ их учтёт.',
+        'Нажми «Скопировать для ИИ» — скопируется твой текст и подробный запрос: ИИ восстановит тему целиком, исправит ошибки в записи, достроит пропущенное и разложит непонятное по темам.',
+        'Вставь скопированное в чат с любым ИИ-ассистентом (Claude, ChatGPT, DeepSeek, Gemini).',
         'Дождись ответа — это будет JSON, скопируй его целиком.',
-        'Нажми «Вставить обработку от ИИ», вставь ответ и нажми «Применить» — поля осмысления и карточки заполнятся сами.',
-        'Проверь результат и нажми «Сохранить материал» внизу.'
+        'Нажми «Вставить обработку от ИИ», вставь ответ и нажми «Применить» — поля осмысления заполнятся сами.',
+        'Проверь результат и нажми «Сохранить материал» внизу. <b>Карточки делаются отдельно</b> — кнопкой «Создать карточки» на уже сохранённой лекции.'
       ])}
 
       <div class="te-save-note" id="teSaveNote">
@@ -5239,6 +5636,7 @@ function renderTheoryEditor(body, key){
     </div>
   `;
   wireRichToolbars();
+  wireTheoryTabsBar(body, key);
   // Панель форматирования появляется вместе с редактором и висит сверху всё время, пока
   // лекция открыта, — листать к ней больше не нужно, и она не пропадает при прокрутке.
   LAST_RT_FIELD = null;
@@ -5277,6 +5675,7 @@ function renderTheoryEditor(body, key){
     return {
       title: document.getElementById('theTitle').value.trim() || 'Без названия',
       kind: curKind,
+      aiWishes: (document.getElementById('theAiWishes')||{}).value || '',
       linkedTo: document.getElementById('theLinkSelect').value || null,
       topicId: document.getElementById('theoryTopicSelect').value,
       dateStart: document.getElementById('theDateStart').value || todayISO(),
@@ -5293,23 +5692,32 @@ function renderTheoryEditor(body, key){
       attachments: attachments
     };
   }
+  // Отложенный автосейв предыдущего редактора отменяем: он относится к уже закрытым полям.
+  clearTimeout(THEORY_DRAFT_TIMER);
   let draftTimer = null;
+  // Черновик живёт во вкладке этого материала — так его видно при переключении между
+  // открытыми лекциями, и он же переживает перезагрузку страницы.
+  THEORY_CURRENT_VALS = currentVals;
+  const myTabId = THEORY_ACTIVE_ID;   // фиксируем свою вкладку
   function flushDraft(){
+    // Если за время ожидания переключились на другой материал, этот отложенный автосейв
+    // прочитал бы ЧУЖИЕ поля и записал их в свою вкладку — поэтому просто выходим.
+    if(THEORY_ACTIVE_ID !== myTabId) return;
     try{
-      STORE.theoryDraft = Object.assign({catKey:key, materialId:THEORY_EDIT_STATE?THEORY_EDIT_STATE.materialId:null, savedAt:new Date().toISOString()}, currentVals());
-      saveStore();
+      const tab = THEORY_TABS.find(t=>t.id===myTabId);
+      if(tab){ tab.values = currentVals(); persistTheoryTabs(); }
     }catch(e){}
   }
   THEORY_FLUSH_DRAFT = flushDraft;
   function scheduleDraftSave(){
     clearTimeout(draftTimer);
-    draftTimer = setTimeout(flushDraft, 1500);
+    draftTimer = THEORY_DRAFT_TIMER = setTimeout(flushDraft, 1500);
   }
   function clearDraft(){
     clearTimeout(draftTimer);
     THEORY_FLUSH_DRAFT = null;
+    THEORY_CURRENT_VALS = null;
     dirty = false; THEORY_DIRTY = false;
-    if(STORE.theoryDraft){ STORE.theoryDraft = null; saveStore(); }
   }
   ['theTitle','theQuestions','theDateStart','theDateEnd','theoryTopicSelect'].forEach(id=>{
     const el = document.getElementById(id);
@@ -5383,6 +5791,12 @@ function renderTheoryEditor(body, key){
     drawKeywords();
     markDirty();
   };
+  // ключевые слова, пришедшие от ИИ — в тот же массив, что и отмеченные вручную
+  onAiKeywords = (list)=>{
+    (list||[]).forEach(k=>{ const w=String(k||'').trim(); if(w && !keywords.includes(w)) keywords.push(w); });
+    drawKeywords();
+    markDirty();
+  };
   document.getElementById('theMaterial').addEventListener('blur',()=>{
     const found = extractKeywordsFromHtml(document.getElementById('theMaterial').innerHTML);
     found.forEach(k=>{ if(!keywords.includes(k)) keywords.push(k); });
@@ -5411,10 +5825,12 @@ function renderTheoryEditor(body, key){
     }
   });
 
+  // «Закрыть» убирает вкладку целиком (с вопросом, если было набрано что-то не сохранённое).
+  // Чтобы просто отойти к списку, не закрывая материал, есть кнопка «К списку» в полоске вкладок.
   document.getElementById('teCancel').onclick=()=>{
-    if(dirty && !confirm('Закрыть без сохранения? Несохранённые изменения потеряются.')) return;
-    clearDraft();
-    THEORY_EDIT_STATE=null; renderTheory(body,key);
+    const id = THEORY_ACTIVE_ID;
+    clearTimeout(draftTimer);
+    closeTheoryTab(id, false);   // сам спросит, если было набрано что-то не сохранённое
   };
   document.getElementById('teSave').onclick=()=>{
     const vals = Object.assign(currentVals(), { date: draft.dateStart || todayISO() });
@@ -5425,45 +5841,37 @@ function renderTheoryEditor(body, key){
       createdMaterial = Object.assign({id:uid('mat')}, vals);
       STORE.materials[key].push(createdMaterial);
     }
-    // Слова, помеченные кнопкой «Ключевое слово + карточка», заводятся карточками
-    // в теме этой лекции — одна лекция = один сет карточек.
-    let madeCards = 0;
-    if(pendingKwCards.length){
-      const isCustom = !CATEGORY_META.find(m=>m.key===key);
-      const existing = (APP_DATA[key] ? APP_DATA[key].cards : []);
-      const type = (APP_DATA[key] && APP_DATA[key].meta.type) || 'custom';
-      pendingKwCards.forEach(({word, context})=>{
-        const dup = existing.some(c=>{
-          const face = renderCardFace(type, c);
-          return face && stripHtml(String(face.top||'')).trim().toLowerCase() === word.toLowerCase();
-        });
-        if(dup) return;
-        const newCard = Object.assign(
-          {id:uid(key), catKey:key, level:0, next_review:todayISO(), topicId: vals.topicId},
-          cardFieldsFromKeyword(key, word, context)
-        );
-        if(isCustom){ if(!STORE.customCards[key]) STORE.customCards[key]=[]; STORE.customCards[key].push(newCard); }
-        else { if(!STORE.extraCards[key]) STORE.extraCards[key]=[]; STORE.extraCards[key].push(newCard); }
-        madeCards++;
+    // Карточки при сохранении НЕ создаются. Слова, помеченные кнопкой «Ключевое слово + карточка»,
+    // просто запоминаются внутри материала — карточки по ним делает отдельная кнопка
+    // «Создать карточки» уже на сохранённой лекции, через обработку ИИ.
+    const target = editing || createdMaterial;
+    if(target && pendingKwCards.length){
+      target.kwCards = (target.kwCards||[]).slice();
+      pendingKwCards.forEach(p=>{
+        if(!target.kwCards.some(x=>x.word===p.word)) target.kwCards.push(p);
       });
       pendingKwCards = [];
     }
+    const savedTabId = THEORY_ACTIVE_ID;
     clearDraft();
     saveStore();
     buildAllData();
-    THEORY_EDIT_STATE=null;
-    renderTheory(body,key);
-    if(createdMaterial) openLectureSavedModal(createdMaterial, key, madeCards, body);
-    else if(madeCards) openInfoModal('Сохранено', `Материал сохранён. По ключевым словам заведено карточек: <b>${madeCards}</b> — они в теме «${esc(topicName(key, vals.topicId))}».`);
+    closeTheoryTab(savedTabId, true);   // материал в библиотеке — вкладку можно закрывать молча
+    // body после перерисовки уже другой — берём актуальный контейнер, иначе кнопки в окне
+    // «Материал сохранён» перерисовывали бы отсоединённый от страницы элемент
+    if(createdMaterial) openLectureSavedModal(createdMaterial, key, 0, document.getElementById('catBody') || body);
   };
 
   document.getElementById('btnCopyForAi').onclick=()=>{
+    const wishEl = document.getElementById('theAiWishes');
     const text = buildTheoryAiExport(key, {
       title: document.getElementById('theTitle').value.trim(),
+      kind: curKind,
       dateStart: document.getElementById('theDateStart').value,
       dateEnd: document.getElementById('theDateEnd').value,
       mainQuestions: document.getElementById('theQuestions').value.trim(),
       keywords,
+      wishes: wishEl ? wishEl.value : '',
       materialText: document.getElementById('theMaterial').innerHTML,
       notes: document.getElementById('theNotes').innerHTML
     });
@@ -5488,7 +5896,8 @@ function openLectureSavedModal(m, key, madeCards, body){
   document.getElementById('modalBody').innerHTML = `
     <h3>Материал сохранён</h3>
     <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:10px">
-      Лекция «<b>${esc(m.title)}</b>» записана.${madeCards?` По ключевым словам заведено карточек: <b>${madeCards}</b>.`:''}
+      ${materialKind(m)==='seminar'?'Семинар':'Лекция'} «<b>${esc(m.title)}</b>» записан${materialKind(m)==='seminar'?'':'а'}.
+      ${(m.kwCards&&m.kwCards.length)?`Отмечено ключевых слов: <b>${m.kwCards.length}</b> — карточки по ним делает кнопка «Создать карточки» в самой лекции.`:'Карточки делаются отдельно — кнопкой «Создать карточки» в самой лекции.'}
     </p>
     <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:14px">
       Отправь её на повторение — платформа сама напомнит вернуться к ней через ${intervals} дней
@@ -5496,10 +5905,15 @@ function openLectureSavedModal(m, key, madeCards, body){
     </p>
     <div class="modal-actions">
       <button class="btn" id="mLecLater">Позже</button>
+      <button class="btn" id="mLecCards">Создать карточки</button>
       <button class="btn btn-primary" id="mLecToSr">Отправить на повторение</button>
     </div>
   `;
   document.getElementById('mLecLater').onclick=closeOverlay;
+  document.getElementById('mLecCards').onclick=()=>{
+    closeOverlay();
+    openCardSetsModal(key, {material:m, onDone:()=>{ if(body) renderTheory(body,key); }});
+  };
   document.getElementById('mLecToSr').onclick=()=>{
     scheduleLectureInitial(m, key, todayISO());
     saveStore();
@@ -5514,70 +5928,100 @@ function openLectureSavedModal(m, key, madeCards, body){
 function buildTheoryAiExport(key, d){
   const catName = APP_DATA[key] ? APP_DATA[key].meta.name : key;
   const dateStr = d.dateEnd && d.dateEnd!==d.dateStart ? `${d.dateStart} — ${d.dateEnd}` : d.dateStart;
-  const fieldKeys = APP_DATA[key] ? (APP_DATA[key].meta.fields || ['front','back']) : ['front','back'];
+  const wishes = (d.wishes||'').trim();
+  const kindWord = d.kind === 'seminar' ? 'семинара' : 'лекции';
   return `ПРЕДМЕТ: ${catName}
 ТЕМА: ${d.title}
 ДАТА: ${dateStr}
+ВИД МАТЕРИАЛА: ${d.kind === 'seminar' ? 'семинар' : 'лекция'}
 
-ГЛАВНЫЕ ВОПРОСЫ (черновик):
+ГЛАВНЫЕ ВОПРОСЫ (черновик, может быть пустым):
 ${d.mainQuestions||'(не заполнено)'}
 
-КЛЮЧЕВЫЕ СЛОВА: ${d.keywords.join(', ')||'(пока нет)'}
+КЛЮЧЕВЫЕ СЛОВА, которые я отметил(а) сам(а): ${d.keywords.join(', ')||'(пока нет)'}
 
-ТЕКСТ ЛЕКЦИИ:
+МОЯ ЗАПИСЬ ${d.kind === 'seminar' ? 'СЕМИНАРА' : 'ЛЕКЦИИ'} (как есть, со всеми обрывками):
 ${stripHtml(d.materialText)}
 
-ЗАМЕТКИ:
+МОИ ЗАМЕТКИ ПО ХОДУ:
 ${stripHtml(d.notes)}
+${wishes ? `\nМОИ ДОПОЛНИТЕЛЬНЫЕ ПОЖЕЛАНИЯ (выполни обязательно):\n${wishes}\n` : ''}
+═══════════════════════════════════════════
+КТО ТЫ И ЧТО ОТ ТЕБЯ НУЖНО
 
----
-Ты помогаешь студенту юридического направления, который готовится к олимпиадам и поступлению.
-Обработай лекцию выше по шаблону PRIMUS. и верни ТОЛЬКО JSON, без пояснений вокруг него.
+Ты — сильный преподаватель по предмету «${catName}», который разбирает конспект студента
+юридического направления (олимпиады, поступление). Конспект писался ВЖИВУЮ: за мыслью лектора
+трудно уследить, поэтому в тексте есть обрывы, пропуски, неточности и места, записанные неверно.
 
-ОБЩИЕ ТРЕБОВАНИЯ К ФОРМАТУ
-- Поля "explanation"/"facts"/"connections"/"application"/"unclear" — это HTML, а не сплошной абзац:
-  <h3> для разделов, <h4> для подзаголовков, <b> для терминов, <ul><li>/<ol><li> для любых перечислений
-  (каждый пункт на своей строке). Никакого markdown — только HTML-теги.
+Твоя работа — не пересказать мою запись, а ВОССТАНОВИТЬ ТЕМУ ЦЕЛИКОМ:
+1. Понять, о чём на самом деле шла речь, даже там, где у меня записан только огрызок фразы.
+2. Найти и исправить мои фактические ошибки — прямо назвать, что было записано неверно и как правильно.
+3. Достроить пробелы: то, что лектор явно говорил, но я не успела записать, и то, без чего тема
+   не складывается в целое.
+4. Разложить всё по смысловым блокам — так, чтобы по этому разбору можно было готовиться,
+   не возвращаясь к сырой записи.
 
-ЗНАК ВОПРОСА (?) — ОБЯЗАТЕЛЬНО ПРОВЕРЬ
-- Если где-то в тексте лекции или в заметках стоит «(?)» — это места, которые студент НЕ ПОНЯЛ.
-- Для каждого такого места дай в поле "unclear" отдельный разбор: <h4>цитата непонятного места</h4>,
-  затем объяснение с нуля, максимально понятным языком, от простого к сложному, с бытовой аналогией,
-  и в конце — одной строкой связь именно с темой этой лекции («зачем это здесь и как связано с ${d.title||'темой'}»).
-- Если знаков «(?)» в тексте нет — верни "unclear": "".
+Пиши разборы ПО ТЕМАМ, а не сплошным текстом: каждый блок — отдельный <h3> с названием подтемы,
+внутри него объяснение от простого к сложному. Я должна запомнить и суметь дополнить свою запись.
 
-"facts" — «Интересные факты, копнуть глубже». Это не список банальностей, а рабочая навигация:
-  <h3>Неочевидное</h3> — 3-5 фактов именно по этой теме, которых нет в самом тексте лекции;
-  <h3>Что почитать</h3> — конкретика с названиями: автор + работа + что именно там смотреть
-  (например: «Гуго Гроций, „О праве войны и мира“ (1625) — книга I, о справедливой войне»);
-  документы/статьи называй точно (Устав ООН, ст. 2(4); Венская конвенция 1969, ст. 62 и т.п.);
-  <h3>Куда копать дальше</h3> — 2-4 смежные темы с одной строкой, ЧТО именно в них искать и ЗАЧЕМ
-  это нужно по отношению к текущей теме.
-  Не пиши расплывчато («почитайте о международном праве») — только конкретные названия и адреса.
+ВЕРНИ ТОЛЬКО JSON, без единого слова вокруг него.
 
-"connections" — «Связь с другими темами». Не просто перечисление предметов, а логические цепочки:
-  каждый пункт строится как «А → Б → вывод»: от чего это выросло, во что превратилось дальше,
-  и что из этого следует. Обязательно свяжи с другими предметами платформы (право, история,
-  литература, искусство, юр. английский) и покажи, как одно объясняет другое, а не просто соседствует.
+ФОРМАТ ПОЛЕЙ
+Все содержательные поля — HTML: <h3> для блоков, <h4> для подзаголовков, <b> для терминов,
+<ul><li>/<ol><li> для перечислений, <br> для переноса. Никакого markdown, никаких ** и ##.
 
-"application" — «Как использовать». Самый разжёванный раздел: развёрнуто ответь на каждый главный
-  вопрос лекции, покажи, где именно эта тема даёт преимущество (эссе, устный ответ, кейс, олимпиадная
-  задача), и дай 1-2 готовые формулировки-заготовки, которые можно вставить в ответ.
+"mainQuestions" — 4-7 вопросов, на которые эта тема реально отвечает. Обычный текст, по строке
+  на вопрос. Если у меня в черновике уже есть вопросы — уточни их формулировки, не выбрасывай.
 
-"cards" — карточки по этой лекции. Требования жёсткие, потому что плохие карточки бесполезны:
-  - 8-15 карточек, каждая проверяет ОДНУ мысль, которую действительно нужно помнить;
-  - берём только существенное: термины, даты-поворотные точки, принципы, различия между
-    похожими понятиями. Никаких случайных фраз, вырванных из текста, и никакой воды;
-  - лицевая сторона — короткий чёткий вопрос или термин; оборотная — точный ответ на 1-3 предложения,
-    который сам по себе понятен, без обращения к лекции;
-  - там, где уместно, рядом с русским термином давай английский эквивалент/аббревиатуру
-    (ООН — UN/UNSC, МУС — ICC, ЕС — EU) — это нужно для юридического английского;
-  - не указывай "topic" у карточек: они и так все попадут в один сет по названию лекции;
-  - поля карточек этого предмета строго такие ключи, без замены и пропусков:
-    ${fieldKeys.map(f=>`"${f}"`).join(', ')}.
+"keywords" — массив строк: 8-15 понятий, без которых тему не сдать. Включи мои ключевые слова
+  и добавь те, что я пропустила.
+
+"explanation" — ГЛАВНОЕ ПОЛЕ, полная структурированная реконструкция темы:
+  <h3>О чём это вообще</h3> — 3-5 предложений: что за тема, зачем она нужна, какое место занимает.
+  <h3>Разбор по блокам</h3> — дальше по одному <h4> на каждую смысловую часть ${kindWord}.
+    В каждом блоке: суть простыми словами → точные формулировки и термины → почему именно так →
+    что здесь чаще всего понимают неправильно. Блоков столько, сколько реально есть в теме
+    (обычно 3-6), и идут они в логическом порядке, а не в порядке моей записи.
+  <h3>Что я записала неточно</h3> — конкретно: «в конспекте: <i>…</i> → на самом деле: …».
+    Если ошибок нет — так и напиши одной строкой. Не выдумывай ошибок ради галочки.
+  <h3>Чего не хватает в моей записи</h3> — пробелы, которые ты достроил(а): что явно прозвучало
+    на ${kindWord}, но у меня выпало, и без чего тема неполная. По пунктам, каждый — с объяснением,
+    а не просто названием.
+  <h3>Костяк темы</h3> — 5-8 пунктов, сжатый каркас для повторения перед ответом.
+
+"unclear" — разбор того, что я НЕ ПОНЯЛА. Ищи два типа мест:
+  (а) всё, где в тексте стоит «(?)» — это мои прямые вопросы;
+  (б) места, где по обрывочности записи видно, что я потеряла мысль, даже если знака нет.
+  Группируй разборы ПО ТЕМАМ, а не по порядку появления: <h3>название подтемы</h3>, внутри —
+  <h4>цитата или формулировка вопроса</h4>, затем объяснение с нуля: что это, откуда взялось,
+  бытовая аналогия, разбор на простом примере, и последней строкой — как это связано
+  с темой «${d.title||''}» и зачем понадобилось именно здесь.
+  Если понимать нечего — верни "unclear": "".
+
+"facts" — «Интересные факты, копнуть глубже». Не банальности, а рабочая навигация:
+  <h3>Неочевидное</h3> — 3-5 фактов по этой теме, которых нет в моём тексте;
+  <h3>Что почитать</h3> — автор + работа + что именно там смотреть
+    (например: «Гуго Гроций, „О праве войны и мира“ (1625) — книга I, о справедливой войне»);
+    документы и статьи называй точно (Устав ООН, ст. 2(4); Венская конвенция 1969, ст. 62);
+  <h3>Куда копать дальше</h3> — 2-4 смежные темы, по строке: ЧТО искать и ЗАЧЕМ это по отношению
+    к текущей теме. Никаких расплывчатых «почитайте о международном праве».
+
+"connections" — «Связь с другими темами». Логические цепочки, а не перечисление:
+  каждый пункт как «А → Б → вывод»: из чего это выросло, во что превратилось, что из этого следует.
+  Обязательно свяжи с другими предметами платформы (право, история, литература, искусство,
+  юридический английский) и покажи, как одно объясняет другое.
+
+"application" — «Как использовать». Самый разжёванный раздел:
+  развёрнутый ответ на каждый главный вопрос темы; где именно она даёт преимущество
+  (эссе, устный ответ, кейс, олимпиадная задача); и 2-3 готовые формулировки-заготовки,
+  которые можно вставить в ответ дословно.
 
 Верни JSON вида:
-{"mainQuestions":"...", "keywords":["...","..."], "explanation":"...", "facts":"...", "connections":"...", "application":"...", "unclear":"...", "cards":[{"fields":{${fieldKeys.map(f=>`"${f}":"..."`).join(', ')}}}]}`;
+{"mainQuestions":"...", "keywords":["...","..."], "explanation":"...", "unclear":"...",
+ "facts":"...", "connections":"...", "application":"..."}
+
+ВАЖНО: карточки в этом ответе НЕ НУЖНЫ — они делаются отдельной кнопкой «Создать карточки»
+со своим запросом. Поле "cards" не возвращай.`;
 }
 function openTheoryAiImportModal(key, body){
   document.getElementById('modalBody').innerHTML = `
@@ -5602,43 +6046,13 @@ function openTheoryAiImportModal(key, body){
     if(parsed.facts) document.getElementById('theFacts').innerHTML = parsed.facts;
     if(parsed.connections) document.getElementById('theConn').innerHTML = parsed.connections;
     if(parsed.application) document.getElementById('theApp').innerHTML = parsed.application;
-    if(Array.isArray(parsed.keywords)){
-      const kwEditor = document.getElementById('kwEditor');
-      if(kwEditor){
-        parsed.keywords.forEach(k=>{ if(k) kwEditor.insertAdjacentHTML('beforeend', `<span class="kw-chip">${esc(k)}</span>`); });
-      }
-    }
-    let cardCount = 0;
-    if(Array.isArray(parsed.cards) && parsed.cards.length){
-      const data = APP_DATA[key];
-      const isCustom = !CATEGORY_META.find(m=>m.key===key);
-      const fieldKeys = (data.meta.fields || (data.meta.type==='custom'?['front','back','note']:['front','back']));
-      // Все карточки одной лекции — в одну тему (сет), названную по лекции: 1 лекция = 1 сет карточек,
-      // не разбитый по темам, которые могла бы напридумывать AI для отдельных карточек.
-      const titleVal = document.getElementById('theTitle').value.trim() || 'Без названия';
-      const lectureTopicId = resolveTopicByName(key, titleVal);
-      const topicSelectEl = document.getElementById('theoryTopicSelect');
-      if(topicSelectEl){
-        if(!topicSelectEl.querySelector(`option[value="${lectureTopicId}"]`)){
-          const t = getCategoryTopics(key).find(t=>t.id===lectureTopicId);
-          if(t) topicSelectEl.insertAdjacentHTML('beforeend', `<option value="${t.id}">${esc(t.name)}</option>`);
-        }
-        topicSelectEl.value = lectureTopicId;
-      }
-      parsed.cards.forEach(c=>{
-        const vals = {};
-        fieldKeys.forEach(f=>{ vals[f] = (c.fields && c.fields[f]) || ''; });
-        const id = uid(key);
-        const newCard = Object.assign({id, catKey:key, level:0, next_review:todayISO(), topicId:lectureTopicId}, vals);
-        if(isCustom){ if(!STORE.customCards[key]) STORE.customCards[key]=[]; STORE.customCards[key].push(newCard); }
-        else { if(!STORE.extraCards[key]) STORE.extraCards[key]=[]; STORE.extraCards[key].push(newCard); }
-        cardCount++;
-      });
-      saveStore();
-      buildAllData();
-    }
+    // Ключевые слова кладём именно в массив редактора, а не просто дорисовываем овалы:
+    // раньше дорисованные чипы не сохранялись вместе с материалом и пропадали.
+    if(Array.isArray(parsed.keywords) && typeof onAiKeywords === 'function') onAiKeywords(parsed.keywords);
+    // Карточки из этого ответа НЕ создаём: они делаются отдельной кнопкой «Создать карточки»
+    // со своим, более подробным запросом. Если ИИ всё же прислал "cards" — просто игнорируем.
     closeOverlay();
-    openInfoModal('Готово', `Поля заполнены${cardCount?`, создано карточек: <b>${cardCount}</b>`:''}. Не забудь нажать «Сохранить материал».`);
+    openInfoModal('Готово', 'Поля осмысления заполнены. Проверь их и нажми «Сохранить материал».<br><br>Карточки делаются отдельно — кнопкой <b>«Создать карточки»</b> на уже сохранённой лекции.');
   };
   openOverlay();
 }
@@ -5669,7 +6083,10 @@ function richToolbarButtonsHtml(mode){
       <button type="button" class="rt-btn" data-cmd="divider" title="Разделительная линия">⎯</button>
       <button type="button" class="rt-btn" data-cmd="table" title="Вставить таблицу">▦</button>
       <span class="rt-sep"></span>`;
-  return `<button type="button" class="rt-btn b" data-cmd="bold" title="Жирный">B</button>
+  return `<button type="button" class="rt-btn rt-undo" data-cmd="rtundo" title="Отменить (назад)">↶</button>
+      <button type="button" class="rt-btn rt-undo" data-cmd="rtredo" title="Вернуть (вперёд)">↷</button>
+      <span class="rt-sep"></span>
+      <button type="button" class="rt-btn b" data-cmd="bold" title="Жирный">B</button>
       <button type="button" class="rt-btn i" data-cmd="italic" title="Курсив">I</button>
       <button type="button" class="rt-btn u" data-cmd="underline" title="Подчёркнутый">U</button>
       <button type="button" class="rt-btn s" data-cmd="strikeThrough" title="Зачёркнутый">S</button>
@@ -6181,18 +6598,6 @@ function scheduledMaterials(){
   });
   return out.sort((a,b)=>String(a.m.nextReview).localeCompare(String(b.m.nextReview)));
 }
-// Расписание оставшихся повторений: от текущего уровня и дальше по интервалам.
-function upcomingReviewDates(m){
-  const dates = [];
-  let base = m.nextReview;
-  if(!base) return dates;
-  dates.push(base);
-  for(let lvl=(m.srLevel||0)+1; lvl<SR_INTERVALS.length; lvl++){
-    base = addDays(base, SR_INTERVALS[lvl]);
-    dates.push(base);
-  }
-  return dates;
-}
 function renderReviewLectures(main){
   const today = todayISO();
   const due = reviewDueMaterials();
@@ -6219,9 +6624,18 @@ function renderReviewLectures(main){
       <button class="btn" data-lecopen="${m.id}" data-leccat3="${catKey}">Открыть</button>
     </div>
     <div class="lec-schedule" data-lecsched="${m.id}" hidden>
-      <div class="lec-schedule-title">Дальнейшие повторения</div>
-      <ol class="lec-schedule-list">${upcomingReviewDates(m).map((d,i)=>`<li>${esc(fmtDate(d))}${i===0?' — ближайшее':''}</li>`).join('')}</ol>
-      <div class="lec-schedule-note">После каждого «Повторил ✓» дата следующего повторения отодвигается дальше по интервалам ${SR_INTERVALS.join(', ')} дней.</div>
+      <div class="lec-schedule-title">Расписание повторений${m.srStart?` · точка отсчёта ${esc(fmtDate(m.srStart))}`:''}</div>
+      <ol class="lec-schedule-list">${srScheduleFrom(m.srStart||m.nextReview).map((d,i)=>{
+        const done = i < (m.srLevel||0);
+        const isNext = i === (m.srLevel||0);
+        const shown = isNext ? m.nextReview : d;
+        return `<li class="${done?'sd-done':''}${isNext?' sd-next':''}">${esc(fmtDate(shown))}${done?' — пройдено':(isNext?' — ближайшее':'')}</li>`;
+      }).join('')}</ol>
+      <div class="lec-schedule-note">Интервалы ${SR_INTERVALS.join(', ')} дней от точки отсчёта. «Повторил ✓» переводит на следующую дату.</div>
+      <div class="btn-row" style="margin:8px 0 0">
+        <button class="btn btn-sm" data-lecmove="${m.id}" data-leccat4="${catKey}">Перенести</button>
+        <button class="btn btn-sm" data-lecdrop="${m.id}" data-leccat5="${catKey}">Убрать из повторения</button>
+      </div>
     </div>`;
   };
 
@@ -6259,7 +6673,24 @@ function renderReviewLectures(main){
       if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'), 1600); }
     }, 60);
   });
-  // клик по строке — показать/скрыть даты следующих повторений
+  // перенести повторение — новая точка отсчёта пересчитывает всё расписание
+  rb.querySelectorAll('[data-lecmove]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
+    const catKey = btn.dataset.leccat4;
+    const m = (STORE.materials[catKey]||[]).find(x=>x.id===btn.dataset.lecmove);
+    if(m) openSrScheduleModal(catKey, m, ()=>renderReviewLectures(main));
+  });
+  rb.querySelectorAll('[data-lecdrop]').forEach(btn=>btn.onclick=(e)=>{
+    e.stopPropagation();
+    const catKey = btn.dataset.leccat5;
+    const m = (STORE.materials[catKey]||[]).find(x=>x.id===btn.dataset.lecdrop);
+    if(!m) return;
+    if(!confirm(`Убрать «${m.title}» из повторения? Напоминания исчезнут, сам материал останется.`)) return;
+    removeLectureFromSr(m, catKey);
+    renderReviewLectures(main);
+    renderNav();
+  });
+  // клик по строке — показать/скрыть расписание повторений
   rb.querySelectorAll('[data-lecrow]').forEach(row=>row.onclick=()=>{
     const sched = rb.querySelector(`[data-lecsched="${row.dataset.lecrow}"]`);
     if(sched) sched.hidden = !sched.hidden;
@@ -6437,7 +6868,7 @@ function openTopicsModal(key){
     document.querySelectorAll('.topic-name-input').forEach(inp=>{
       inp.addEventListener('change',()=>{ renameTopic(key, inp.dataset.id, inp.value.trim()||'Без названия'); });
     });
-    document.querySelectorAll('[data-del-topic]').forEach(btn=>{ btn.onclick=()=>{ if(!confirm('Удалить тему? Карточки в ней не удалятся, но потеряют привязку к теме. Это безвозвратно.')) return; deleteTopic(key, btn.dataset.delTopic); draw(); }; });
+    document.querySelectorAll('[data-del-topic]').forEach(btn=>{ btn.onclick=()=>{ if(!confirm('Удалить тему? Карточки в ней не удалятся, но потеряют привязку к теме. Тему можно будет вернуть из корзины в разделе Storage.')) return; deleteTopic(key, btn.dataset.delTopic); draw(); }; });
     document.querySelectorAll('[data-pin-topic]').forEach(btn=>{ btn.onclick=()=>{ toggleTopicPin(key, btn.dataset.pinTopic); draw(); }; });
     document.querySelectorAll('[data-up-topic]').forEach(btn=>{ btn.onclick=()=>{ moveTopic(key, btn.dataset.upTopic,-1); draw(); }; });
     document.querySelectorAll('[data-down-topic]').forEach(btn=>{ btn.onclick=()=>{ moveTopic(key, btn.dataset.downTopic,1); draw(); }; });
@@ -6547,7 +6978,107 @@ document.addEventListener('selectionchange', ()=>{
 });
 // Команды панели, которых нет в execCommand: заголовки, список чёрточками, разделитель,
 // таблица и «ключевое слово + карточка». Возвращает true, если команда обработана здесь.
+/* ---------- Своя история правок для полей лекции (кнопки ↶ / ↷) ----------
+   Встроенный execCommand('undo') не знает про наши собственные операции — таблицу, разделитель,
+   ключевое слово: они меняют DOM напрямую и в браузерный стек отмены не попадают. Поэтому история
+   своя: снимок HTML + позиция курсора, снимается перед каждой командой панели и с задержкой при
+   наборе текста. Курсор считаем в символах от начала поля и так же восстанавливаем. */
+const RT_HISTORY = new WeakMap();
+const RT_HISTORY_LIMIT = 80;
+function rtCaretOffset(el){
+  const sel = window.getSelection();
+  if(!sel || sel.rangeCount===0) return null;
+  const r = sel.getRangeAt(0);
+  if(!el.contains(r.startContainer)) return null;
+  const pre = r.cloneRange();
+  pre.selectNodeContents(el);
+  pre.setEnd(r.startContainer, r.startOffset);
+  return pre.toString().length;
+}
+function rtSetCaret(el, offset){
+  if(offset==null) return;
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+  let left = offset, node = null;
+  while(walker.nextNode()){
+    const len = walker.currentNode.nodeValue.length;
+    if(left <= len){ node = walker.currentNode; break; }
+    left -= len;
+  }
+  try{
+    const r = document.createRange();
+    if(node) r.setStart(node, Math.min(left, node.nodeValue.length));
+    else { r.selectNodeContents(el); r.collapse(false); }
+    r.collapse(true);
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(r);
+  }catch(e){}
+}
+function rtHistory(el){
+  let h = RT_HISTORY.get(el);
+  if(!h){
+    h = {stack:[{html:el.innerHTML, caret:null}], pos:0, timer:null, applying:false};
+    RT_HISTORY.set(el, h);
+  }
+  return h;
+}
+function rtPushSnapshot(el){
+  if(!el) return;
+  const h = rtHistory(el);
+  if(h.applying) return;
+  clearTimeout(h.timer); h.timer = null;
+  const html = el.innerHTML;
+  if(h.stack[h.pos] && h.stack[h.pos].html === html){
+    h.stack[h.pos].caret = rtCaretOffset(el);
+    return;
+  }
+  h.stack.length = h.pos + 1;            // новая ветка — всё, что было «вперёд», обрезаем
+  h.stack.push({html, caret: rtCaretOffset(el)});
+  if(h.stack.length > RT_HISTORY_LIMIT) h.stack.shift();
+  h.pos = h.stack.length - 1;
+}
+function rtScheduleSnapshot(el){
+  if(!el) return;
+  const h = rtHistory(el);
+  if(h.applying) return;
+  clearTimeout(h.timer);
+  h.timer = setTimeout(()=>rtPushSnapshot(el), 450);
+}
+function rtApply(el, entry){
+  const h = rtHistory(el);
+  h.applying = true;
+  el.innerHTML = entry.html;
+  rtSetCaret(el, entry.caret);
+  h.applying = false;
+  el.dispatchEvent(new Event('input', {bubbles:true}));
+  if(typeof syncTableTools === 'function') syncTableTools();
+}
+function rtUndo(el){
+  const h = rtHistory(el);
+  clearTimeout(h.timer); h.timer = null;
+  // если после последнего снимка успели что-то набрать — сначала фиксируем текущее состояние
+  if(h.stack[h.pos] && h.stack[h.pos].html !== el.innerHTML) rtPushSnapshot(el);
+  if(h.pos <= 0) return false;
+  h.pos--;
+  rtApply(el, h.stack[h.pos]);
+  return true;
+}
+function rtRedo(el){
+  const h = rtHistory(el);
+  clearTimeout(h.timer); h.timer = null;
+  if(h.pos >= h.stack.length-1) return false;
+  h.pos++;
+  rtApply(el, h.stack[h.pos]);
+  return true;
+}
+// набор текста в любом поле с форматированием копится в историю
+document.addEventListener('input',(e)=>{
+  const el = e.target.closest && e.target.closest('.rt-editable[contenteditable="true"]');
+  if(el) rtScheduleSnapshot(el);
+}, true);
+
 function runRichCustomCommand(cmd, val, editable){
+  if(cmd==='rtundo'){ rtUndo(editable); return true; }
+  if(cmd==='rtredo'){ rtRedo(editable); return true; }
   if(cmd==='heading'){
     // formatBlock в разных браузерах хочет разный формат аргумента — пробуем оба
     try{ if(!document.execCommand('formatBlock', false, val)) document.execCommand('formatBlock', false, '<'+val+'>'); }
@@ -6572,12 +7103,34 @@ function runRichCustomCommand(cmd, val, editable){
   }
   if(cmd==='table'){
     const row = (cells, tag)=>`<tr>${cells.map(c=>`<${tag}>${c}</${tag}>`).join('')}</tr>`;
+    const mark = 'tblAfter_'+Math.random().toString(36).slice(2);
     const html = `<table class="lec-table"><tbody>`
       + row(['&nbsp;','&nbsp;','&nbsp;'],'th')
       + row(['&nbsp;','&nbsp;','&nbsp;'],'td')
       + row(['&nbsp;','&nbsp;','&nbsp;'],'td')
-      + `</tbody></table><p><br></p>`;
+      + `</tbody></table><p id="${mark}"><br></p>`;
     document.execCommand('insertHTML', false, html);
+    // Браузер разрезает абзац, в который вставили таблицу, и оставляет пустые куски до и после неё —
+    // из-за них текст после таблицы начинался «через строчку». Убираем их и ставим курсор
+    // в один нормальный абзац сразу под таблицей.
+    const after = document.getElementById(mark);
+    if(after){
+      after.removeAttribute('id');
+      const isEmptyBlock = (el)=> el && /^(P|DIV)$/.test(el.tagName)
+        && !el.textContent.replace(/ /g,' ').trim()
+        && !el.querySelector('img,table,hr');
+      const table = after.previousElementSibling;
+      if(table && table.tagName==='TABLE'){
+        while(isEmptyBlock(table.previousElementSibling)) table.previousElementSibling.remove();
+      }
+      while(isEmptyBlock(after.nextElementSibling)) after.nextElementSibling.remove();
+      try{
+        const r = document.createRange();
+        r.setStart(after, 0); r.collapse(true);
+        const sel = window.getSelection();
+        sel.removeAllRanges(); sel.addRange(r);
+      }catch(e){}
+    }
     return true;
   }
   if(cmd==='kwcard'){
@@ -6605,6 +7158,8 @@ function runRichCustomCommand(cmd, val, editable){
 }
 // Заполняется редактором лекции, чтобы отмеченное слово сразу попало в овалы ключевых слов и в карточки.
 let onKeywordMarked = null;
+// То же самое для ключевых слов, которые вернул ИИ при обработке материала.
+let onAiKeywords = null;
 
 /* ---------- Редактирование таблиц прямо в лекции (как в заметках iPhone) ---------- */
 let ACTIVE_TABLE_CELL = null; // ячейка, в которой стоит курсор
@@ -6750,6 +7305,7 @@ function hideFloatFormatBar(){
   if(bar) bar.hidden = true;
   document.body.classList.remove('has-float-bar');
   document.documentElement.style.removeProperty('--float-bar-y');
+  FLOAT_BAR_LAST.y = FLOAT_BAR_LAST.h = FLOAT_BAR_LAST.left = null;
 }
 /* Панель должна быть видна ВСЁ время, пока открыта лекция — и при прокрутке, и на телефоне.
    Две вещи мешали этому раньше:
@@ -6759,33 +7315,55 @@ function hideFloatFormatBar(){
    Первое лечится тем, что панель живёт, пока живёт редактор лекции; второе — этой функцией:
    она сдвигает панель ровно на смещение visual viewport. */
 let FLOAT_BAR_RAF = 0;
-function measureFloatBar(){
+// Последние записанные значения: переписывать CSS-переменные на каждый кадр прокрутки нельзя —
+// каждая запись пересчитывает padding редактора, и панель заметно мигала при листании.
+const FLOAT_BAR_LAST = {y:null, h:null, left:null};
+function setFloatVar(name, key, value){
+  if(FLOAT_BAR_LAST[key] === value) return;
+  FLOAT_BAR_LAST[key] = value;
+  document.documentElement.style.setProperty(name, value+'px');
+}
+// geometry=true — полный пересчёт (высота панели и левый край). При обычной прокрутке
+// достаточно сдвига по вертикали, который на десктопе вообще не меняется.
+function measureFloatBar(geometry){
   const bar = document.getElementById('floatFormatBar');
   if(!bar || bar.hidden) return;
   const vv = window.visualViewport;
-  const y = vv ? Math.max(0, vv.offsetTop) : 0;
-  const root = document.documentElement.style;
-  root.setProperty('--float-bar-y', y+'px');
+  setFloatVar('--float-bar-y', 'y', vv ? Math.max(0, Math.round(vv.offsetTop)) : 0);
+  if(!geometry) return;
+  // левый край = фактический правый край сайдбара (учитывает и масштаб интерфейса, и телефон)
+  const sb = document.getElementById('sidebar');
+  let left = 0;
+  if(sb && window.innerWidth >= 821){
+    const r = sb.getBoundingClientRect();
+    if(r.width) left = Math.max(0, Math.round(r.right));
+  }
+  setFloatVar('--float-bar-left', 'left', left);
   const h = bar.offsetHeight;
-  if(h){
-    root.setProperty('--float-bar-h', (h+18)+'px');
+  if(h && FLOAT_BAR_LAST.h !== h+18){
+    setFloatVar('--float-bar-h', 'h', h+18);
     // чтобы прокрутка к полю (в том числе автоматическая, за курсором) не прятала его под панель
-    root.setProperty('--float-bar-scrollpad', (h+12)+'px');
+    document.documentElement.style.setProperty('--float-bar-scrollpad', (h+12)+'px');
   }
 }
 function syncFloatBarPosition(immediate){
   // при скролле измеряем не чаще раза за кадр, иначе каждый пиксель прокрутки стоит layout;
   // при появлении панели считаем сразу — rAF в скрытой вкладке может не сработать вовсе
-  if(immediate){ measureFloatBar(); return; }
+  if(immediate){ measureFloatBar(true); return; }
   if(FLOAT_BAR_RAF) return;
-  FLOAT_BAR_RAF = requestAnimationFrame(()=>{ FLOAT_BAR_RAF = 0; measureFloatBar(); });
+  FLOAT_BAR_RAF = requestAnimationFrame(()=>{ FLOAT_BAR_RAF = 0; measureFloatBar(false); });
 }
+// смена размера окна/сайдбара/масштаба — пересчитываем геометрию целиком
+function syncFloatBarGeometry(){ measureFloatBar(true); }
+// Важно: слушатели оборачиваем в стрелки. Если передать syncFloatBarPosition напрямую,
+// первым аргументом придёт объект события — он «истинный», и каждый скролл уходил бы
+// в полный пересчёт геометрии (из-за этого панель и мигала при листании).
 if(window.visualViewport){
-  window.visualViewport.addEventListener('resize', syncFloatBarPosition);
-  window.visualViewport.addEventListener('scroll', syncFloatBarPosition);
+  window.visualViewport.addEventListener('resize', ()=>syncFloatBarGeometry());
+  window.visualViewport.addEventListener('scroll', ()=>syncFloatBarPosition());
 }
-window.addEventListener('scroll', syncFloatBarPosition, {passive:true});
-window.addEventListener('resize', syncFloatBarPosition);
+window.addEventListener('scroll', ()=>syncFloatBarPosition(), {passive:true});
+window.addEventListener('resize', ()=>syncFloatBarGeometry());
 // Пока открыт редактор лекции — панель на экране. Целевое поле переключается по курсору
 // (см. selectionchange), но само её присутствие от фокуса больше не зависит.
 function refreshFloatBarForEditor(){
@@ -6824,6 +7402,8 @@ function applyRichCommand(btn){
     }catch(e){}
   }
   const cmd = btn.dataset.cmd, val = btn.dataset.val || null;
+  // перед любой правкой фиксируем состояние — чтобы кнопка «назад» вернула именно его
+  if(cmd !== 'rtundo' && cmd !== 'rtredo') rtPushSnapshot(editable);
   if(!runRichCustomCommand(cmd, val, editable)){
     try{
       const ok = document.execCommand(cmd, false, val);
@@ -6850,7 +7430,11 @@ document.addEventListener('pointerdown',(e)=>{
   const btn = e.target.closest && e.target.closest('.rt-toolbar .rt-btn, .tbl-tools [data-tbl]');
   if(!btn) return;
   e.preventDefault(); // не уводим фокус из редактируемого поля и не сбрасываем выделение
-  if(btn.dataset.tbl) tableOp(btn.dataset.tbl, richFieldForButton(btn));
+  if(btn.dataset.tbl){
+    const fld = richFieldForButton(btn);
+    if(fld) rtPushSnapshot(fld);   // операции с таблицей тоже должны отменяться кнопкой «назад»
+    tableOp(btn.dataset.tbl, fld);
+  }
   else applyRichCommand(btn);
 }, true);
 
@@ -7378,12 +7962,333 @@ function openInfoModalOver(title, html){
 }
 
 /* ==========================================================================
+   НЕСКОЛЬКО СЕТОВ КАРТОЧЕК ЧЕРЕЗ ИИ
+   Один экран на весь путь: свои пожелания → запрос для ИИ → вставка ответа →
+   видно, какие сеты получились → правишь названия и сами карточки → сохраняешь.
+   Отсюда же делаются карточки по сохранённой лекции (кнопка «Создать карточки»).
+   ========================================================================== */
+// Разбор ответа ИИ. Терпимый: понимает JSON с "sets", JSON с одним "cards",
+// массив сетов и обычный текст с заголовками «## Название» и строками «a :: b :: c».
+function parseCardSetsAnswer(raw, fieldKeys, fallbackName){
+  const text = String(raw||'').trim();
+  if(!text) return [];
+  const norm = (cards)=>cards.map(c=>{
+    const src = (c && c.fields) ? c.fields : (c||{});
+    const vals = {};
+    fieldKeys.forEach(f=>{ vals[f] = String(src[f]==null?'':src[f]).trim(); });
+    // если ИИ прислал поля с другими именами — раскладываем по порядку
+    if(fieldKeys.every(f=>!vals[f])){
+      const order = Object.values(src);
+      fieldKeys.forEach((f,i)=>{ vals[f] = String(order[i]==null?'':order[i]).trim(); });
+    }
+    return vals;
+  }).filter(v=>fieldKeys.some(f=>v[f]));
+
+  // 1) JSON — вырезаем его из возможной болтовни вокруг
+  const jsonStart = text.search(/[[{]/);
+  if(jsonStart >= 0){
+    const jsonEnd = Math.max(text.lastIndexOf('}'), text.lastIndexOf(']'));
+    if(jsonEnd > jsonStart){
+      try{
+        const parsed = JSON.parse(text.slice(jsonStart, jsonEnd+1));
+        let rawSets = null;
+        if(Array.isArray(parsed)) rawSets = parsed;
+        else if(Array.isArray(parsed.sets)) rawSets = parsed.sets;
+        else if(Array.isArray(parsed.cards)) rawSets = [{topic:parsed.topic||fallbackName, cards:parsed.cards}];
+        if(rawSets){
+          const out = rawSets.map((s,i)=>({
+            name: String((s && (s.topic || s.name || s.title)) || `${fallbackName}${rawSets.length>1?' '+(i+1):''}`).trim(),
+            cards: norm(Array.isArray(s && s.cards) ? s.cards : [])
+          })).filter(s=>s.cards.length);
+          if(out.length) return out;
+        }
+      }catch(e){ /* не JSON — идём дальше, разберём как текст */ }
+    }
+  }
+
+  // 2) Текст: «## Название сета» (или «# », «Сет: », «Тема: ») + строки через «::»
+  const sets = [];
+  let cur = null;
+  text.split('\n').forEach(line=>{
+    const t = line.trim();
+    if(!t) return;
+    const head = t.match(/^(?:#{1,4}\s*|\*\*)?(?:сет|тема|раздел|set|topic)\s*[:—-]\s*(.+?)\*{0,2}$/i)
+              || t.match(/^#{1,4}\s+(.+?)\s*$/);
+    if(head && head[1] && t.indexOf('::') < 0){
+      cur = {name: head[1].replace(/\*+/g,'').trim(), cards: []};
+      sets.push(cur);
+      return;
+    }
+    if(t.indexOf('::') < 0) return;
+    const clean = t.replace(/^\s*\d+[.)]\s*/, '');
+    const parts = clean.split('::').map(p=>p.trim());
+    const vals = {};
+    fieldKeys.forEach((f,i)=>{ vals[f] = parts[i] || ''; });
+    if(!fieldKeys.some(f=>vals[f])) return;
+    if(!cur){ cur = {name: fallbackName, cards: []}; sets.push(cur); }
+    cur.cards.push(vals);
+  });
+  return sets.filter(s=>s.cards.length);
+}
+
+// Запрос к ИИ на карточки: подробные, с запоминалкой, примером и связью с темой.
+function buildCardSetsAiPrompt(key, opts){
+  opts = opts || {};
+  const data = APP_DATA[key];
+  const catName = data ? data.meta.name : key;
+  const fields = (data && data.meta.fields) || ['front','back','note'];
+  const m = opts.material;
+  const wishes = (opts.wishes||'').trim();
+  const kw = m && m.kwCards && m.kwCards.length
+    ? m.kwCards.map(k=>k.word).join(', ')
+    : '';
+
+  const fieldPlan = [
+    `1) "${fields[0]}" — сам термин/вопрос. Коротко, как он звучит в материале.`,
+    fields[1] ? `2) "${fields[1]}" — перевод или короткий однострочный ответ. Если перевод не нужен, дай сюда сжатую суть в одной строке.` : '',
+    fields[2] ? `3) "${fields[2]}" — ГЛАВНОЕ ПОЛЕ. Сюда: <b>Что это:</b> точное определение 1-2 предложения; <b>Как запомнить:</b> запоминалка — разбор слова по частям, созвучие, образ или короткая история; <b>Почему так:</b> откуда взялось и зачем нужно. Разделяй эти куски тегами &lt;b&gt; и &lt;br&gt;.` : '',
+    fields[3] ? `4) "${fields[3]}" — <b>Пример:</b> один конкретный, живой, проверяемый пример (реальное дело, статья, ситуация, предложение с этим термином). Затем <b>Связь:</b> цепочка «откуда → это → куда ведёт» и одной строкой — как это связано с темой материала.` : '',
+    ...fields.slice(4).map((f,i)=>`${i+5}) "${f}" — дополни по смыслу поля, не оставляй пустым, если есть что сказать.`)
+  ].filter(Boolean).join('\n');
+
+  return `Сделай карточки для платформы PRIMUS. по предмету «${catName}».
+${m ? `Материал — ${materialKind(m)==='seminar'?'семинар':'лекция'} «${m.title}».` : 'Материал я приложу ниже.'}
+
+${wishes ? `МОИ ДОПОЛНИТЕЛЬНЫЕ ПОЖЕЛАНИЯ (выполни их обязательно):\n${wishes}\n` : ''}
+ЧТО ДОЛЖНО ПОЛУЧИТЬСЯ
+Раздели материал на СМЫСЛОВЫЕ БЛОКИ и сделай по каждому отдельный сет карточек со своим названием.
+Если блок один — верни один сет. Не сваливай всё в кучу: сет = одна тема, 6-15 карточек в сете.
+Название сета — короткое и по делу, как заголовок раздела.
+
+КАКОЙ ДОЛЖНА БЫТЬ КАРТОЧКА
+Плохая карточка — это вырванная фраза. Хорошая объясняет так, что к лекции возвращаться не нужно.
+Поля этого предмета строго такие и в таком порядке (${fields.length} шт.): ${fields.join(', ')}
+${fieldPlan}
+
+Требования по содержанию:
+- бери существенное: термины, принципы, даты-поворотные точки, различия между похожими понятиями;
+- каждая карточка проверяет ОДНУ мысль;
+- запоминалка обязательна там, где термин непрозрачный: разбери его по частям
+  (например «tax whistleblower office»: whistle + blower — «тот, кто свистит в свисток», т.е. подаёт
+  сигнал; office — служба; значит служба, куда сигнализируют о налоговых нарушениях);
+- пример должен быть конкретным и проверяемым, а не «например, в некоторых странах»;
+- рядом с русским термином давай английский эквивалент/аббревиатуру там, где это уместно
+  (ООН — UN/UNSC, МУС — ICC, ЕС — EU);
+- внутри полей можно использовать только теги &lt;b&gt;, &lt;i&gt;, &lt;br&gt;, &lt;ul&gt;&lt;li&gt;. Никакого markdown.
+${kw ? `\nОСОБО ВАЖНО: по каждому из этих слов обязательно сделай отдельную карточку — они помечены мной в тексте:\n${kw}\n` : ''}
+ФОРМАТ ОТВЕТА — только JSON, без единого слова вокруг:
+{"sets":[{"topic":"Название сета","cards":[{"fields":{${fields.map(f=>`"${f}":"..."`).join(', ')}}}]}]}
+
+МОЙ МАТЕРИАЛ:
+${m ? [stripHtml(m.materialText||''), stripHtml(m.notes||''), stripHtml(m.explanation||'')].filter(Boolean).join('\n\n') : '[вставь сюда текст лекции, конспект, список слов или терминов]'}`;
+}
+
+let CARD_SETS_STATE = null; // {sets:[{name,cards:[],open}], key, material}
+function openCardSetsModal(key, opts){
+  opts = opts || {};
+  const data = APP_DATA[key];
+  const fieldDefs = getFieldDefsForCategory(key);
+  const fieldKeys = fieldDefs.map(f=>f[0]);
+  const material = opts.material || null;
+  const fallbackName = material ? (material.title || 'Новый сет') : 'Новый сет';
+  CARD_SETS_STATE = {key, material, sets:[]};
+
+  function setsSummary(){
+    const s = CARD_SETS_STATE.sets;
+    const cards = s.reduce((n,x)=>n+x.cards.length, 0);
+    return {sets:s.length, cards};
+  }
+  function drawSets(){
+    const wrap = document.getElementById('csSets');
+    if(!wrap) return;
+    const sets = CARD_SETS_STATE.sets;
+    if(!sets.length){
+      wrap.innerHTML = `<div class="cs-empty">Сетов пока нет. Вставь ответ ИИ кнопкой выше — или добавь сет вручную.</div>`;
+    } else {
+      wrap.innerHTML = sets.map((s,si)=>`
+        <div class="cs-set">
+          <div class="cs-set-head">
+            <input class="cs-set-name" data-csname="${si}" value="${esc(s.name)}" placeholder="Название сета">
+            <span class="cs-set-count">${s.cards.length}</span>
+            <button type="button" class="btn btn-sm" data-cstoggle="${si}">${s.open?'Свернуть':'Карточки'}</button>
+            <button type="button" class="icon-btn" data-csdel="${si}" title="Убрать сет">✕</button>
+          </div>
+          ${s.open?`<div class="cs-set-body">${s.cards.map((c,ci)=>`
+            <div class="set-row">
+              <div class="set-row-num">${ci+1}</div>
+              <div class="set-row-fields">
+                ${fieldDefs.map(([f,label])=>`<input class="set-input" data-csrow="${si}:${ci}" data-f="${f}" placeholder="${esc(label)}" value="${esc(stripHtml(c[f]||''))}">`).join('')}
+              </div>
+              <button type="button" class="icon-btn" data-cscarddel="${si}:${ci}" title="Убрать карточку">✕</button>
+            </div>`).join('')}
+            <button type="button" class="btn btn-sm" data-cscardadd="${si}">+ карточка</button>
+          </div>`:''}
+        </div>`).join('');
+    }
+    // правка названий и полей
+    wrap.querySelectorAll('[data-csname]').forEach(inp=>inp.addEventListener('input',()=>{
+      CARD_SETS_STATE.sets[+inp.dataset.csname].name = inp.value;
+    }));
+    wrap.querySelectorAll('[data-csrow]').forEach(inp=>inp.addEventListener('input',()=>{
+      const [si,ci] = inp.dataset.csrow.split(':').map(Number);
+      CARD_SETS_STATE.sets[si].cards[ci][inp.dataset.f] = inp.value;
+    }));
+    wrap.querySelectorAll('[data-cstoggle]').forEach(b=>b.onclick=()=>{
+      const si = +b.dataset.cstoggle;
+      CARD_SETS_STATE.sets[si].open = !CARD_SETS_STATE.sets[si].open;
+      drawSets();
+    });
+    wrap.querySelectorAll('[data-csdel]').forEach(b=>b.onclick=()=>{
+      const si = +b.dataset.csdel;
+      if(!confirm(`Убрать сет «${CARD_SETS_STATE.sets[si].name}» из списка? Он ещё не сохранён, так что просто исчезнет отсюда.`)) return;
+      CARD_SETS_STATE.sets.splice(si,1);
+      drawSets(); updateFooter();
+    });
+    wrap.querySelectorAll('[data-cscarddel]').forEach(b=>b.onclick=()=>{
+      const [si,ci] = b.dataset.cscarddel.split(':').map(Number);
+      CARD_SETS_STATE.sets[si].cards.splice(ci,1);
+      drawSets(); updateFooter();
+    });
+    wrap.querySelectorAll('[data-cscardadd]').forEach(b=>b.onclick=()=>{
+      const si = +b.dataset.cscardadd;
+      const blank = {}; fieldKeys.forEach(f=>blank[f]='');
+      CARD_SETS_STATE.sets[si].cards.push(blank);
+      drawSets(); updateFooter();
+    });
+    updateFooter();
+  }
+  function updateFooter(){
+    const {sets, cards} = setsSummary();
+    const el = document.getElementById('csSaveLabel');
+    if(el) el.textContent = sets ? `Сохранить: ${cards} карточек в ${sets} сет${sets===1?'е':'ах'}` : 'Сохранить';
+    const btn = document.getElementById('mCsSave');
+    if(btn) btn.disabled = !sets;
+  }
+
+  document.getElementById('modalBody').innerHTML = `
+    <h3>Создать карточки${material?` — ${materialKind(material)==='seminar'?'семинар':'лекция'} «${esc(material.title)}»`:''}</h3>
+    <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:14px">
+      ИИ разбирает материал на смысловые блоки и возвращает сразу несколько сетов.
+      Ты видишь, что получилось, правишь названия и сами карточки — и только потом сохраняешь.
+    </div>
+
+    <div class="field">
+      <label>Дополнительные пожелания к ИИ — необязательно</label>
+      <textarea id="csWishes" style="min-height:62px" placeholder="Например: подчёркивай ударные слоги в словах · делай упор на различия похожих терминов · добавь транскрипцию"></textarea>
+    </div>
+
+    <div class="btn-row" style="margin:0 0 10px">
+      <button class="btn btn-primary" id="btnCsCopy" type="button">Скопировать запрос для ИИ</button>
+      <button class="btn" id="btnCsPaste" type="button">Вставить ответ ИИ</button>
+      <button class="btn" id="btnCsManual" type="button">+ Сет вручную</button>
+    </div>
+    ${aiInstructionsHtml('Как это работает', [
+      'Впиши пожелания, если они есть, и нажми «Скопировать запрос для ИИ».',
+      'Вставь запрос в чат с любым ИИ-ассистентом (Claude, ChatGPT, DeepSeek, Gemini).' + (material?' Материал лекции уже внутри запроса.':' Вместо пометки в конце вставь свой текст или список слов.'),
+      'Скопируй ответ целиком и нажми «Вставить ответ ИИ» → «Разобрать ответ».',
+      'Ниже появятся сеты — проверь названия, при желании открой любой и поправь карточки.',
+      'Нажми «Сохранить» — сеты станут темами в разделе Карточки, каждую можно потом править отдельно.'
+    ])}
+
+    <div id="csPasteWrap" hidden>
+      <div class="field" style="margin-top:6px">
+        <label>Ответ ИИ</label>
+        <textarea id="csPasteText" style="min-height:170px" placeholder='Сюда можно вставить как JSON, так и строки вида
+## Название сета
+термин :: перевод :: пояснение :: пример'></textarea>
+      </div>
+      <div class="btn-row" style="margin:0 0 8px">
+        <button class="btn btn-primary" id="btnCsParse" type="button">Разобрать ответ</button>
+        <button class="btn" id="btnCsPasteCancel" type="button">Свернуть</button>
+      </div>
+    </div>
+
+    <div class="set-rows-head">Получившиеся сеты</div>
+    <div id="csSets"></div>
+
+    <div class="modal-actions">
+      <button class="btn" id="mCsCancel" type="button">Отмена</button>
+      <button class="btn btn-primary" id="mCsSave" type="button"><span id="csSaveLabel">Сохранить</span></button>
+    </div>
+  `;
+  document.getElementById('modalBody').classList.add('modal-lg');
+  drawSets();
+
+  document.getElementById('btnCsCopy').onclick=()=>{
+    const text = buildCardSetsAiPrompt(key, {material, wishes: document.getElementById('csWishes').value});
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text)
+        .then(()=>openInfoModalOver('Скопировано','Запрос в буфере. Вставь его в чат с ИИ, а с ответом вернись сюда — окно никуда не делось.'))
+        .catch(()=>showCopyFallback(text));
+    } else showCopyFallback(text);
+  };
+  const pasteWrap = document.getElementById('csPasteWrap');
+  document.getElementById('btnCsPaste').onclick=()=>{ pasteWrap.hidden=false; document.getElementById('csPasteText').focus(); };
+  document.getElementById('btnCsPasteCancel').onclick=()=>{ pasteWrap.hidden=true; };
+  document.getElementById('btnCsManual').onclick=()=>{
+    const blank = {}; fieldKeys.forEach(f=>blank[f]='');
+    CARD_SETS_STATE.sets.push({name: fallbackName, cards:[blank], open:true});
+    drawSets();
+  };
+  document.getElementById('btnCsParse').onclick=()=>{
+    const raw = document.getElementById('csPasteText').value;
+    const parsed = parseCardSetsAnswer(raw, fieldKeys, fallbackName);
+    if(!parsed.length){
+      openInfoModalOver('Не разобрала ответ','Не нашла ни JSON с сетами, ни строк с разделителем <code>::</code>. Попроси ИИ вернуть ответ строго в формате из запроса.');
+      return;
+    }
+    parsed.forEach(s=>CARD_SETS_STATE.sets.push({name:s.name, cards:s.cards, open:false}));
+    document.getElementById('csPasteText').value = '';
+    pasteWrap.hidden = true;
+    drawSets();
+    const n = parsed.reduce((a,s)=>a+s.cards.length,0);
+    openInfoModalOver('Разобрано', `Сетов: <b>${parsed.length}</b>, карточек: <b>${n}</b>. Проверь названия и нажми «Сохранить».`);
+  };
+  document.getElementById('mCsCancel').onclick=()=>{
+    if(CARD_SETS_STATE.sets.length && !confirm('Закрыть без сохранения? Разобранные сеты потеряются.')) return;
+    CARD_SETS_STATE = null;
+    closeOverlay();
+  };
+  document.getElementById('mCsSave').onclick=()=>{
+    const isCustom = !CATEGORY_META.find(m=>m.key===key);
+    let made = 0, madeSets = 0;
+    CARD_SETS_STATE.sets.forEach(s=>{
+      const cards = s.cards.filter(c=>fieldKeys.some(f=>(c[f]||'').trim()));
+      if(!cards.length) return;
+      const topicId = resolveTopicByName(key, (s.name||fallbackName).trim() || fallbackName);
+      cards.forEach(c=>{
+        const vals = {};
+        fieldKeys.forEach(f=>{ vals[f] = (c[f]||'').trim(); });
+        const newCard = Object.assign({id:uid(key), catKey:key, level:0, next_review:todayISO(), topicId}, vals);
+        if(isCustom){ if(!STORE.customCards[key]) STORE.customCards[key]=[]; STORE.customCards[key].push(newCard); }
+        else { if(!STORE.extraCards[key]) STORE.extraCards[key]=[]; STORE.extraCards[key].push(newCard); }
+        made++;
+      });
+      madeSets++;
+    });
+    // по лекции карточки сделаны — отмеченные слова больше не «ждут»
+    if(material && made) material.cardsMadeAt = todayISO();
+    CARD_SETS_STATE = null;
+    saveStore();
+    buildAllData();
+    closeOverlay();
+    if(typeof opts.onDone === 'function') opts.onDone(); else renderAll();
+    renderNav();
+    openInfoModal('Готово', made
+      ? `Создано карточек: <b>${made}</b> в ${madeSets} сет${madeSets===1?'е':'ах'}. Они уже в spaced repetition — первое повторение завтра. Каждый сет можно править отдельно в разделе Карточки.`
+      : 'Ни одной заполненной карточки не нашлось — ничего не сохранено.');
+  };
+  openOverlay();
+}
+
+/* ==========================================================================
    КОРЗИНА — подстраховка: всё недавно удалённое можно вернуть из раздела Storage.
    ========================================================================== */
-const TRASH_LIMIT = 40; // держим корзину небольшой, чтобы не упереться в лимит localStorage
+const TRASH_LIMIT = 60; // держим корзину небольшой, чтобы не упереться в лимит localStorage
 const TRASH_TYPE_LABELS = {
   card:'Карточка', material:'Лекция', notebook:'Тетрадь', note:'Заметка',
-  finaltest:'Тест', timerecord:'Запись времени', category:'Предмет'
+  finaltest:'Тест', timerecord:'Запись времени', category:'Предмет',
+  plantask:'Задача планера', calevent:'Событие календаря', topic:'Тема', cardset:'Сет карточек'
 };
 function trashPush(type, label, payload, catKey, sub){
   if(!STORE.trash) STORE.trash = [];
@@ -7425,6 +8330,26 @@ function restoreFromTrash(trashId){
       if(p.materials) STORE.materials[p.category.key] = p.materials;
       if(p.notebooks) STORE.notebooks[p.category.key] = p.notebooks;
       if(p.topics) STORE.customTopics[p.category.key] = p.topics;
+    }
+    else if(t.type==='plantask'){ STORE.planTasks = STORE.planTasks||[]; STORE.planTasks.push(p.task); }
+    else if(t.type==='calevent'){ STORE.calEvents = STORE.calEvents||[]; STORE.calEvents.push(p.event); }
+    else if(t.type==='topic'){
+      // тема возвращается вместе со всеми карточками, которые в ней лежали
+      STORE.deletedTopics[key] = (STORE.deletedTopics[key]||[]).filter(id=>id!==p.topicId);
+      if(p.topic){
+        STORE.customTopics[key] = STORE.customTopics[key]||[];
+        if(!STORE.customTopics[key].some(x=>x.id===p.topic.id)) STORE.customTopics[key].push(p.topic);
+      }
+      if(p.name){ STORE.topicRenames[key] = STORE.topicRenames[key]||{}; STORE.topicRenames[key][p.topicId] = p.name; }
+    }
+    else if(t.type==='cardset'){
+      (p.cards||[]).forEach(c=>{
+        if(p.mode==='custom'){ STORE.customCards[key] = STORE.customCards[key]||[]; STORE.customCards[key].push(c); }
+        else { STORE.extraCards[key] = STORE.extraCards[key]||[]; STORE.extraCards[key].push(c); }
+      });
+      (p.rawIds||[]).forEach(id=>{ STORE.deletedCards = (STORE.deletedCards||[]).filter(x=>x!==id); });
+      Object.keys(p.progress||{}).forEach(id=>{ STORE.cardProgress[id] = p.progress[id]; });
+      Object.keys(p.topicOverride||{}).forEach(id=>{ STORE.cardTopicOverride[id] = p.topicOverride[id]; });
     }
   }catch(e){ return false; }
   STORE.trash.splice(i,1);
@@ -7491,7 +8416,8 @@ function openMoveCardsModal(fromKey, topicId, cardId, onDone){
   openOverlay();
 }
 
-function deleteCard(key, cardId, quiet){
+// noTrash=true — карточка уже записана в корзину как часть целого сета, отдельная запись не нужна
+function deleteCard(key, cardId, quiet, noTrash){
   const isCustom = !CATEGORY_META.find(m=>m.key===key);
   const card = findCard(key, cardId);
   const face = card ? renderCardFace((APP_DATA[key]&&APP_DATA[key].meta.type)||'custom', card) : null;
@@ -7516,7 +8442,7 @@ function deleteCard(key, cardId, quiet){
       if(!STORE.deletedCards.includes(cardId)) STORE.deletedCards.push(cardId);
     }
   }
-  trashPush('card', (face && stripHtml(face.top)) || 'Карточка', payload, key, getCategoryDisplayName(key));
+  if(!noTrash) trashPush('card', (face && stripHtml(face.top)) || 'Карточка', payload, key, getCategoryDisplayName(key));
   delete STORE.cardProgress[cardId];
   delete STORE.cardOverrides[cardId];
   delete STORE.cardTopicOverride[cardId];
@@ -7564,6 +8490,8 @@ document.getElementById('themeSwitch').addEventListener('click',()=>{
 /* ---------- Масштаб интерфейса ---------- */
 function applyFontScale(){
   document.getElementById('app').style.zoom = STORE.fontScale || 1;
+  // zoom меняет фактическую ширину сайдбара — панель форматирования должна за ним успеть
+  if(typeof syncFloatBarGeometry === 'function') setTimeout(syncFloatBarGeometry, 0);
 }
 applyFontScale();
 
@@ -7682,6 +8610,8 @@ function applySidebarWidth(w){
   const clamped = Math.min(SIDEBAR_MAX_W, Math.max(SIDEBAR_MIN_W, Math.round(w) || SIDEBAR_DEFAULT_W));
   document.getElementById('app').style.gridTemplateColumns = `${clamped}px 1fr`;
   document.documentElement.style.setProperty('--sidebar-w', clamped+'px');
+  // панель форматирования упирается в правый край сайдбара — пересчитываем его
+  if(typeof syncFloatBarGeometry === 'function') syncFloatBarGeometry();
   return clamped;
 }
 applySidebarWidth(STORE.sidebarWidth || 256);
@@ -8369,6 +9299,7 @@ applyCoverImage();
 buildAllData();
 seedDemoLecture();
 buildAllData(); // пересобираем: сид мог скрыть пустые предметы и завести тему для лекции-примера
+restoreTheoryTabs();
 renderAll();
 initAuthGate();
 
